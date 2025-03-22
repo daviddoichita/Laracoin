@@ -1,4 +1,5 @@
-import AppLayoutTemplate from '@/layouts/app/app-header-layout';
+import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
+import AppHeaderLayout from './app/app-header-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
 
@@ -7,8 +8,23 @@ interface AppLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
-    <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        {children}
-    </AppLayoutTemplate>
-);
+const getLayout = ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
+    const appLayout = localStorage.getItem('app-layout')
+    if (appLayout && appLayout === "sidebar") {
+        return (
+            <AppSidebarLayout breadcrumbs={breadcrumbs} {...props}>
+                {children}
+            </AppSidebarLayout>
+        )
+    } else {
+        return (
+            <AppHeaderLayout breadcrumbs={breadcrumbs} {...props}>
+                {children}
+            </AppHeaderLayout>
+        )
+    }
+}
+
+export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
+    return getLayout({ children, breadcrumbs, ...props })
+}
