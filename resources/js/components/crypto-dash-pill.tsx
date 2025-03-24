@@ -1,17 +1,31 @@
-import { Crypto } from "@/types/crypto";
+import { Crypto } from '@/types/crypto';
+import { Link } from '@inertiajs/react';
 
 interface CryptoDashPillProps {
     crypto: Crypto;
 }
 
+const getEuroPrice = (crypto: Crypto) => {
+    const pcArr = crypto.main_price_comparison.length !== 0 ? crypto.main_price_comparison : crypto.child_price_comparison;
+    const priceComparison = pcArr.filter((pc) => {
+        return pc.main_id === 1;
+    });
+    const price = priceComparison[0]?.price.toString();
+    const price2d = parseFloat(price).toFixed(2);
+    return <p>{price2d + ' €'}</p>;
+};
+
 export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
     return (
-        <div className="w-full flex flex-row items-center justify-between border rounded p-3 bg-neutral-950 hover:bg-neutral-900 transition duration-[0.2s] ease-in-out hover:cursor-pointer">
+        <Link
+            href={route('crypto.show', { id: crypto.id })}
+            className="flex max-w-7xl min-w-7xl flex-row items-center justify-between rounded border bg-neutral-950 p-3 font-sans transition duration-[0.2s] ease-in-out hover:cursor-pointer hover:bg-neutral-900"
+        >
             <div className="flex flex-row gap-3">
                 <p>{crypto.name.toLocaleUpperCase()}</p>
                 <p>{crypto.symbol}</p>
             </div>
-            <p>{crypto.main_price_comparison[0]?.price}</p>
-        </div>
-    )
+            {getEuroPrice(crypto)}
+        </Link>
+    );
 }

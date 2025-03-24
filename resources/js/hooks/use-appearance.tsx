@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export type Appearance = 'light' | 'dark' | 'system';
+export type Layout = 'header' | 'sidebar';
 
 const prefersDark = () => {
     if (typeof window === 'undefined') {
@@ -70,4 +71,25 @@ export function useAppearance() {
     }, [updateAppearance]);
 
     return { appearance, updateAppearance } as const;
+}
+
+export function useLayout() {
+    const [layout, setLayout] = useState<Layout>('header');
+
+    const updateLayout = useCallback((mode: Layout) => {
+        setLayout(mode);
+
+        setCookie('layout', mode);
+
+        localStorage.setItem('app-layout', mode);
+    }, []);
+
+    useEffect(() => {
+        const savedLayout = localStorage.getItem('app-layout') as Layout | null;
+        updateLayout(savedLayout || 'header');
+
+        return () => mediaQuery()?.removeEventListener('change', handleSystemThemeChange);
+    }, [updateLayout]);
+
+    return { layout, updateLayout } as const;
 }
