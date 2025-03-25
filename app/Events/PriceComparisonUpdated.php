@@ -8,32 +8,24 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PriceComparisonUpdated
+class PriceComparisonUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public PriceComparison $priceComparison;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(PriceComparison $priceComparison)
-    {
-        $this->priceComparison = $priceComparison;
-    }
+    public function __construct(public PriceComparison $priceComparison) {}
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        return new Channel($this->priceComparison->pair_symbol);
     }
 }
