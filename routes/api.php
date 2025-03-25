@@ -30,6 +30,7 @@ Route::post('/notifications', [NotificationController::class, 'store']);
 
 Route::get('/price_comparison', [PriceComparisonController::class, 'index']);
 Route::get('/price_comparison/{id}', [PriceComparisonController::class, 'show']);
+Route::put('/price_comparison/{id}', [PriceComparisonController::class, 'update']);
 Route::post('/price_comparison', [PriceComparisonController::class, 'store']);
 Route::delete('/price_comparison/{id}', [PriceComparisonController::class, 'destroy']);
 

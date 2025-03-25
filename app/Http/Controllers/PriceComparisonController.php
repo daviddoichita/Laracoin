@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PriceComparisonUpdated;
 use App\Models\PriceComparison;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
 use function Pest\Laravel\json;
 
@@ -68,9 +71,23 @@ class PriceComparisonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PriceComparison $priceComparison)
+    public function update(Request $request, int $id)
     {
-        //
+        $request->validate([
+            'price' => 'required'
+        ]);
+
+        $priceComparison = PriceComparison::with('mainCrypto', 'childCrypto')->find($id);
+
+        $priceComparison->price = $request->price;
+
+        $priceComparison->save();
+
+        event(new PriceComparisonUpdated($priceComparison));
+
+        return response()->json([
+            'message' => 'Update Successfully'
+        ]);
     }
 
     /**

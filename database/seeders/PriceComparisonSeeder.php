@@ -17,14 +17,14 @@ class PriceComparisonSeeder extends Seeder
             'main_id' => '1',
             'child_id' => '2',
             'pair_symbol' => 'EUR_BTC',
-            'price' => '60000'
+            'price' => '0.00001282'
         ]);
 
         DB::table('price_comparison')->insert([
             'main_id' => '1',
             'child_id' => '3',
             'pair_symbol' => 'EUR_ETH',
-            'price' => '2000'
+            'price' => '0.0005'
         ]);
     }
 }

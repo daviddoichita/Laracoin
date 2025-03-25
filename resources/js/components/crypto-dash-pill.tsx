@@ -10,9 +10,12 @@ const getEuroPrice = (crypto: Crypto) => {
     const priceComparison = pcArr.filter((pc) => {
         return pc.main_id === 1;
     });
-    const price = priceComparison[0]?.price.toString();
-    const price2d = parseFloat(price).toFixed(2);
-    return <p>{price2d + ' €'}</p>;
+
+    const price = priceComparison[0]?.price;
+    const priceInverted = (1 / price).toString();
+    const price2d = parseFloat(priceInverted).toFixed(2);
+    const pId = `${crypto.id}-${crypto.name}-price`;
+    return <p id={pId}>{price2d + ' €'}</p>;
 };
 
 export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
