@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('/crypto/{id}', function (int $id) {
     return Inertia::render('crypto', [
-        'crypto' => Crypto::find($id)
+        'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])->find($id)
     ]);
 })->name('crypto.show');
 
