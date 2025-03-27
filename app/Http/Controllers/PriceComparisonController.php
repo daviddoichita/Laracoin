@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
+use function Illuminate\Log\log;
 use function Pest\Laravel\json;
 
 class PriceComparisonController extends Controller
@@ -79,14 +80,22 @@ class PriceComparisonController extends Controller
 
         $priceComparison = PriceComparison::with('mainCrypto', 'childCrypto')->find($id);
 
+        $priceUpdatePercentage = (abs($priceComparison->price - $request->price) / (($priceComparison->price + $request->price) / 2)) * 100;
+
+        if ($priceComparison->price < $request->price) {
+            $priceUpdatePercentage *= -1;
+        }
+
         $priceComparison->price = $request->price;
+        $priceComparison->last_update = $priceUpdatePercentage;
 
         $priceComparison->save();
 
         event(new PriceComparisonUpdated($priceComparison));
 
         return response()->json([
-            'message' => 'Update Successfully'
+            'message' => 'Update Successfully',
+            'updatePercent' => $priceUpdatePercentage
         ]);
     }
 

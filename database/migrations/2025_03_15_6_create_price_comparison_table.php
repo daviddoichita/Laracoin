@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('child_id');
             $table->string('pair_symbol', 20);
             $table->decimal('price', 18, 8);
+            $table->decimal('last_update', 18, 8);
             $table->timestamps();
 
             $table->foreign('main_id')->references('id')->on('cryptos')->cascadeOnDelete();

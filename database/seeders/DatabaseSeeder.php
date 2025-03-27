@@ -26,24 +26,26 @@ class DatabaseSeeder extends Seeder
         }
 
         DB::table('price_comparison')->insert([
-            'main_id' => '1',
-            'child_id' => '2',
+            'main_id' => 1,
+            'child_id' => 2,
             'pair_symbol' => 'EUR_BTC',
-            'price' => '0.00001282',
+            'price' => 0.00001282,
+            'last_update' => 0,
         ]);
 
         DB::table('price_comparison')->insert([
-            'main_id' => '1',
-            'child_id' => '3',
+            'main_id' => 1,
+            'child_id' => 3,
             'pair_symbol' => 'EUR_ETH',
-            'price' => '0.0005',
+            'price' => 0.0005,
+            'last_update' => 0,
         ]);
 
         DB::table('users')->insert([
             'name' => 'admin',
             'surnames' => 'admin',
             'nif' => '12312323A',
-            'phone_number' => '123123123',
+            'phone_number' => 123123123,
             'email' => 'admin@local.com',
             'password' => Hash::make('admin'),
         ]);

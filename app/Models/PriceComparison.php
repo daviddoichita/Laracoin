@@ -18,6 +18,7 @@ class PriceComparison extends Model
         'child_id',
         'pair_symbol',
         'price',
+        'last_update'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
