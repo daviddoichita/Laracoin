@@ -18,10 +18,10 @@ interface CryptoViewProps {
 }
 
 export default function CryptoView({ crypto }: CryptoViewProps) {
-    const [price, setPrice] = useState(crypto.child_price_comparison[0].price);
+    const [priceComparison, setPriceComparison] = useState(crypto.child_price_comparison[0]);
 
     echo.channel(crypto.child_price_comparison[0].pair_symbol).listen('PriceComparisonUpdated', (event: any) => {
-        setPrice(event.priceComparison.price);
+        setPriceComparison(event.priceComparison);
     });
 
     return (
@@ -34,10 +34,10 @@ export default function CryptoView({ crypto }: CryptoViewProps) {
                     <div className="flex flex-col items-start justify-start gap-3">
                         <CryptoDashPillPrice
                             id="cryptoPrice"
-                            price={price}
+                            priceComparison={priceComparison}
                             className="self-center text-2xl font-bold"
                             maxFractionDigits={2}
-                            smallTextSize="text-[0.8rem]"
+                            smallTextClassName="text-[0.8rem]"
                             arrowSize={18}
                         />
 

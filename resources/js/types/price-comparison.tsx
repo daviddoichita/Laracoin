@@ -4,4 +4,5 @@ export interface PriceComparison {
     child_id: number;
     pair_symbol: string;
     price: number;
+    last_update: number;
 }

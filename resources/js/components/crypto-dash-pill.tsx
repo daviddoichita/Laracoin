@@ -10,10 +10,10 @@ interface CryptoDashPillProps {
 }
 
 export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
-    const [price, setPrice] = useState(crypto.child_price_comparison[0].price);
+    const [priceComparison, setPriceComparison] = useState(crypto.child_price_comparison[0]);
 
     echo.channel(crypto.child_price_comparison[0].pair_symbol).listen('PriceComparisonUpdated', (event: any) => {
-        setPrice(event.priceComparison.price);
+        setPriceComparison(event.priceComparison);
     });
 
     return (
@@ -26,7 +26,13 @@ export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
                 <p>{crypto.name.toLocaleUpperCase()}</p>
                 <p>{crypto.symbol}</p>
             </div>
-            <CryptoDashPillPrice price={price} id="test-price" />
+            <CryptoDashPillPrice
+                priceComparison={priceComparison}
+                id={crypto.name + '-price'}
+                maxFractionDigits={2}
+                textClassName="text-lg font-bold"
+                smallTextClassName="text-[0.7rem] font-bold"
+            />
         </Link>
     );
 }
