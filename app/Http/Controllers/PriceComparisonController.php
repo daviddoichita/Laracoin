@@ -80,6 +80,7 @@ class PriceComparisonController extends Controller
 
         $priceComparison = PriceComparison::with('mainCrypto', 'childCrypto')->find($id);
 
+        // Need the update to be daily
         $priceUpdatePercentage = (abs($priceComparison->price - $request->price) / (($priceComparison->price + $request->price) / 2)) * 100;
 
         if ($priceComparison->price < $request->price) {

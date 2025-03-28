@@ -12,7 +12,12 @@ class PriceRecordController extends Controller
      */
     public function index()
     {
-        return response()->json(PriceRecord::with('pair')->get());
+        $priceRecords = PriceRecord::with('pair')->get();
+
+        return response()->json([
+            'count' => sizeof($priceRecords),
+            'data' => $priceRecords
+        ]);
     }
 
     /**
