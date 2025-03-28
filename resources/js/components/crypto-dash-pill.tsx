@@ -22,7 +22,7 @@ export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
             className="flex max-w-7xl min-w-7xl flex-row items-center justify-between rounded border bg-neutral-950 p-3 font-sans transition duration-[0.2s] ease-in-out hover:cursor-pointer hover:bg-neutral-900"
         >
             <div className="flex flex-row gap-3">
-                <DynamicIcon name={crypto.name === 'Bitcoin' ? 'bitcoin' : 'coins'} />
+                <DynamicIcon name={crypto.icon} />
                 <p>{crypto.name.toLocaleUpperCase()}</p>
                 <p>{crypto.symbol}</p>
             </div>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->string('symbol', 10);
+            $table->string('icon', 50);
             $table->timestamps();
         });
     }

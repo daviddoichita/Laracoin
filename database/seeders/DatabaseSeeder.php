@@ -16,12 +16,14 @@ class DatabaseSeeder extends Seeder
     {
         $names = ['Euro', 'Bitcoin', 'Ethereum'];
         $symbols = ['EUR', 'BTC', 'ETH'];
+        $icons = ['coins', 'bitcoin', 'coins'];
 
         $len = count($names);
         for ($i = 0; $i < $len; $i++) {
             DB::table('cryptos')->insert([
                 'name' => $names[$i],
                 'symbol' => $symbols[$i],
+                'icon' => $icons[$i]
             ]);
         }
 
