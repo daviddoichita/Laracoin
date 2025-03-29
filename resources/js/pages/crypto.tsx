@@ -8,7 +8,7 @@ import { PriceComparison } from '@/types/price-comparison';
 import { PriceRecord } from '@/types/price-record';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -46,13 +46,30 @@ const calculateInfoPills = (crypto: Crypto, priceComparison: PriceComparison, vo
     return { marketCap, volume, fdv, vol_mktCap, max_supply, circulating_supply, rawmc, rawvol };
 };
 
+interface CustomTooltipProps {
+    active?: boolean;
+    payload?: { payload: { created_at: string; price: number } }[];
+}
+
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+    if (active && payload && payload.length) {
+        const { created_at, price } = payload[0].payload;
+        return (
+            <div className="rounded bg-neutral-950 p-1">
+                <p>{`${new Date(created_at).toLocaleString()}: ${parseFloat(price.toString()).toLocaleString('es-ES', { maximumFractionDigits: 4, style: 'currency', currency: 'EUR' })}`}</p>
+            </div>
+        );
+    }
+    return null;
+};
+
 const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => {
     const minPrice = Math.min(...priceRecords.map((record) => record.price));
     const maxPrice = Math.max(...priceRecords.map((record) => record.price));
 
     return (
         <ResponsiveContainer width="100%" height={500} className="self-center">
-            <LineChart
+            <AreaChart
                 width={500}
                 height={300}
                 data={priceRecords}
@@ -63,18 +80,42 @@ const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => 
                     bottom: 50,
                 }}
             >
+                <defs>
+                    <linearGradient id="colorPrice" x1={0} y1={0} x2={0} y2={1}>
+                        <stop offset="5%" stopColor="#0069a8" stopOpacity={0.9} />
+                        <stop offset="95%" stopColor="#0069a8" stopOpacity={0.1} />
+                    </linearGradient>
+                </defs>
                 <CartesianGrid stroke="#404040"></CartesianGrid>
                 <XAxis
                     dataKey="created_at"
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 12, width: 100 }}
                     tickFormatter={(tick) => {
                         const tickDate = new Date(tick);
                         return `${tickDate.toLocaleDateString()} ${tickDate.toLocaleTimeString()}`;
                     }}
+                    tickMargin={10}
                 ></XAxis>
-                <Tooltip></Tooltip>
-                <Line type="natural" dataKey="price" dot={false} activeDot={{ r: 4 }} stroke="#0069a8"></Line>
-            </LineChart>
+                <YAxis
+                    tickMargin={10}
+                    dataKey="price"
+                    domain={[minPrice, maxPrice]}
+                    tickFormatter={(tick) => {
+                        return localeString(parseFloat(tick));
+                    }}
+                ></YAxis>
+                <Tooltip content={<CustomTooltip />}></Tooltip>
+                <Area
+                    type="monotone"
+                    dataKey="price"
+                    dot={false}
+                    activeDot={{ r: 4 }}
+                    stroke="#0069a8"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#colorPrice)"
+                ></Area>
+            </AreaChart>
         </ResponsiveContainer>
     );
 };
@@ -105,8 +146,8 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Crypto View"></Head>
 
-            <div className="mt-[2rem] grid grid-cols-[0.4fr_1fr_0.4fr] p-1">
-                <div className="flex flex-col gap-6 font-bold">
+            <div className="mt-[2rem] grid grid-cols-[0.3fr_1fr_0.3fr] p-1 2xl:grid-cols-[0.2fr_1fr_0.2fr]">
+                <div className="flexflex-col gap-6 font-bold">
                     <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">Coin info and metrics</h2>
                     <div className="flex flex-col items-start justify-start gap-3">
                         <CryptoDashPillPrice
@@ -140,9 +181,8 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
 
                     {/* Add a convenience converter */}
                 </div>
-                <div className="flex flex-col gap-6">
+                <div className="mr-2 ml-2 flex flex-col gap-6">
                     <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{crypto.symbol}&nbsp;&nbsp;|&nbsp;&nbsp;EUR</h2>
-
                     {/* Should have a WebSocket for 1h, 30m, etc to retrieve all the prices update to that interval in 1d, 1w, 1m size */}
                     <CryptoPriceChart priceRecords={priceRecordsState} />
                 </div>
