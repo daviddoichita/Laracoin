@@ -44,6 +44,13 @@ class PriceRecordController extends Controller
         return response()->json(PriceRecord::with('pair')->find($id));
     }
 
+    public function showByPair(int $pairId)
+    {
+        return response()->json(
+            PriceRecord::with('pair')->where('pair_id', '=', $pairId)->get()
+        );
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

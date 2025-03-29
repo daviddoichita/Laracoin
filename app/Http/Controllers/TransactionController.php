@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TransactionInserted;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -49,6 +51,8 @@ class TransactionController extends Controller
             'amount' => $request->amount,
         ]);
 
+        event(new TransactionInserted($transaction));
+
         return response()->json([
             'created' => $transaction
         ]);
@@ -65,6 +69,22 @@ class TransactionController extends Controller
     public function showFull(int $id)
     {
         return response()->json(Transaction::with(['user', 'crypto', 'order'])->find($id));
+    }
+
+    public function volume24h(int $id)
+    {
+        $transactions = Transaction::with('crypto')->where('crypto_id', '=', $id)->where('created_at', '>=', Carbon::now()->subDay())->get();
+        $volume = 0;
+        foreach ($transactions as $transaction) {
+            $volume += $transaction->amount;
+        }
+
+        return $volume;
+    }
+
+    public function volume24hApi(int $id)
+    {
+        return response()->json($this->volume24h($id));
     }
 
     /**

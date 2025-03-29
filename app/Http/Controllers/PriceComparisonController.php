@@ -46,6 +46,7 @@ class PriceComparisonController extends Controller
             'child_id' => $request->child_id,
             'pair_symbol' => $request->pair_symbol,
             'price' => $request->price,
+            'last_update' => 0,
         ]);
 
         return response()->json([
@@ -81,7 +82,9 @@ class PriceComparisonController extends Controller
         $priceComparison = PriceComparison::with('mainCrypto', 'childCrypto')->find($id);
 
         // Need the update to be daily
-        $priceUpdatePercentage = (abs($priceComparison->price - $request->price) / (($priceComparison->price + $request->price) / 2)) * 100;
+        $current = 1 / $priceComparison->price;
+        $new = 1 / $request->price;
+        $priceUpdatePercentage = abs($current - $new) / (($current + $new) / 2);
 
         if ($priceComparison->price < $request->price) {
             $priceUpdatePercentage *= -1;

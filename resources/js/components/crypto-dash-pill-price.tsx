@@ -34,23 +34,30 @@ export function CryptoDashPillPrice({
         }
     }, [priceComparison]);
 
-    const formatNum = (n: number, suffix: string) => {
-        const formatted = parseFloat(n.toString()).toLocaleString('es-ES', {
+    const formatNum = (n: number) => {
+        return parseFloat(n.toString()).toLocaleString('es-ES', {
+            style: 'currency',
+            currency: 'EUR',
             minimumFractionDigits: 2,
             maximumFractionDigits: maxFractionDigits || 6,
         });
+    };
 
-        return `${formatted}${suffix}`;
+    const formatPercent = (n: number) => {
+        return parseFloat(n.toString()).toLocaleString('es-ES', {
+            maximumFractionDigits: 2,
+            style: 'percent',
+        });
     };
 
     return (
         <div className={'flex flex-row items-center gap-2 ' + className}>
             <p id={id} className={color + ' ' + textClassName}>
-                {formatNum(1 / priceComparison.price, '€')}
+                {formatNum(priceComparison.price)}
             </p>
             <div className="flex flex-row items-center">
                 <DynamicIcon name={arrow} size={arrowSize || 16} className={color} />
-                <small className={(smallTextClassName || 'text-[0.6rem]') + ' ' + color}>{formatNum(priceComparison.last_update, '%')}</small>
+                <small className={(smallTextClassName || 'text-[0.6rem]') + ' ' + color}>{formatPercent(priceComparison.last_update)}</small>
             </div>
         </div>
     );

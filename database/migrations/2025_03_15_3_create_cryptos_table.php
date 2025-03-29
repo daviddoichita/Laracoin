@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('symbol', 10);
             $table->string('icon', 50);
+            $table->bigInteger('max_supply');
+            $table->bigInteger('circulating_supply');
             $table->timestamps();
         });
     }

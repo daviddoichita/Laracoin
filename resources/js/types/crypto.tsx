@@ -6,6 +6,8 @@ export interface Crypto {
     name: string;
     symbol: string;
     icon: IconName;
+    max_supply: number;
+    circulating_supply: number;
     main_price_comparison: PriceComparison[];
     child_price_comparison: PriceComparison[];
 }

@@ -13,7 +13,10 @@ class Crypto extends Model
 
     protected $fillable = [
         'name',
-        'symbol'
+        'symbol',
+        'icon',
+        'max_supply',
+        'circulating_supply'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

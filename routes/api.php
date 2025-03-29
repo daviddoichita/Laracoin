@@ -36,6 +36,7 @@ Route::delete('/price_comparison/{id}', [PriceComparisonController::class, 'dest
 
 Route::get('/price_record', [PriceRecordController::class, 'index']);
 Route::get('/price_record/{id}', [PriceRecordController::class, 'show']);
+Route::get('/price_record/pair/{id}', [PriceRecordController::class, 'showByPair']);
 
 Route::get('/orders', [OrderController::class, 'index']);
 Route::get('/orders/full', [OrderController::class, 'indexFull']);
@@ -46,5 +47,6 @@ Route::post('/orders', [OrderController::class, 'store']);
 Route::get('/transactions', [TransactionController::class, 'index']);
 Route::get('/transactions/full', [TransactionController::class, 'indexFull']);
 Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+Route::get('/transactions/{id}/24h', [TransactionController::class, 'show24CryptoVolumeApi']);
 Route::get('/transactions/{id}/full', [TransactionController::class, 'showFull']);
 Route::post('/transactions', [TransactionController::class, 'store']);

@@ -38,12 +38,18 @@ class CryptoController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:50',
-            'symbol' => 'required|string|max:10'
+            'symbol' => 'required|string|max:10',
+            'icon' => 'required|string',
+            'max_supply' => 'required',
+            'circulating_supply' => 'required'
         ]);
 
         $crypto = Crypto::create([
             'name' => $request->name,
-            'symbol' => $request->symbol
+            'symbol' => $request->symbol,
+            'icon' => $request->icon,
+            'max_supply' => $request->max_supply,
+            'circulating_supply' => $request->circulating_supply
         ]);
 
         return response()->json([

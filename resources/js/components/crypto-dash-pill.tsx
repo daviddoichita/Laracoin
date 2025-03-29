@@ -10,9 +10,9 @@ interface CryptoDashPillProps {
 }
 
 export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
-    const [priceComparison, setPriceComparison] = useState(crypto.child_price_comparison[0]);
+    const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
 
-    echo.channel(crypto.child_price_comparison[0].pair_symbol).listen('PriceComparisonUpdated', (event: any) => {
+    echo.channel('PriceComparison.Pair.' + crypto.main_price_comparison[0].pair_symbol).listen('PriceComparisonUpdated', (event: any) => {
         setPriceComparison(event.priceComparison);
     });
 

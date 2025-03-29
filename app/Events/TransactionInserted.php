@@ -2,9 +2,8 @@
 
 namespace App\Events;
 
-use App\Http\Controllers\TransactionController;
-use App\Models\PriceComparison;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -15,16 +14,25 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 
-class PriceComparisonUpdated implements ShouldBroadcastNow
+use function Illuminate\Log\log;
+
+class TransactionInserted implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public int $volume24h;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public PriceComparison $priceComparison)
+    public function __construct(public Transaction $lastTransaction)
     {
-        //
+        $transactions24h = Transaction::with('crypto')->where('crypto_id', '=', $this->lastTransaction->crypto_id)->where('created_at', '>=', Carbon::now()->subDay())->get();
+        $volume = 0;
+        foreach ($transactions24h as $transaction) {
+            $volume += $transaction->amount;
+        }
+        $this->volume24h = $volume;
     }
 
     /**
@@ -32,6 +40,6 @@ class PriceComparisonUpdated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('PriceComparison.Pair.' . $this->priceComparison->pair_symbol);
+        return new Channel('Transactions.Crypto.Id.' . $this->lastTransaction->crypto_id);
     }
 }
