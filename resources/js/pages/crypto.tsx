@@ -8,7 +8,7 @@ import { PriceComparison } from '@/types/price-comparison';
 import { PriceRecord } from '@/types/price-record';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -66,10 +66,14 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => {
     const minPrice = Math.min(...priceRecords.map((record) => record.price));
     const maxPrice = Math.max(...priceRecords.map((record) => record.price));
+    const modRecords = priceRecords.map((record) => ({
+        ...record,
+        price: record.price * 0.4,
+    }));
 
     return (
-        <ResponsiveContainer width="100%" height={500} className="self-center">
-            <AreaChart
+        <ResponsiveContainer className="self-center" width="100%" height={600}>
+            <ComposedChart
                 width={500}
                 height={300}
                 data={priceRecords}
@@ -82,11 +86,11 @@ const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => 
             >
                 <defs>
                     <linearGradient id="colorPrice" x1={0} y1={0} x2={0} y2={1}>
-                        <stop offset="5%" stopColor="#0069a8" stopOpacity={0.9} />
-                        <stop offset="95%" stopColor="#0069a8" stopOpacity={0.1} />
+                        <stop offset="5%" stopColor="#0069a8" stopOpacity={0.7} />
+                        <stop offset="95%" stopColor="#0069a8" stopOpacity={0.05} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#404040"></CartesianGrid>
+                <CartesianGrid stroke="#404040" strokeDasharray="3 3"></CartesianGrid>
                 <XAxis
                     dataKey="created_at"
                     tick={{ fontSize: 12, width: 100 }}
@@ -95,11 +99,12 @@ const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => 
                         return `${tickDate.toLocaleDateString()} ${tickDate.toLocaleTimeString()}`;
                     }}
                     tickMargin={10}
+                    scale="auto"
                 ></XAxis>
                 <YAxis
-                    tickMargin={10}
+                    orientation="right"
                     dataKey="price"
-                    domain={[minPrice, maxPrice]}
+                    domain={[minPrice - minPrice * 0.08, maxPrice + maxPrice * 0.08]}
                     tickFormatter={(tick) => {
                         return localeString(parseFloat(tick));
                     }}
@@ -108,14 +113,14 @@ const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => 
                 <Area
                     type="monotone"
                     dataKey="price"
-                    dot={false}
                     activeDot={{ r: 4 }}
                     stroke="#0069a8"
                     strokeWidth={2.5}
                     fillOpacity={1}
                     fill="url(#colorPrice)"
                 ></Area>
-            </AreaChart>
+                <Bar dataKey="price" data={modRecords} stroke="#0069a8" opacity={0.6} fill="#0069a8"></Bar>
+            </ComposedChart>
         </ResponsiveContainer>
     );
 };
@@ -153,13 +158,12 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
                         <CryptoDashPillPrice
                             id="cryptoPrice"
                             priceComparison={priceComparison}
-                            className="self-center text-2xl"
+                            className="mt-2 self-center text-2xl"
                             maxFractionDigits={2}
                             smallTextClassName="text-[0.8rem]"
                             arrowSize={18}
                         />
 
-                        <h4 className="self-center font-bold">General info</h4>
                         <div className="grid w-full grid-cols-2 gap-3 self-center">
                             <CoinInfoPill name="Market Cap" value={infoPills.marketCap} rawValue={infoPills.rawmc} textClassName="text-sm" dynamic />
                             <CoinInfoPill name="Volume (24h)" value={infoPills.volume} textClassName="text-sm" rawValue={infoPills.rawvol} dynamic />

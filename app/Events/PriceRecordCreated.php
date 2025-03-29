@@ -11,6 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 use function Illuminate\Log\log;
 
@@ -21,10 +22,7 @@ class PriceRecordCreated implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public PriceRecord $priceRecord)
-    {
-        //
-    }
+    public function __construct(public PriceRecord $priceRecord) {}
 
     /**
      * Get the channels the event should broadcast on.

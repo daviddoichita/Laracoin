@@ -27,7 +27,7 @@ Schedule::call(function () {
 
         event(new PriceRecordCreated($priceRecord));
     }
-})->everyFiveMinutes();
+})->everyThirtySeconds();
 
 Schedule::call(function () {
     $priceComparisonArray = PriceComparison::all();
@@ -35,7 +35,7 @@ Schedule::call(function () {
     foreach ($priceComparisonArray as $priceComparison) {
         $current = $priceComparison->price;
 
-        $percent = rand(-10, 10);
+        $percent = rand(-2, 2);
         $adjust = ($percent / 100) * $current;
         $new = $current + $adjust;
 
