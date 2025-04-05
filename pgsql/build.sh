@@ -1,1 +1,1 @@
-docker build -t laracoin_pgsql .
+docker build -t pgsql .
