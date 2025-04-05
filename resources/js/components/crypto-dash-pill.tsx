@@ -19,7 +19,7 @@ export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
     return (
         <Link
             href={route('crypto.show', { id: crypto.id })}
-            className="flex max-w-7xl min-w-7xl flex-row items-center justify-between rounded-xl border p-3 font-sans transition duration-[0.2s] ease-in-out hover:cursor-pointer hover:bg-neutral-300 dark:bg-neutral-950 dark:hover:bg-neutral-900"
+            className="flex max-w-7xl min-w-7xl flex-row items-center justify-between rounded-xl border p-3 font-sans transition duration-[0.2s] ease-in-out hover:cursor-pointer hover:bg-neutral-200 dark:bg-neutral-950 dark:hover:bg-neutral-900"
         >
             <div className="flex flex-row gap-3">
                 <DynamicIcon name={crypto.icon} />

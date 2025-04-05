@@ -10,4 +10,5 @@ export interface Crypto {
     circulating_supply: number;
     main_price_comparison: PriceComparison[];
     child_price_comparison: PriceComparison[];
+    disabled: boolean;
 }

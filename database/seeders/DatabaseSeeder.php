@@ -77,6 +77,7 @@ class DatabaseSeeder extends Seeder
                 'surnames' => 'admin',
                 'nif' => '12312323A',
                 'phone_number' => 123123123,
+                'admin' => true,
                 'email' => 'admin@local.com',
                 'password' => Hash::make('admin'),
                 'created_at' => $now,

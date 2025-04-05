@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Crypto;
+use App\Models\PriceComparison;
+use App\Models\PriceRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
@@ -57,6 +59,41 @@ class CryptoController extends Controller
         ]);
     }
 
+    public function storeInertia(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'symbol' => 'required|string|max:10',
+            'icon' => 'required|string',
+            'max_supply' => 'required',
+            'circulating_supply' => 'required',
+            'price' => 'required'
+        ]);
+
+        $crypto = Crypto::create([
+            'name' => $request->name,
+            'symbol' => $request->symbol,
+            'icon' => $request->icon,
+            'max_supply' => $request->max_supply,
+            'circulating_supply' => $request->circulating_supply
+        ]);
+
+        $priceComparison = PriceComparison::create([
+            'main_id' => $crypto->id,
+            'child_id' => 1,
+            'pair_symbol' => $crypto->symbol . '_EUR',
+            'price' => $request->price,
+            'last_update' => 0,
+        ]);
+
+        $priceRecord = PriceRecord::create([
+            'pair_id' => $priceComparison->id,
+            'price' => $priceComparison->price,
+        ]);
+
+        return redirect()->intended(route('crypto.add', absolute: false));
+    }
+
     /**
      * Display the specified resource.
      */
@@ -99,6 +136,17 @@ class CryptoController extends Controller
             'message' => 'Update successfull',
             'crypto' => $current
         ]);
+    }
+
+    public function changeDisableState(int $id)
+    {
+        $crypto = Crypto::find($id);
+
+        $crypto->disabled = !$crypto->disabled;
+
+        $crypto->save();
+
+        return redirect()->intended(route('crypto.list', absolute: false));
     }
 
     /**

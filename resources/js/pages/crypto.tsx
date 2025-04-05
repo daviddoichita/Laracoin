@@ -13,7 +13,7 @@ import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Crypto View',
-        href: '/cryto-view',
+        href: '/crypto/show',
     },
 ];
 
@@ -55,7 +55,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
         const { created_at, price } = payload[0].payload;
         return (
-            <div className="rounded bg-neutral-950 p-1">
+            <div className="rounded border border-black bg-white p-1 dark:border-white dark:bg-neutral-950">
                 <p>{`${new Date(created_at).toLocaleString()}: ${parseFloat(price.toString()).toLocaleString('es-ES', { maximumFractionDigits: 4, style: 'currency', currency: 'EUR' })}`}</p>
             </div>
         );
@@ -126,6 +126,12 @@ const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => 
 };
 
 export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoViewProps) {
+    useEffect(() => {
+        if (!crypto) {
+            window.location.href = route('dashboard');
+        }
+    }, []);
+
     const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
     const [volume24hState, setVolume24hState] = useState(volume24h);
     const [infoPills, setInfoPills] = useState(calculateInfoPills(crypto, priceComparison, volume24h));

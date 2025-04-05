@@ -21,7 +21,7 @@ export function CryptoDashPillPrice({
     smallTextClassName,
     arrowSize,
 }: CryptoDashPillPriceProps) {
-    const [color, setColor] = useState<string>('text-white');
+    const [color, setColor] = useState<string>('dark:text-white text-black');
     const [arrow, setArrow] = useState<IconName>('minus');
 
     useEffect(() => {
@@ -35,12 +35,20 @@ export function CryptoDashPillPrice({
     }, [priceComparison]);
 
     const formatNum = (n: number) => {
-        return parseFloat(n.toString()).toLocaleString('es-ES', {
-            style: 'currency',
-            currency: 'EUR',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: maxFractionDigits || 6,
-        });
+        if (n < 1) {
+            return parseFloat(n.toString()).toLocaleString('es-ES', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 4,
+            });
+        } else {
+            return parseFloat(n.toString()).toLocaleString('es-ES', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: maxFractionDigits || 6,
+            });
+        }
     };
 
     const formatPercent = (n: number) => {

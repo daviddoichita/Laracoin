@@ -6,7 +6,7 @@ interface CryptoInfoDynamicProps {
 }
 
 export function CryptoInfoDynamic({ value, rawValue }: CryptoInfoDynamicProps) {
-    const [color, setColor] = useState<string>('text-white');
+    const [color, setColor] = useState<string>('dark:text-white text-black');
     const [arrow, setArrow] = useState<IconName>('minus');
     const [change, setChange] = useState(0);
     const rawValueRef = useRef(rawValue);

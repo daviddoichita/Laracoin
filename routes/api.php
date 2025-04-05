@@ -10,6 +10,7 @@ use App\Http\Controllers\UserBalanceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::middleware('auth.basic')->group(function () {
 	Route::get('/users', [UserController::class, 'index']);
 	Route::get('/users/{id}', [UserController::class, 'show']);

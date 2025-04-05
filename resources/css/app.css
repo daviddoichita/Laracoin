@@ -3,7 +3,7 @@
 @plugin 'tailwindcss-animate';
 
 @source "../views";
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -58,8 +58,7 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 
-
-    --breakpoint-2xl: 1920px;
+    --breakpoint-2xl: 1921px;
 }
 
 /*

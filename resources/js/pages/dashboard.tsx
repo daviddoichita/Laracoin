@@ -21,15 +21,17 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ cryptos }: DashboardProps) {
+    console.log(cryptos);
+
     const [filteredCryptos, setFilteredCryptos] = useState(cryptos);
     const [filtering, setFiltering] = useState(false);
-    const [serachQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const cryptosRef = useRef(cryptos);
     const fuse = new Fuse(cryptos, { keys: ['name', 'symbol'] });
 
     const filter = () => {
         setFiltering(true);
-        const trimmed = serachQuery.trim().toLocaleLowerCase();
+        const trimmed = searchQuery.trim().toLocaleLowerCase();
 
         if (trimmed === '') {
             setFilteredCryptos(cryptosRef.current);
@@ -37,14 +39,13 @@ export default function Dashboard({ cryptos }: DashboardProps) {
             return;
         }
 
-        // setFilteredCryptos(cryptosRef.current.filter((crypto) => crypto.name.toLowerCase().includes(trimmed)));
         setFilteredCryptos(fuse.search(trimmed).map((result) => result.item));
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="mt-5 flex w-[40%] flex-row gap-2 self-center">
+            <div className="mt-5 mb-5 flex w-[40%] flex-row gap-2 self-center">
                 {filtering ? (
                     <Button
                         onClick={() => {
@@ -66,7 +67,7 @@ export default function Dashboard({ cryptos }: DashboardProps) {
                         }
                     }}
                     onInput={(e) => setSearchQuery(e.currentTarget.value)}
-                    value={serachQuery}
+                    value={searchQuery}
                     placeholder="Search"
                 ></Input>
                 <Button
