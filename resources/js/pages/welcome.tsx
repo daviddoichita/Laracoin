@@ -80,7 +80,7 @@ export default function Welcome() {
                         {auth.user ? (
                             <Link
                                 href={route('dashboard')}
-                                className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                                className="inline-block rounded-sm border border-sky-600 px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-sky-600 dark:text-[#EDEDEC]"
                             >
                                 Dashboard
                             </Link>
