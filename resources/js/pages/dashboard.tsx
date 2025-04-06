@@ -21,8 +21,6 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ cryptos }: DashboardProps) {
-    console.log(cryptos);
-
     const [filteredCryptos, setFilteredCryptos] = useState(cryptos);
     const [filtering, setFiltering] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -45,7 +43,7 @@ export default function Dashboard({ cryptos }: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="mt-5 mb-5 flex w-[40%] flex-row gap-2 self-center">
+            <div className="mt-5 mb-5 flex w-[40%] max-w-7xl flex-row gap-2 self-center">
                 {filtering ? (
                     <Button
                         onClick={() => {
@@ -80,9 +78,7 @@ export default function Dashboard({ cryptos }: DashboardProps) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl">
                 <div className="flex w-full flex-col items-center justify-center gap-5">
                     {filteredCryptos.map(function (crypto, i) {
-                        if (crypto.symbol !== 'EUR') {
-                            return <CryptoDashPill key={i} crypto={crypto} />;
-                        }
+                        return <CryptoDashPill key={i} crypto={crypto} />;
                     })}
                 </div>
             </div>

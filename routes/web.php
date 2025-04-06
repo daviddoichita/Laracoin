@@ -14,7 +14,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard', [
-            'cryptos' => Crypto::with('mainPriceComparison', 'childPriceComparison')->where('disabled', '=', false)->get()
+            'cryptos' => Crypto::with('mainPriceComparison', 'childPriceComparison')->where('disabled', '=', false)->where('symbol', '!=', 'EUR')->get()
         ]);
     })->name('dashboard');
 
@@ -37,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/crypto/list', function () {
         return Inertia::render('list-cryptos', [
-            'cryptos' => Crypto::all()
+            'cryptos' => Crypto::where('symbol', '!=', 'EUR')->get()
         ]);
     })->name('crypto.list');
 });

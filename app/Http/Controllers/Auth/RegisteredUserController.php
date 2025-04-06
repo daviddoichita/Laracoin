@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\SpanishId;
+use App\Rules\SpanishPhone;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,8 +35,8 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'surnames' => 'required|string|max:255',
-            'nif' => 'required|string|max:9',
-            'phoneNumber' => 'required',
+            'nif' => ['required', 'string', new SpanishId],
+            'phoneNumber' => ['required', new SpanishPhone],
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);

@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { checkRole } from '@/lib/utils';
+import { BreadcrumbItem, SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import Fuse from 'fuse.js';
 import { DynamicIcon } from 'lucide-react/dynamic';
 import { useEffect, useRef, useState } from 'react';
@@ -21,11 +22,16 @@ export interface ListCryptosProps {
 
 export default function ListCryptos({ cryptos }: ListCryptosProps) {
     const { post } = useForm<{}>({});
+    const { auth } = usePage<SharedData>().props;
     const [query, setQuery] = useState('');
     const [filtering, setFiltering] = useState(false);
     const cryptosRef = useRef(cryptos);
     const [filteredCryptos, setFilteredCryptos] = useState(cryptos);
     const fuse = new Fuse(cryptos, { keys: ['name', 'symbol'] });
+
+    useEffect(() => {
+        checkRole(auth);
+    }, []);
 
     useEffect(() => {
         if (filtering) {
@@ -56,7 +62,7 @@ export default function ListCryptos({ cryptos }: ListCryptosProps) {
         <AppLayout>
             <Head title="Cryptos list"></Head>
 
-            <div className="flex w-[85%] flex-col items-center justify-start gap-3 self-center p-4">
+            <div className={'flex w-[85%] flex-col items-center justify-start gap-3 self-center p-4 ' + (auth.user.admin ? '' : 'hidden')}>
                 <div className="flex w-full flex-row items-center justify-center gap-3 p-4">
                     {filtering ? (
                         <Button
@@ -91,7 +97,7 @@ export default function ListCryptos({ cryptos }: ListCryptosProps) {
                 </div>
             </div>
 
-            <table className="w-[85%] border-separate self-center">
+            <table className={'w-[85%] border-separate self-center ' + (auth.user.admin ? '' : 'hidden')}>
                 <thead className="text-lg">
                     <tr>
                         <th className="rounded-tl border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Name</th>
@@ -104,7 +110,6 @@ export default function ListCryptos({ cryptos }: ListCryptosProps) {
                 </thead>
                 <tbody>
                     {filteredCryptos
-                        .filter((v) => v.symbol !== 'EUR')
                         .sort((a, b) => {
                             if (a.disabled === b.disabled) {
                                 return 0;
@@ -120,13 +125,18 @@ export default function ListCryptos({ cryptos }: ListCryptosProps) {
                                     <td className={tdClass}>{v.max_supply === -1 ? 'INF' : v.max_supply}</td>
                                     <td className={tdClass}>{v.circulating_supply === -1 ? 'INF' : v.circulating_supply}</td>
                                     <td className={tdClass}>
-                                        <Button onClick={() => (window.location.href = route('crypto.show', { id: v.id }))} disabled={v.disabled}>
+                                        <Button
+                                            onClick={() => (window.location.href = route('crypto.show', { id: v.id }))}
+                                            disabled={v.disabled}
+                                            className="cursor-pointer"
+                                        >
                                             View
                                         </Button>
                                     </td>
                                     <td className={tdClass}>
                                         {v.disabled ? (
                                             <Button
+                                                className="cursor-pointer"
                                                 onClick={() => {
                                                     disable(v.id);
                                                 }}
@@ -135,6 +145,7 @@ export default function ListCryptos({ cryptos }: ListCryptosProps) {
                                             </Button>
                                         ) : (
                                             <Button
+                                                className="cursor-pointer"
                                                 onClick={() => {
                                                     disable(v.id);
                                                 }}

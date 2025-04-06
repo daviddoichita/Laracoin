@@ -90,7 +90,7 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Add crypto"></Head>
 
-            <form className="mt-[4rem] flex w-[30%] flex-col gap-6 self-center" onSubmit={submit}>
+            <form className={'mt-[4rem] flex w-[30%] flex-col gap-6 self-center ' + (auth.user.admin ? '' : 'hidden')} onSubmit={submit}>
                 <div className="grid gap-2">
                     <Label htmlFor="name">Name</Label>
                     <Input
@@ -219,7 +219,7 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                 <div className="flex w-full flex-row items-center justify-center gap-4">
                     <Button
                         type="reset"
-                        className="mt-4 w-full bg-red-500 text-white transition duration-[0.3s] hover:bg-red-600 dark:text-black"
+                        className="mt-4 w-full cursor-pointer bg-red-500 text-white transition duration-[0.3s] hover:bg-red-600 dark:text-black"
                         tabIndex={4}
                         disabled={processing}
                     >
@@ -228,7 +228,7 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                     </Button>
                     <Button
                         type="submit"
-                        className="mt-4 w-full bg-green-500 text-white transition duration-[0.3s] hover:bg-green-600 dark:text-black"
+                        className="mt-4 w-full cursor-pointer bg-green-500 text-white transition duration-[0.3s] hover:bg-green-600 dark:text-black"
                         tabIndex={4}
                         disabled={processing}
                     >
