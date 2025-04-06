@@ -102,7 +102,7 @@ class DatabaseSeeder extends Seeder
 
         $orders = [
             [
-                'user_balance_id' => 1,
+                'user_id' => 1,
                 'sold_id' => 1,
                 'purchased_id' => 2,
                 'order_type' => 'buy',
@@ -114,7 +114,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'user_balance_id' => 1,
+                'user_id' => 1,
                 'sold_id' => 1,
                 'purchased_id' => 3,
                 'order_type' => 'buy',

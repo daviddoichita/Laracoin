@@ -4,6 +4,7 @@ use App\Http\Controllers\CryptoController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Crypto;
 use App\Models\PriceRecord;
+use App\Models\UserBalance;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -24,7 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('crypto', [
             'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])->where('disabled', '=', false)->find($id),
             'volume24h' => TransactionController::volume24h($id),
-            'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get()
+            'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
         ]);
     })->name('crypto.show');
 

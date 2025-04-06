@@ -29,9 +29,4 @@ class UserBalance extends Model
     {
         return $this->belongsTo(Crypto::class);
     }
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
-    }
 }

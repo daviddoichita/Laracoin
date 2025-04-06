@@ -12,7 +12,7 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_balance_id',
+        'user_id',
         'sold_id',
         'purchased_id',
         'order_type',
@@ -22,9 +22,9 @@ class Order extends Model
         'status',
     ];
 
-    public function userBalance(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(UserBalance::class);
+        return $this->belongsTo(User::class);
     }
 
     public function sold(): BelongsTo

@@ -17,7 +17,7 @@ class OrderController extends Controller
 
     public function indexFull()
     {
-        return response()->json(Order::with(['userBalance', 'sold', 'purchased'])->get());
+        return response()->json(Order::with(['user', 'sold', 'purchased'])->get());
     }
 
     /**
@@ -34,7 +34,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_balance_id' => 'required',
+            'user_id' => 'required',
             'sold_id' => 'required',
             'purchased_id' => 'required',
             'order_type' => 'required',
@@ -43,7 +43,7 @@ class OrderController extends Controller
         ]);
 
         $order = Order::create([
-            'user_balance_id' => $request->user_balance_id,
+            'user_id' => $request->user_id,
             'sold_id' => $request->sold_id,
             'purchased_id' => $request->purchased_id,
             'order_type' => $request->order_type,
@@ -68,7 +68,7 @@ class OrderController extends Controller
 
     public function showFull(int $id)
     {
-        return response()->json(Order::with(['userBalance', 'sold', 'purchased'])->find($id));
+        return response()->json(Order::with(['user', 'sold', 'purchased'])->find($id));
     }
 
     /**

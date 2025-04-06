@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->hasMany(UserBalance::class);
     }
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function notifications(): HasMany
     {
         return $this->hasMany(Notifications::class);

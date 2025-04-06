@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_balance_id');
+            $table->foreignId('user_id');
             $table->foreignId('sold_id');
             $table->foreignId('purchased_id');
             $table->enum('order_type', ['buy', 'sell']);
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'completed', 'canceled']);
             $table->timestamps();
 
-            $table->foreign('user_balance_id')->references('id')->on('user_balances')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('sold_id')->references('id')->on('cryptos')->cascadeOnDelete();
             $table->foreign('purchased_id')->references('id')->on('cryptos')->cascadeOnDelete();
         });

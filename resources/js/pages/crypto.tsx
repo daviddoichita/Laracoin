@@ -1,13 +1,17 @@
 import CoinInfoPill from '@/components/coin-info-pill';
 import { CryptoDashPillPrice } from '@/components/crypto-dash-pill-price';
+import InputError from '@/components/input-error';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import echo from '@/echo';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { PriceComparison } from '@/types/price-comparison';
 import { PriceRecord } from '@/types/price-record';
-import { Head } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler, JSX, useEffect, useState } from 'react';
 import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -125,6 +129,15 @@ const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => 
     );
 };
 
+type OrderForm = {
+    user_id: number;
+    sold_id: number;
+    purchased_id: number;
+    order_type: string;
+    total_amount: number;
+    price: number;
+};
+
 export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoViewProps) {
     useEffect(() => {
         if (!crypto) {
@@ -132,19 +145,99 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
         }
     }, []);
 
+    const { auth } = usePage<SharedData>().props;
+
     const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
     const [volume24hState, setVolume24hState] = useState(volume24h);
     const [infoPills, setInfoPills] = useState(calculateInfoPills(crypto, priceComparison, volume24h));
     const [priceRecordsState, setPriceRecords] = useState(priceRecords);
 
+    const [tab, setTab] = useState('buy');
+    const activeTab = ' bg-sky-800 hover:bg-sky-900';
+
+    const { data, setData, post, processing, errors, reset } = useForm<Required<OrderForm>>({
+        user_id: auth.user.id,
+        sold_id: priceComparison.child_id,
+        purchased_id: priceComparison.main_id,
+        order_type: 'buy',
+        total_amount: -1,
+        price: -1,
+    });
+
+    const submitBuy: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        console.log(data);
+    };
+    const submitSell: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        console.log(data);
+    };
+
+    const formData: JSX.Element = (
+        <>
+            <div className="mt-4 flex w-full flex-col">
+                <Label htmlFor="price" className="text-md">
+                    Price
+                </Label>
+                <Input
+                    name="price"
+                    id="price"
+                    type="number"
+                    step={0.00000001}
+                    autoFocus
+                    tabIndex={1}
+                    autoComplete="price"
+                    value={data.price === -1 ? '' : data.price}
+                    onChange={(e) => setData('price', parseFloat(e.target.value))}
+                    placeholder="€"
+                />
+                <InputError message={errors.price} />
+            </div>
+
+            <div className="flex w-full flex-col">
+                <Label htmlFor="quantity" className="text-md">
+                    Quantity
+                </Label>
+                <Input
+                    name="amount"
+                    id="amount"
+                    type="number"
+                    step={0.00000001}
+                    autoFocus
+                    tabIndex={1}
+                    autoComplete="amount"
+                    value={data.total_amount === -1 ? '' : data.total_amount}
+                    onChange={(e) => setData('total_amount', parseFloat(e.target.value))}
+                    placeholder="Total amount"
+                />
+                <InputError message={errors.total_amount} />
+            </div>
+
+            <div className="flex w-full flex-row gap-2">
+                <Button
+                    type="reset"
+                    onClick={(e) => {
+                        reset('price', 'total_amount');
+                    }}
+                    className="w-full bg-red-500 text-white hover:bg-red-600 dark:text-black"
+                >
+                    Cancel
+                </Button>
+                <Button type="submit" className="w-full bg-green-500 text-white hover:bg-green-600 dark:text-black">
+                    Buy
+                </Button>
+            </div>
+        </>
+    );
+
     echo.channel('PriceComparison.Pair.' + priceComparison.pair_symbol).listen('PriceComparisonUpdated', (event: any) => {
         setPriceComparison(event.priceComparison);
     });
-
     echo.channel('Transactions.Crypto.Id.' + crypto.id).listen('TransactionInserted', (event: any) => {
         setVolume24hState(event.volume24h);
     });
-
     echo.channel('Records.Pair.' + priceComparison.id).listen('PriceRecordCreated', (event: any) => {
         setPriceRecords(() => [...priceRecordsState, event.priceRecord]);
     });
@@ -157,7 +250,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Crypto View"></Head>
 
-            <div className="mt-[2rem] grid grid-cols-[0.3fr_1fr_0.3fr] p-1 2xl:grid-cols-[0.2fr_1fr_0.2fr]">
+            <div className="mt-[2rem] grid grid-cols-[0.4fr_1fr_0.4fr] p-1 2xl:grid-cols-[0.2fr_1fr_0.2fr]">
                 <div className="flexflex-col gap-6 font-bold">
                     <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">Coin info and metrics</h2>
                     <div className="flex flex-col items-start justify-start gap-3">
@@ -198,7 +291,44 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
                 </div>
                 <div className="flex flex-col gap-6">
                     {/* Change according to selected tab */}
-                    <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">Buy&nbsp;&nbsp;|&nbsp;&nbsp;Sell</h2>
+                    <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{tab.toUpperCase()}</h2>
+
+                    <div className="flex w-full flex-col items-center justify-center">
+                        <div className="flex w-full flex-row border-b">
+                            <button
+                                onClick={() => {
+                                    setTab('buy');
+                                    setData('sold_id', priceComparison.child_id);
+                                    setData('purchased_id', priceComparison.main_id);
+                                    setData('order_type', 'buy');
+                                }}
+                                className={'w-full cursor-pointer rounded-t p-2 ' + (tab.match('buy') ? activeTab : '')}
+                            >
+                                Buy
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setTab('sell');
+                                    setData('sold_id', priceComparison.main_id);
+                                    setData('purchased_id', priceComparison.child_id);
+                                    setData('order_type', 'sell');
+                                }}
+                                className={'w-full cursor-pointer rounded-t p-2 ' + (tab.match('sell') ? activeTab : '')}
+                            >
+                                Sell
+                            </button>
+                        </div>
+
+                        {tab.match('buy') ? (
+                            <form onSubmit={submitBuy} className="flex w-full flex-col gap-2">
+                                {formData}
+                            </form>
+                        ) : (
+                            <form onSubmit={submitSell} className="flex w-full flex-col gap-2">
+                                {formData}
+                            </form>
+                        )}
+                    </div>
                 </div>
             </div>
         </AppLayout>
