@@ -232,15 +232,20 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
         </>
     );
 
-    echo.channel('PriceComparison.Pair.' + priceComparison.pair_symbol).listen('PriceComparisonUpdated', (event: any) => {
-        setPriceComparison(event.priceComparison);
-    });
-    echo.channel('Transactions.Crypto.Id.' + crypto.id).listen('TransactionInserted', (event: any) => {
-        setVolume24hState(event.volume24h);
-    });
-    echo.channel('Records.Pair.' + priceComparison.id).listen('PriceRecordCreated', (event: any) => {
-        setPriceRecords(() => [...priceRecordsState, event.priceRecord]);
-    });
+    const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + priceComparison.pair_symbol)
+    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function(data: any) {
+        setPriceComparison(data.priceComparison)
+    })
+
+    const transactionsChannel = echo.subscribe('Transactions.Crypto.Id.' + crypto.id)
+    transactionsChannel.bind('App\\Events\\TransactionInserted', function(data: any) {
+        setVolume24hState(data.volume24h)
+    })
+
+    const recordChannel = echo.subscribe('Records.Pair.' + priceComparison.id)
+    recordChannel.bind('App\\Events\\PriceRecordCreated', function(data: any) {
+        setPriceRecords(() => [...priceRecordsState, data.priceRecord])
+    })
 
     useEffect(() => {
         setInfoPills(calculateInfoPills(crypto, priceComparison, volume24hState));
