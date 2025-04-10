@@ -53,3 +53,5 @@ Route::middleware('auth.basic')->group(function () {
 	Route::get('/transactions/{id}/full', [TransactionController::class, 'showFull']);
 	Route::post('/transactions', [TransactionController::class, 'store']);
 });
+
+Route::get('/price_comparison/pair/{symbol}', [PriceComparisonController::class, 'showByPair'])->name('comparison_by_pair');

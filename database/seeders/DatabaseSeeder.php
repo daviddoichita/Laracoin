@@ -91,11 +91,19 @@ class DatabaseSeeder extends Seeder
             [
                 'user_id' => 1,
                 'crypto_id' => 1,
-                'balance' => 0,
+                'balance' => 1000,
                 'locked_balance' => 0,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+            [
+                'user_id' => 1,
+                'crypto_id' => 2,
+                'balance' => 10,
+                'locked_balance' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]
         ];
 
         DB::table('user_balances')->insert($userBalances);

@@ -44,7 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/my-balances', function() {
         return Inertia::render('balances', [
-            'userBalances' => UserBalance::with('crypto')->where('user_id', '=',Auth::user()->id)
+            'userBalances' => UserBalance::with('crypto')->where('user_id', '=',Auth::user()->id)->get()
         ]);
     });
 });

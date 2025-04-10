@@ -62,6 +62,10 @@ class PriceComparisonController extends Controller
         return response()->json(PriceComparison::with(['mainCrypto', 'childCrypto'])->find($id));
     }
 
+    public function showByPair(string $symbol) {
+        return response()->json(PriceComparison::where('pair_symbol', '=', $symbol)->get());
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
