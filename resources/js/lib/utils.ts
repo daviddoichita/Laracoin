@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function checkRole(auth: Auth) {
-    if (auth.user?.admin !== true) {
+    if (auth.user?.admin !== 1) {
         window.location.href = route('dashboard');
     }
 }

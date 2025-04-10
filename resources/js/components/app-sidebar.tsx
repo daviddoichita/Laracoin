@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Plus } from 'lucide-react';
+import { LayoutGrid, Plus, Wallet } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -12,6 +12,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'My balances',
+        href: '/my-balances',
+        icon: Wallet,
     },
 ];
 
@@ -55,7 +60,7 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} title="Platform" />
-                {auth.user?.admin == true ? <NavMain items={adminNavItems} title="Administration"></NavMain> : <></>}
+                {auth.user?.admin == 1 ? <NavMain items={adminNavItems} title="Administration"></NavMain> : <></>}
             </SidebarContent>
 
             <SidebarFooter>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Crypto;
 use App\Models\User;
+use App\Models\UserBalance;
 use App\Rules\SpanishId;
 use App\Rules\SpanishPhone;
 use Illuminate\Auth\Events\Registered;
@@ -48,6 +50,13 @@ class RegisteredUserController extends Controller
             'phone_number' => $request->phoneNumber,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+
+        $userBalance = UserBalance::create([
+            'user_id' => $user->id,
+            'crypto_id' => Crypto::all()->where('symbol', '=', 'EUR')->get('id'),
+            'balance' => 1000,
+            'locked_balance' => 0
         ]);
 
         event(new Registered($user));

@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, List, Menu, Plus } from 'lucide-react';
+import { LayoutGrid, List, Menu, Plus, Wallet } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -20,6 +20,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'My balances',
+        href: '/my-balances',
+        icon: Wallet,
     },
 ];
 
@@ -133,7 +138,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         )}
                                     </NavigationMenuItem>
                                 ))}
-                                {auth.user?.admin === true ? (
+                                {auth.user?.admin === 1 ? (
                                     adminNavItems.map((item, index) => (
                                         <NavigationMenuItem key={index} className="relative flex h-full items-center">
                                             <Link

@@ -41,6 +41,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'cryptos' => Crypto::where('symbol', '!=', 'EUR')->get()
         ]);
     })->name('crypto.list');
+
+    Route::get('/my-balances', function() {
+        return Inertia::render('balances', [
+            'userBalances' => UserBalance::with('crypto')->where('user_id', '=',Auth::user()->id)
+        ]);
+    });
 });
 
 
