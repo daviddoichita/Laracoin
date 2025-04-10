@@ -41,7 +41,7 @@ Schedule::call(function () {
 
         $priceUpdatePercentage = abs($current - $new) / (($current + $new) / 2);
 
-        if ($current < $new) {
+        if ($new < $current) {
             $priceUpdatePercentage *= -1;
         }
 

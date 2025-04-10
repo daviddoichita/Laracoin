@@ -25,6 +25,7 @@ interface CryptoViewProps {
     crypto: Crypto;
     volume24h: number;
     priceRecords: PriceRecord[];
+    state: string;
 }
 
 const localeString = (n: number) => {
@@ -46,8 +47,9 @@ const calculateInfoPills = (crypto: Crypto, priceComparison: PriceComparison, vo
 
     const rawmc = crypto.circulating_supply * price;
     const rawvol = volume24h * price;
+    const latest = priceComparison.last_update;
 
-    return { marketCap, volume, fdv, vol_mktCap, max_supply, circulating_supply, rawmc, rawvol };
+    return { marketCap, volume, fdv, vol_mktCap, max_supply, circulating_supply, rawmc, rawvol, latest };
 };
 
 interface CustomTooltipProps {
@@ -138,7 +140,7 @@ type OrderForm = {
     price: number;
 };
 
-export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoViewProps) {
+export default function CryptoView({ crypto, volume24h, priceRecords, state }: CryptoViewProps) {
     useEffect(() => {
         if (!crypto) {
             window.location.href = route('dashboard');
@@ -152,7 +154,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
     const [infoPills, setInfoPills] = useState(calculateInfoPills(crypto, priceComparison, volume24h));
     const [priceRecordsState, setPriceRecords] = useState(priceRecords);
 
-    const [tab, setTab] = useState('buy');
+    const [tab, setTab] = useState(state ? state : 'buy');
     const activeTab = ' bg-sky-800 hover:bg-sky-900';
 
     const { data, setData, post, processing, errors, reset } = useForm<Required<OrderForm>>({
@@ -232,20 +234,20 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
         </>
     );
 
-    const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + priceComparison.pair_symbol)
-    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function(data: any) {
-        setPriceComparison(data.priceComparison)
-    })
+    const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + priceComparison.pair_symbol);
+    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
+        setPriceComparison(data.priceComparison);
+    });
 
-    const transactionsChannel = echo.subscribe('Transactions.Crypto.Id.' + crypto.id)
-    transactionsChannel.bind('App\\Events\\TransactionInserted', function(data: any) {
-        setVolume24hState(data.volume24h)
-    })
+    const transactionsChannel = echo.subscribe('Transactions.Crypto.Id.' + crypto.id);
+    transactionsChannel.bind('App\\Events\\TransactionInserted', function (data: any) {
+        setVolume24hState(data.volume24h);
+    });
 
-    const recordChannel = echo.subscribe('Records.Pair.' + priceComparison.id)
-    recordChannel.bind('App\\Events\\PriceRecordCreated', function(data: any) {
-        setPriceRecords(() => [...priceRecordsState, data.priceRecord])
-    })
+    const recordChannel = echo.subscribe('Records.Pair.' + priceComparison.id);
+    recordChannel.bind('App\\Events\\PriceRecordCreated', function (data: any) {
+        setPriceRecords(() => [...priceRecordsState, data.priceRecord]);
+    });
 
     useEffect(() => {
         setInfoPills(calculateInfoPills(crypto, priceComparison, volume24hState));
@@ -269,17 +271,37 @@ export default function CryptoView({ crypto, volume24h, priceRecords }: CryptoVi
                         />
 
                         <div className="grid w-full grid-cols-2 gap-3 self-center">
-                            <CoinInfoPill name="Market Cap" value={infoPills.marketCap} rawValue={infoPills.rawmc} textClassName="text-sm" dynamic />
-                            <CoinInfoPill name="Volume (24h)" value={infoPills.volume} textClassName="text-sm" rawValue={infoPills.rawvol} dynamic />
-                            <CoinInfoPill name="FDV" value={infoPills.fdv} textClassName="text-sm" />
-                            <CoinInfoPill name="Vol/Mkt (24h)" value={infoPills.vol_mktCap} textClassName="text-sm" />
-                            <CoinInfoPill name="Total supply" value={infoPills.circulating_supply} textClassName="text-sm" />
-                            <CoinInfoPill name="Max supply" value={infoPills.max_supply} textClassName="text-sm" />
+                            <CoinInfoPill
+                                name="Market Cap"
+                                value={infoPills.marketCap}
+                                rawValue={infoPills.rawmc}
+                                textClassName="text-sm"
+                                dynamic
+                                latest={infoPills.latest}
+                            />
+                            <CoinInfoPill
+                                name="Volume (24h)"
+                                value={infoPills.volume}
+                                textClassName="text-sm"
+                                rawValue={infoPills.rawvol}
+                                dynamic
+                                latest={infoPills.latest}
+                            />
+                            <CoinInfoPill name="FDV" value={infoPills.fdv} textClassName="text-sm" latest={infoPills.latest} />
+                            <CoinInfoPill name="Vol/Mkt (24h)" value={infoPills.vol_mktCap} textClassName="text-sm" latest={infoPills.latest} />
+                            <CoinInfoPill
+                                name="Total supply"
+                                value={infoPills.circulating_supply}
+                                textClassName="text-sm"
+                                latest={infoPills.latest}
+                            />
+                            <CoinInfoPill name="Max supply" value={infoPills.max_supply} textClassName="text-sm" latest={infoPills.latest} />
                             <CoinInfoPill
                                 name="Circulating supply"
                                 value={infoPills.circulating_supply}
                                 textClassName="text-sm"
                                 additionalClassName="col-span-2 flex justify-center"
+                                latest={infoPills.latest}
                             />
                         </div>
                     </div>

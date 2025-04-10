@@ -54,7 +54,7 @@ class RegisteredUserController extends Controller
 
         $userBalance = UserBalance::create([
             'user_id' => $user->id,
-            'crypto_id' => Crypto::all()->where('symbol', '=', 'EUR')->get('id'),
+            'crypto_id' => Crypto::where('symbol', '=', 'EUR')->get()[0]->id,
             'balance' => 1000,
             'locked_balance' => 0
         ]);

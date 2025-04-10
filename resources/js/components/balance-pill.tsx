@@ -17,7 +17,7 @@ export interface BalancePillProps {
 }
 
 const formatPrice = (n: number) => {
-    return n.toLocaleString('es-ES', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' });
+    return isNaN(n) ? 'Loading...' : n.toLocaleString('es-ES', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' });
 };
 
 export default function BalancePill({ userBalance }: BalancePillProps) {
@@ -61,8 +61,8 @@ export default function BalancePill({ userBalance }: BalancePillProps) {
                         {userBalance.crypto.symbol === 'EUR' ? (
                             <p>{formatPrice(userBalance.balance)}</p>
                         ) : (
-                            <p>
-                                <p>{formatPrice(userBalance.balance * priceComparison.price)}</p>
+                            <p className={priceComparison.last_update > 0 ? 'text-green-500' : 'text-red-500'}>
+                                {formatPrice(userBalance.balance * priceComparison.price)}
                             </p>
                         )}
                     </BalanceInfoPill>
@@ -71,17 +71,35 @@ export default function BalancePill({ userBalance }: BalancePillProps) {
                         {userBalance.crypto.symbol === 'EUR' ? (
                             <p>{formatPrice(userBalance.locked_balance)}</p>
                         ) : (
-                            <p>{formatPrice(userBalance.locked_balance * priceComparison.price)}</p>
+                            <p className={priceComparison.last_update > 0 ? 'text-green-500' : 'text-red-500'}>
+                                {formatPrice(userBalance.locked_balance * priceComparison.price)}
+                            </p>
                         )}
                     </BalanceInfoPill>
                 </div>
                 <div className="flex w-full flex-row justify-center gap-3">
-                    <Button disabled={userBalance.crypto.symbol === 'EUR'} className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400">
-                        Sell
-                    </Button>
-                    <Button disabled={userBalance.crypto.symbol === 'EUR'} className="w-full bg-green-500 hover:cursor-pointer hover:bg-green-400">
-                        Buy
-                    </Button>
+                    {userBalance.crypto.symbol === 'EUR' ? (
+                        <Button className="w-full hover:cursor-pointer">Add</Button>
+                    ) : (
+                        <>
+                            <Button
+                                className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400"
+                                onClick={() => {
+                                    window.location.href = route('crypto.show', { id: userBalance.crypto_id, state: 'sell' });
+                                }}
+                            >
+                                Sell
+                            </Button>
+                            <Button
+                                className="w-full bg-green-500 hover:cursor-pointer hover:bg-green-400"
+                                onClick={() => {
+                                    window.location.href = route('crypto.show', { id: userBalance.crypto_id, state: 'buy' });
+                                }}
+                            >
+                                Buy
+                            </Button>
+                        </>
+                    )}
                 </div>
             </div>
         </>

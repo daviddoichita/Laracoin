@@ -62,7 +62,8 @@ class PriceComparisonController extends Controller
         return response()->json(PriceComparison::with(['mainCrypto', 'childCrypto'])->find($id));
     }
 
-    public function showByPair(string $symbol) {
+    public function showByPair(string $symbol)
+    {
         return response()->json(PriceComparison::where('pair_symbol', '=', $symbol)->get());
     }
 
@@ -90,7 +91,7 @@ class PriceComparisonController extends Controller
         $new = 1 / $request->price;
         $priceUpdatePercentage = abs($current - $new) / (($current + $new) / 2);
 
-        if ($priceComparison->price < $request->price) {
+        if ($request->price < $priceComparison->price) {
             $priceUpdatePercentage *= -1;
         }
 

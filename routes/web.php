@@ -19,13 +19,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    Route::get('/crypto/show/{id}', function (int $id) {
+    Route::get('/crypto/show/{id}', function (Request $request , int $id) {
         $transactionController = new TransactionController();
 
         return Inertia::render('crypto', [
             'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])->where('disabled', '=', false)->find($id),
             'volume24h' => TransactionController::volume24h($id),
             'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
+            'state' => request()->query('state')
         ]);
     })->name('crypto.show');
 
