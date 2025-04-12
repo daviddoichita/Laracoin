@@ -8,6 +8,7 @@ import {
     useVelocity,
     useAnimationFrame,
 } from "framer-motion";
+import { shortUUID } from "@/lib/utils";
 
 interface VelocityMapping {
     input: [number, number];
@@ -139,7 +140,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({
             spans.push(
                 <span
                     className={`flex-shrink-0 ${className}`}
-                    key={i}
+                    key={shortUUID()}
                     ref={i === 0 ? copyRef : null}
                 >
                     {children}
@@ -166,7 +167,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({
         <section>
             {texts.map((text: string, index: number) => (
                 <VelocityText
-                    key={index}
+                    key={shortUUID()}
                     className={className}
                     baseVelocity={index % 2 !== 0 ? -velocity : velocity}
                     scrollContainerRef={scrollContainerRef}

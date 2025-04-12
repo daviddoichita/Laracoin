@@ -2,6 +2,7 @@ import { CryptoDashPill } from '@/components/crypto-dash-pill';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
+import { shortUUID } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { Head } from '@inertiajs/react';
@@ -77,8 +78,8 @@ export default function Dashboard({ cryptos }: DashboardProps) {
             </div>
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl">
                 <div className="flex w-full flex-col items-center justify-center gap-5">
-                    {filteredCryptos.map(function (crypto, i) {
-                        return <CryptoDashPill key={i} crypto={crypto} />;
+                    {filteredCryptos.map(function(crypto, _i) {
+                        return <CryptoDashPill key={shortUUID()} crypto={crypto} />;
                     })}
                 </div>
             </div>

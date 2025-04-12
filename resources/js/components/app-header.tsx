@@ -7,7 +7,7 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuT
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
-import { cn } from '@/lib/utils';
+import { cn, shortUUID } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { LayoutGrid, List, Menu, Plus, Wallet } from 'lucide-react';
@@ -106,8 +106,9 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
                         <NavigationMenu className="flex h-full items-stretch">
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, _index) => (
-                                    <NavigationMenuItem key={'nav-' + item.icon} className="relative flex h-full items-center">
+                                {mainNavItems.map((item, _index) =>
+                                (
+                                    <NavigationMenuItem key={shortUUID()} className="relative flex h-full items-center">
                                         <Link
                                             href={item.href}
                                             className={cn(
@@ -123,10 +124,12 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
                                     </NavigationMenuItem>
-                                ))}
+                                )
+                                )}
                                 {auth.user?.admin === 1 ? (
-                                    adminNavItems.map((item, _index) => (
-                                        <NavigationMenuItem key={'nav-' + item.icon} className="relative flex h-full items-center">
+                                    adminNavItems.map((item, _index) =>
+                                    (
+                                        <NavigationMenuItem key={shortUUID()} className="relative flex h-full items-center">
                                             <Link
                                                 href={item.href}
                                                 className={cn(
@@ -142,7 +145,8 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                                                 <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                             )}
                                         </NavigationMenuItem>
-                                    ))
+                                    )
+                                    )
                                 ) : (
                                     <></>
                                 )}

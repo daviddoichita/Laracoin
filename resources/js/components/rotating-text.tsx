@@ -15,6 +15,7 @@ import {
     type AnimationControls,
     type TargetAndTransition,
 } from "framer-motion";
+import { shortUUID } from "@/lib/utils";
 
 function cn(...classes: (string | undefined | null | boolean)[]): string {
     return classes.filter(Boolean).join(" ");
@@ -237,17 +238,15 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
                             const previousCharsCount = array
                                 .slice(0, wordIndex)
                                 .reduce((sum, word) => sum + word.characters.length, 0);
-                            let counter = 0
                             return (
                                 <span
-                                    key={++counter}
+                                    key={shortUUID()}
                                     className={cn("inline-flex", splitLevelClassName)}
                                 >
                                     {wordObj.characters.map((char, charIndex) => {
-                                        let c = 0
                                         return (
                                             <motion.span
-                                                key={++c}
+                                                key={shortUUID()}
                                                 initial={initial}
                                                 animate={animate}
                                                 exit={exit}

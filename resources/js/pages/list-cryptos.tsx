@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import { checkRole } from '@/lib/utils';
+import { checkRole, shortUUID } from '@/lib/utils';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { Head, useForm, usePage } from '@inertiajs/react';
@@ -119,7 +119,7 @@ export default function ListCryptos({ cryptos }: ListCryptosProps) {
                         .map((v, i) => {
                             const tdClass = 'border border-neutral-700 text-center p-3';
                             return (
-                                <tr key={i} className={v.disabled ? 'opacity-50' : ''}>
+                                <tr key={shortUUID()} className={v.disabled ? 'opacity-50' : ''}>
                                     <td className={tdClass}>{v.name}</td>
                                     <td className={tdClass}>{v.symbol}</td>
                                     <td className={tdClass}>{v.max_supply === -1 ? 'INF' : v.max_supply}</td>
