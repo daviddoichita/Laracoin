@@ -1,6 +1,6 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin)
 
-# Instrucciones despliegue local
+# Instrucciones despliegue local (actualmente me tienes que pedir las keys de pusher)
 
 ## Backend + Frontend
 ### Instalar composer, laravel, php, etc
@@ -18,16 +18,13 @@ npm i
 php artisan reverb:install
 ```
 ### Configuracion backend
-Copiar .env.example a .env y rellenar las siguientes [entradas](https://github.com/daviddoichita/Laracoin/blob/3d501f5de7827bd7549f614db60ace44a894a4a8/.env.example#L26) con laracoin: <br>
-DB_DATABASE <br>
-DB_USERNAME <br>
-DB_PASSWORD <br>
-<br>
+Copiar .env.example a .env
+
 Crear la key del proyecto
 ```bash
 php artisan key:generate
 ```
-Ejecutar las migraciones (igual en windows docker despliega a 127.0.0.1 en vez de 0.0.0.0 e igual da error, si es asi, cambiar DB_HOST por 127.0.0.1):
+Ejecutar las migraciones:
 ```bash
 php artisan migrate:fresh
 ```
