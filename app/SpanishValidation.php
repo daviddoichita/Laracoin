@@ -11,13 +11,6 @@ class SpanishValidation
     {
         //
     }
-    public function isValidTaxNumber(?string $value): bool
-    {
-        return
-            $this->isValidNif($value) ||
-            $this->isValidNie($value) ||
-            $this->isValidCif($value);
-    }
 
     public function isValidPersonalId(?string $value): bool
     {
@@ -29,7 +22,7 @@ class SpanishValidation
     public function isValidNif(?string $value): bool
     {
         if ($value) {
-            $regEx = '/^\d{8}[A-Z]$/i';
+            $regEx = '/^[0-9]{8}[A-Z]$/i';
 
             $letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
 
@@ -46,7 +39,7 @@ class SpanishValidation
     public function isValidNie(?string $value): bool
     {
         if ($value) {
-            $regEx = '/^[KLMXYZ]\d{7}[A-Z]$/i';
+            $regEx = '/^[KLMXYZ][0-9]{7}[A-Z]$/i';
             $letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
 
             $value = strtoupper($value);
@@ -61,21 +54,10 @@ class SpanishValidation
         return false;
     }
 
-    public function isValidPostalCode(?string $value): bool
-    {
-        if ($value) {
-            $regEx = '/^(?:0[1-9]|[1-4]\d|5[0-2])\d{3}$/i';
-
-            return preg_match($regEx, $value) === 1;
-        }
-
-        return false;
-    }
-
     public function isValidPhone(?string $value): bool
     {
         if ($value) {
-            $regEx = '/^[9-6]\d{8}$/i';
+            $regEx = '/^[9|8|6|7][0-9]{8}$/i';
 
             return preg_match($regEx, $value) === 1;
         }
