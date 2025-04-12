@@ -123,7 +123,7 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
                                     </NavigationMenuItem>))}
-                                {auth.user?.admin === 1 ? (
+                                {auth.user?.admin ? (
                                     adminNavItems.map((item, _index) => (
                                         <NavigationMenuItem key={shortUUID()} className="relative flex h-full items-center">
                                             <Link

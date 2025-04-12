@@ -65,7 +65,7 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} title="Platform" />
-                {auth.user?.admin == 1 ? <NavMain items={adminNavItems} title="Administration"></NavMain> : <></>}
+                {auth.user?.admin ? <NavMain items={adminNavItems} title="Administration"></NavMain> : <></>}
             </SidebarContent>
 
             <SidebarFooter>
