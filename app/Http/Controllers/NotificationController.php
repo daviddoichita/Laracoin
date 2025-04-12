@@ -55,26 +55,22 @@ class NotificationController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Notifications $notifications)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Notifications $notifications)
+    public function update(Request $request, int $id)
     {
-        //
-    }
+        $request->validate([
+            'read' => 'required'
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Notifications $notifications)
-    {
-        //
+        $notification = Notifications::all()->find($id);
+
+        $notification->read = $request->read;
+
+        $notification->save();
+
+        return response()->json([
+            'updated' => $notification
+        ]);
     }
 }

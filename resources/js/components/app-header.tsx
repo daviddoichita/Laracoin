@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
@@ -41,26 +40,13 @@ const adminNavItems: NavItem[] = [
     },
 ];
 
-const rightNavItems: NavItem[] = [
-    // {
-    //     title: 'Repository',
-    //     href: 'https://github.com/laravel/react-starter-kit',
-    //     icon: Folder,
-    // },
-    // {
-    //     title: 'Documentation',
-    //     href: 'https://laravel.com/docs/starter-kits',
-    //     icon: BookOpen,
-    // },
-];
-
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
 interface AppHeaderProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
+export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const getInitials = useInitials();
@@ -93,7 +79,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         </div>
 
                                         <div className="flex flex-col space-y-4">
-                                            {rightNavItems.map((item) => (
+                                            {/*rightNavItems.map((item) => (
                                                 <a
                                                     key={item.title}
                                                     href={item.href}
@@ -104,7 +90,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                     {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
                                                     <span>{item.title}</span>
                                                 </a>
-                                            ))}
+                                            ))*/}
                                         </div>
                                     </div>
                                 </div>
@@ -120,8 +106,8 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
                         <NavigationMenu className="flex h-full items-stretch">
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, index) => (
-                                    <NavigationMenuItem key={index} className="relative flex h-full items-center">
+                                {mainNavItems.map((item, _index) => (
+                                    <NavigationMenuItem key={'nav-' + item.icon} className="relative flex h-full items-center">
                                         <Link
                                             href={item.href}
                                             className={cn(
@@ -139,8 +125,8 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                     </NavigationMenuItem>
                                 ))}
                                 {auth.user?.admin === 1 ? (
-                                    adminNavItems.map((item, index) => (
-                                        <NavigationMenuItem key={index} className="relative flex h-full items-center">
+                                    adminNavItems.map((item, _index) => (
+                                        <NavigationMenuItem key={'nav-' + item.icon} className="relative flex h-full items-center">
                                             <Link
                                                 href={item.href}
                                                 className={cn(
@@ -171,7 +157,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                             </Button>
 */}{' '}
                             <div className="hidden lg:flex">
-                                {rightNavItems.map((item) => (
+                                {/*rightNavItems.map((item) => (
                                     <TooltipProvider key={item.title} delayDuration={0}>
                                         <Tooltip>
                                             <TooltipTrigger>
@@ -190,7 +176,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-                                ))}
+                                ))*/}
                             </div>
                         </div>
                         <DropdownMenu>

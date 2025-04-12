@@ -45,7 +45,7 @@ export default function Stepper({
     disableStepIndicators = false,
     renderStepIndicator,
     ...rest
-}: StepperProps) {
+}: Readonly<StepperProps>) {
     const [currentStep, setCurrentStep] = useState<number>(initialStep);
     const [direction, setDirection] = useState<number>(0);
     const stepsArray = Children.toArray(children);
@@ -145,8 +145,8 @@ export default function Stepper({
                                 <button
                                     onClick={handleBack}
                                     className={`duration-350 rounded px-2 py-1 transition ${currentStep === 1
-                                            ? "pointer-events-none opacity-50 text-neutral-400"
-                                            : "text-neutral-400 hover:text-neutral-700"
+                                        ? "pointer-events-none opacity-50 text-neutral-400"
+                                        : "text-neutral-400 hover:text-neutral-700"
                                         }`}
                                     {...backButtonProps}
                                 >
@@ -182,7 +182,7 @@ function StepContentWrapper({
     direction,
     children,
     className = "",
-}: StepContentWrapperProps) {
+}: Readonly<StepContentWrapperProps>) {
     const [parentHeight, setParentHeight] = useState<number>(0);
 
     return (
@@ -217,7 +217,7 @@ function SlideTransition({
     children,
     direction,
     onHeightReady,
-}: SlideTransitionProps) {
+}: Readonly<SlideTransitionProps>) {
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     useLayoutEffect(() => {

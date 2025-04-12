@@ -71,26 +71,11 @@ class OrderController extends Controller
         return response()->json(Order::with(['user', 'sold', 'purchased'])->find($id));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Order $order)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
     {
         //
     }

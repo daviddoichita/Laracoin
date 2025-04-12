@@ -11,7 +11,7 @@ interface CoinInfoPillProps {
     dynamic?: boolean;
 }
 
-export default function CoinInfoPill({ name, value, rawValue, tooltip, textClassName, additionalClassName, dynamic, latest }: CoinInfoPillProps) {
+export default function CoinInfoPill({ name, value, rawValue, textClassName, additionalClassName, dynamic, latest }: Readonly<CoinInfoPillProps>) {
     const rv = typeof rawValue === 'string' ? parseFloat(rawValue) : rawValue;
 
     return (
@@ -21,7 +21,7 @@ export default function CoinInfoPill({ name, value, rawValue, tooltip, textClass
         >
             <p className={textClassName}>{name}</p>
             {dynamic ? (
-                <CryptoInfoDynamic value={value.toString()} rawValue={rv || 0} latest={latest} />
+                <CryptoInfoDynamic value={value.toString()} rawValue={rv ?? 0} latest={latest} />
             ) : (
                 <p className={textClassName}>{parseFloat(value.toString()) === -1 ? 'INF' : value}</p>
             )}

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\PriceRecord;
-use Illuminate\Http\Request;
 
 class PriceRecordController extends Controller
 {
@@ -21,22 +20,6 @@ class PriceRecordController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(int $id)
@@ -49,29 +32,5 @@ class PriceRecordController extends Controller
         return response()->json(
             PriceRecord::with('pair')->where('pair_id', '=', $pairId)->get()
         );
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PriceRecord $priceRecord)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PriceRecord $priceRecord)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PriceRecord $priceRecord)
-    {
-        //
     }
 }

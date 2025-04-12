@@ -6,7 +6,7 @@ interface AppShellProps {
     variant?: 'header' | 'sidebar';
 }
 
-export function AppShell({ children, variant = 'header' }: AppShellProps) {
+export function AppShell({ children, variant = 'header' }: Readonly<AppShellProps>) {
     const [isOpen, setIsOpen] = useState(() => (typeof window !== 'undefined' ? localStorage.getItem('sidebar') !== 'false' : true));
 
     const handleSidebarChange = (open: boolean) => {

@@ -20,7 +20,7 @@ export function CryptoDashPillPrice({
     textClassName,
     smallTextClassName,
     arrowSize,
-}: CryptoDashPillPriceProps) {
+}: Readonly<CryptoDashPillPriceProps>) {
     const [color, setColor] = useState<string>('dark:text-white text-black');
     const [arrow, setArrow] = useState<IconName>('minus');
 
@@ -46,7 +46,7 @@ export function CryptoDashPillPrice({
                 style: 'currency',
                 currency: 'EUR',
                 minimumFractionDigits: 2,
-                maximumFractionDigits: maxFractionDigits || 6,
+                maximumFractionDigits: maxFractionDigits ?? 6,
             });
         }
     };
@@ -64,8 +64,8 @@ export function CryptoDashPillPrice({
                 {formatNum(priceComparison.price)}
             </p>
             <div className="flex flex-row items-center">
-                <DynamicIcon name={arrow} size={arrowSize || 16} className={color} />
-                <small className={(smallTextClassName || 'text-[0.6rem]') + ' ' + color}>{formatPercent(priceComparison.last_update)}</small>
+                <DynamicIcon name={arrow} size={arrowSize ?? 16} className={color} />
+                <small className={(smallTextClassName ?? 'text-[0.6rem]') + ' ' + color}>{formatPercent(priceComparison.last_update)}</small>
             </div>
         </div>
     );

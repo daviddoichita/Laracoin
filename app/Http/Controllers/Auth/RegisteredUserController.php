@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
             'surnames' => 'required|string|max:255',
             'nif' => ['required', 'string', new SpanishId],
             'phoneNumber' => ['required', new SpanishPhone],
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -52,7 +52,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $userBalance = UserBalance::create([
+        UserBalance::create([
             'user_id' => $user->id,
             'crypto_id' => Crypto::where('symbol', '=', 'EUR')->get()[0]->id,
             'balance' => 1000,

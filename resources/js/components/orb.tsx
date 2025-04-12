@@ -13,7 +13,7 @@ export default function Orb({
     hoverIntensity = 0.2,
     rotateOnHover = true,
     forceHoverState = false,
-}: OrbProps) {
+}: Readonly<OrbProps>) {
     const ctnDom = useRef<HTMLDivElement>(null);
 
     const vert = /* glsl */ `

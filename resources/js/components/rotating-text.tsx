@@ -144,26 +144,34 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
         );
 
         const next = useCallback(() => {
-            const nextIndex =
-                currentTextIndex === texts.length - 1
-                    ? loop
-                        ? 0
-                        : currentTextIndex
-                    : currentTextIndex + 1;
+            let nextIndex;
+            if (currentTextIndex === texts.length - 1) {
+                if (loop) {
+                    nextIndex = 0
+                } else {
+                    nextIndex = currentTextIndex
+                }
+            } else {
+                nextIndex = currentTextIndex + 1
+            }
             if (nextIndex !== currentTextIndex) {
-                handleIndexChange(nextIndex);
+                handleIndexChange(nextIndex ?? 0);
             }
         }, [currentTextIndex, texts.length, loop, handleIndexChange]);
 
         const previous = useCallback(() => {
-            const prevIndex =
-                currentTextIndex === 0
-                    ? loop
-                        ? texts.length - 1
-                        : currentTextIndex
-                    : currentTextIndex - 1;
+            let prevIndex
+            if (currentTextIndex === 0) {
+                if (loop) {
+                    prevIndex = texts.length - 1
+                } else {
+                    prevIndex = currentTextIndex
+                }
+            } else {
+                prevIndex = currentTextIndex - 1
+            }
             if (prevIndex !== currentTextIndex) {
-                handleIndexChange(prevIndex);
+                handleIndexChange(prevIndex ?? 0);
             }
         }, [currentTextIndex, texts.length, loop, handleIndexChange]);
 
@@ -229,32 +237,36 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
                             const previousCharsCount = array
                                 .slice(0, wordIndex)
                                 .reduce((sum, word) => sum + word.characters.length, 0);
+                            let counter = 0
                             return (
                                 <span
-                                    key={wordIndex}
+                                    key={++counter}
                                     className={cn("inline-flex", splitLevelClassName)}
                                 >
-                                    {wordObj.characters.map((char, charIndex) => (
-                                        <motion.span
-                                            key={charIndex}
-                                            initial={initial}
-                                            animate={animate}
-                                            exit={exit}
-                                            transition={{
-                                                ...transition,
-                                                delay: getStaggerDelay(
-                                                    previousCharsCount + charIndex,
-                                                    array.reduce(
-                                                        (sum, word) => sum + word.characters.length,
-                                                        0
-                                                    )
-                                                ),
-                                            }}
-                                            className={cn("inline-block", elementLevelClassName)}
-                                        >
-                                            {char}
-                                        </motion.span>
-                                    ))}
+                                    {wordObj.characters.map((char, charIndex) => {
+                                        let c = 0
+                                        return (
+                                            <motion.span
+                                                key={++c}
+                                                initial={initial}
+                                                animate={animate}
+                                                exit={exit}
+                                                transition={{
+                                                    ...transition,
+                                                    delay: getStaggerDelay(
+                                                        previousCharsCount + charIndex,
+                                                        array.reduce(
+                                                            (sum, word) => sum + word.characters.length,
+                                                            0
+                                                        )
+                                                    ),
+                                                }}
+                                                className={cn("inline-block", elementLevelClassName)}
+                                            >
+                                                {char}
+                                            </motion.span>
+                                        )
+                                    })}
                                     {wordObj.needsSpace && (
                                         <span className="whitespace-pre"> </span>
                                     )}

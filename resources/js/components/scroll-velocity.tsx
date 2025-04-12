@@ -88,7 +88,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({
         scrollerClassName,
         parallaxStyle,
         scrollerStyle,
-    }: VelocityTextProps) {
+    }: Readonly<VelocityTextProps>) {
         const baseX = useMotionValue(0);
         const scrollOptions = scrollContainerRef
             ? { container: scrollContainerRef }

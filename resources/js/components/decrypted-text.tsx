@@ -29,7 +29,7 @@ export default function DecryptedText({
     encryptedClassName = '',
     animateOn = 'hover',
     ...props
-}: DecryptedTextProps) {
+}: Readonly<DecryptedTextProps>) {
     const [displayText, setDisplayText] = useState<string>(text)
     const [isHovering, setIsHovering] = useState<boolean>(false)
     const [isScrambling, setIsScrambling] = useState<boolean>(false)
@@ -212,7 +212,7 @@ export default function DecryptedText({
 
                     return (
                         <span
-                            key={index}
+                            key={'char-' + char}
                             className={isRevealedOrDone ? className : encryptedClassName}
                         >
                             {char}

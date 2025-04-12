@@ -9,7 +9,7 @@ interface CryptoDashPillProps {
     crypto: Crypto;
 }
 
-export function CryptoDashPill({ crypto }: CryptoDashPillProps) {
+export function CryptoDashPill({ crypto }: Readonly<CryptoDashPillProps>) {
     const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
 
     const channel = echo.subscribe('PriceComparison.Pair.' + crypto.main_price_comparison[0].pair_symbol)

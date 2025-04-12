@@ -5,11 +5,6 @@ namespace App\Http\Controllers;
 use App\Events\PriceComparisonUpdated;
 use App\Models\PriceComparison;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
-
-use function Illuminate\Log\log;
-use function Pest\Laravel\json;
 
 class PriceComparisonController extends Controller
 {
@@ -65,14 +60,6 @@ class PriceComparisonController extends Controller
     public function showByPair(string $symbol)
     {
         return response()->json(PriceComparison::where('pair_symbol', '=', $symbol)->get());
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PriceComparison $priceComparison)
-    {
-        //
     }
 
     /**

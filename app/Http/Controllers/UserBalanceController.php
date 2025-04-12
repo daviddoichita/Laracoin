@@ -45,36 +45,4 @@ class UserBalanceController extends Controller
             'created' => $userBalance
         ]);
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(UserBalance $userBalance)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(UserBalance $userBalance)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, UserBalance $userBalance)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(UserBalance $userBalance)
-    {
-        //
-    }
 }

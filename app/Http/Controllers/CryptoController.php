@@ -6,12 +6,12 @@ use App\Models\Crypto;
 use App\Models\PriceComparison;
 use App\Models\PriceRecord;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-
-use function Illuminate\Log\log;
 
 class CryptoController extends Controller
 {
+    private const NAME_VALIDATIONS = 'required|string|max:50';
+    private const SYMBOL_VALIDATIONS = 'required|string|max:10';
+
     /**
      * Display a listing of the resource.
      */
@@ -39,8 +39,8 @@ class CryptoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:50',
-            'symbol' => 'required|string|max:10',
+            'name' => self::NAME_VALIDATIONS,
+            'symbol' => self::SYMBOL_VALIDATIONS,
             'icon' => 'required|string',
             'max_supply' => 'required',
             'circulating_supply' => 'required'
@@ -62,8 +62,8 @@ class CryptoController extends Controller
     public function storeInertia(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:50',
-            'symbol' => 'required|string|max:10',
+            'name' => self::NAME_VALIDATIONS,
+            'symbol' => self::SYMBOL_VALIDATIONS,
             'icon' => 'required|string',
             'max_supply' => 'required',
             'circulating_supply' => 'required',
@@ -86,7 +86,7 @@ class CryptoController extends Controller
             'last_update' => 0,
         ]);
 
-        $priceRecord = PriceRecord::create([
+        PriceRecord::create([
             'pair_id' => $priceComparison->id,
             'price' => $priceComparison->price,
         ]);
@@ -107,13 +107,6 @@ class CryptoController extends Controller
         return response()->json(Crypto::with(['mainPriceComparison', 'childPriceComparison'])->find($id));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Crypto $crypto)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -121,8 +114,8 @@ class CryptoController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'name' => 'required|string|max:50',
-            'symbol' => 'required|string|max:10'
+            'name' => self::NAME_VALIDATIONS,
+            'symbol' => self::SYMBOL_VALIDATIONS,
         ]);
 
         $current = Crypto::find($id);
