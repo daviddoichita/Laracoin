@@ -19,9 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    Route::get('/crypto/show/{id}', function (Request $request , int $id) {
-        $transactionController = new TransactionController();
-
+    Route::get('/crypto/show/{id}', function (int $id) {
         return Inertia::render('crypto', [
             'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])->where('disabled', '=', false)->find($id),
             'volume24h' => TransactionController::volume24h($id),
@@ -43,9 +41,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('crypto.list');
 
-    Route::get('/my-balances', function() {
+    Route::get('/my-balances', function () {
         return Inertia::render('balances', [
-            'userBalances' => UserBalance::with('crypto')->where('user_id', '=',Auth::user()->id)->get()
+            'userBalances' => UserBalance::with('crypto')->where('user_id', '=', Auth::user()->id)->get()
         ]);
     });
 });
