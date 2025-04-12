@@ -1,0 +1,44 @@
+
+.app\events\pricecomparisonupdated::broadcastonL
+B/home/ddoichita/git/Laracoin/app/Events/PriceComparisonUpdated.php! !("1*ü
+1# #(Zp
+n
+#5 #(K
+%2"__id*V
+
+__unknown_file (:*8#
+!app\events\pricecomparisonupdated"
+priceComparisonM
+K
+#5 #(X
+%3"__id*3
+
+__unknown_file (*
+
+%2"
+pair_symbolW
+U
+# #(X
+%4"__concat*%
+# #(2
+PriceComparison.Pair.*
+#5 #(X
+
+%331
+# #(Y
+%1"illuminate\broadcasting\channel‰
+†
+# #(Y
+%5",illuminate\broadcasting\channel::__construct*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%4"
+# #(Z
+
+%1B%#
+!app\events\pricecomparisonupdatedH

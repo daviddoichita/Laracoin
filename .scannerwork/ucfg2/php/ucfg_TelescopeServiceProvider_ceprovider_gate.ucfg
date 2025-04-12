@@ -1,0 +1,30 @@
+
+,app\providers\telescopeserviceprovider::gateQ
+G/home/ddoichita/git/Laracoin/app/Providers/TelescopeServiceProvider.php8 8("1*D
+2
+TelescopeServiceProvider.php"
+? ?(
+implicit return*Œ
+1: >(¤
+¡
+:& >(	
+%1"__declareFunction*|
+
+__unknown_file (`^
+\__sonar_lambda_/home/ddoichita/git/Laracoin/app/Providers/TelescopeServiceProvider.php_58_38Ð
+Í
+: >(
+
+%2"'illuminate\support\facades\gate::define*?
+
+__unknown_file (#"!
+illuminate\support\facades\gate*-
+
+__unknown_file (
+viewTelescope*"
+
+__unknown_file (
+
+%1*
+2B*(
+&app\providers\telescopeserviceproviderH

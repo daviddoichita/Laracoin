@@ -1,0 +1,62 @@
+
+0app\providers\telescopeserviceprovider::registerQ
+G/home/ddoichita/git/Laracoin/app/Providers/TelescopeServiceProvider.php ("1*D
+2
+TelescopeServiceProvider.php"
+ (
+implicit return*Þ
+1 (s
+q
+ (
+%1""laravel\telescope\telescope::night*;
+
+__unknown_file ("
+laravel\telescope\telescopewu
+ (,
+%2*F
+
+__unknown_file (*(
+&app\providers\telescopeserviceprovider2hidesensitiverequestdetailsi
+g
+ (
+%3"__id*O
+
+__unknown_file (3*1(
+&app\providers\telescopeserviceprovider"
+appjh
+ (3
+%4*"
+
+__unknown_file (
+
+%3*%
+
+__unknown_file (	
+local2environmentB
+@
+ (3
+
+$isLocal"__id*"
+
+__unknown_file (
+
+%4¤
+¡
+ (	
+%5"__declareFunction*|
+
+__unknown_file (`^
+\__sonar_lambda_/home/ddoichita/git/Laracoin/app/Providers/TelescopeServiceProvider.php_23_26™
+–
+ (
+
+%6"#laravel\telescope\telescope::filter*;
+
+__unknown_file ("
+laravel\telescope\telescope*"
+
+__unknown_file (
+
+%5*
+2B*(
+&app\providers\telescopeserviceproviderH

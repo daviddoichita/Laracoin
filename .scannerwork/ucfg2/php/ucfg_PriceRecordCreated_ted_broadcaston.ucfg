@@ -1,0 +1,44 @@
+
+*app\events\pricerecordcreated::broadcastonH
+>/home/ddoichita/git/Laracoin/app/Events/PriceRecordCreated.php   ("1*è
+1" "(Jh
+f
+"- "(?
+%2"__id*N
+
+__unknown_file (2*0
+app\events\pricerecordcreated"
+priceRecordI
+G
+"- "(H
+%3"__id*/
+
+__unknown_file (*
+
+%2"	
+pair_idO
+M
+" "(H
+%4"__concat*
+" "(*
+Records.Pair.*
+"- "(H
+
+%331
+" "(I
+%1"illuminate\broadcasting\channel‰
+†
+" "(I
+%5",illuminate\broadcasting\channel::__construct*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%4"
+" "(J
+
+%1B!
+app\events\pricerecordcreatedH

@@ -1,0 +1,30 @@
+
+&app\providers\appserviceprovider::bootK
+A/home/ddoichita/git/Laracoin/app/Providers/AppServiceProvider.php ("1*>
+2
+AppServiceProvider.php"
+ (
+implicit return*‚
+1 (ž
+›
+" (	
+%1"__declareFunction*v
+
+__unknown_file (ZX
+V__sonar_lambda_/home/ddoichita/git/Laracoin/app/Providers/AppServiceProvider.php_24_34Ì
+É
+ (
+
+%2"'illuminate\support\facades\gate::define*?
+
+__unknown_file (#"!
+illuminate\support\facades\gate*)
+
+__unknown_file (
+	viewPulse*"
+
+__unknown_file (
+
+%1*
+2B$"
+ app\providers\appserviceproviderH

@@ -10,7 +10,6 @@ export function NavMain({ items = [], title }: Readonly<{ items: NavItem[]; titl
             <SidebarGroupLabel>{title}</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => {
-                    let c = 0
                     return (
                         <SidebarMenuItem key={shortUUID()}>
                             <SidebarMenuButton asChild isActive={item.href === page.url}>

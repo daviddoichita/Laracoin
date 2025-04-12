@@ -13,14 +13,7 @@ export function checkRole(auth: Auth) {
 }
 
 export function shortUUID(len: number = 6): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-
-    for (let i = 0; i < len; i++) {
-        const randIdx = Math.floor(Math.random() * chars.length);
-        result += chars[randIdx];
-    }
-
-    return result;
+    const crypto = window.crypto
+    return crypto.randomUUID().slice(0, len)
 }
 

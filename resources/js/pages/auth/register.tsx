@@ -51,7 +51,6 @@ export default function Register() {
                                 id="name"
                                 type="text"
                                 autoFocus
-                                tabIndex={1}
                                 autoComplete="name"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
@@ -69,7 +68,6 @@ export default function Register() {
                                 id="surnames"
                                 type="text"
                                 autoFocus
-                                tabIndex={1}
                                 autoComplete="surnames"
                                 value={data.surnames}
                                 onChange={(e) => setData('surnames', e.target.value)}
@@ -89,7 +87,6 @@ export default function Register() {
                                 id="nif"
                                 type="text"
                                 autoFocus
-                                tabIndex={1}
                                 autoComplete="nif"
                                 value={data.nif}
                                 onChange={(e) => setData('nif', e.target.value.toUpperCase())}
@@ -107,7 +104,6 @@ export default function Register() {
                                 id="phoneNumber"
                                 type="number"
                                 autoFocus
-                                tabIndex={1}
                                 autoComplete="phoneNumber"
                                 value={data.phoneNumber}
                                 onChange={(e) => setData('phoneNumber', e.target.value)}
@@ -125,7 +121,6 @@ export default function Register() {
                         <Input
                             id="email"
                             type="email"
-                            tabIndex={2}
                             autoComplete="email"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
@@ -143,7 +138,6 @@ export default function Register() {
                             <Input
                                 id="password"
                                 type="password"
-                                tabIndex={3}
                                 autoComplete="new-password"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
@@ -160,7 +154,6 @@ export default function Register() {
                             <Input
                                 id="password_confirmation"
                                 type="password"
-                                tabIndex={4}
                                 autoComplete="new-password"
                                 value={data.password_confirmation}
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -171,7 +164,7 @@ export default function Register() {
                         </div>
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    <Button type="submit" className="mt-2 w-full" disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Create account
                     </Button>
@@ -179,7 +172,7 @@ export default function Register() {
 
                 <div className="text-muted-foreground text-center text-sm">
                     Already have an account?{' '}
-                    <TextLink href={route('login')} tabIndex={6}>
+                    <TextLink href={route('login')}>
                         Log in
                     </TextLink>
                 </div>

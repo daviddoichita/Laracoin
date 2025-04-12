@@ -106,8 +106,7 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
                         <NavigationMenu className="flex h-full items-stretch">
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, _index) =>
-                                (
+                                {mainNavItems.map((item, _index) => (
                                     <NavigationMenuItem key={shortUUID()} className="relative flex h-full items-center">
                                         <Link
                                             href={item.href}
@@ -123,12 +122,9 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                                         {page.url === item.href && (
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
-                                    </NavigationMenuItem>
-                                )
-                                )}
+                                    </NavigationMenuItem>))}
                                 {auth.user?.admin === 1 ? (
-                                    adminNavItems.map((item, _index) =>
-                                    (
+                                    adminNavItems.map((item, _index) => (
                                         <NavigationMenuItem key={shortUUID()} className="relative flex h-full items-center">
                                             <Link
                                                 href={item.href}

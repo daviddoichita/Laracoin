@@ -98,7 +98,6 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                         type="text"
                         required
                         autoFocus
-                        tabIndex={1}
                         autoComplete="name"
                         value={data.name}
                         onChange={(e) => setData('name', capitalize(e.target.value))}
@@ -114,7 +113,6 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                         type="text"
                         required
                         autoFocus
-                        tabIndex={1}
                         autoComplete="symbol"
                         value={data.symbol}
                         onChange={(e) => setData('symbol', e.target.value)}
@@ -133,7 +131,6 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                             step={0.00000001}
                             required
                             autoFocus
-                            tabIndex={1}
                             autoComplete="max-supply"
                             value={data.max_supply.toString().startsWith('-') ? '' : data.max_supply}
                             onChange={(e) => setData('max_supply', parseFloat(e.target.value))}
@@ -167,7 +164,6 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                             step={0.00000001}
                             required
                             autoFocus
-                            tabIndex={1}
                             autoComplete="circulating-supply"
                             value={data.circulating_supply.toString().startsWith('-') ? '' : data.circulating_supply}
                             onChange={(e) => setData('circulating_supply', parseFloat(e.target.value))}
@@ -205,7 +201,6 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                             step={0.00000001}
                             required
                             autoFocus
-                            tabIndex={1}
                             autoComplete="price"
                             value={data.price.toString().startsWith('-') ? '' : data.price}
                             onChange={(e) => setData('price', parseFloat(e.target.value))}
@@ -220,7 +215,6 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                     <Button
                         type="reset"
                         className="mt-4 w-full cursor-pointer bg-red-500 text-white transition duration-[0.3s] hover:bg-red-600 dark:text-black"
-                        tabIndex={4}
                         disabled={processing}
                     >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
@@ -229,7 +223,6 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                     <Button
                         type="submit"
                         className="mt-4 w-full cursor-pointer bg-green-500 text-white transition duration-[0.3s] hover:bg-green-600 dark:text-black"
-                        tabIndex={4}
                         disabled={processing}
                     >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}

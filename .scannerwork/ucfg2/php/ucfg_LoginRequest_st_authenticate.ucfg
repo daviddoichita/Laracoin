@@ -1,0 +1,85 @@
+
+1app\http\requests\auth\loginrequest::authenticateN
+D/home/ddoichita/git/Laracoin/app/Http/Requests/Auth/LoginRequest.php( (( "1*ß
+2- -(3db
+- -(1
+%5*C
+
+__unknown_file ('%
+#app\http\requests\auth\loginrequest2throttlekey¨
+©
+- -(2
+%6"+illuminate\support\facades\ratelimiter::hit*F
+
+__unknown_file (*"(
+&illuminate\support\facades\ratelimiter*"
+
+__unknown_file (
+
+%5*
+4*©
+34 4(1db
+4 4(/
+%7*C
+
+__unknown_file ('%
+#app\http\requests\auth\loginrequest2throttlekeyÆ
+´
+4 4(0
+%8"-illuminate\support\facades\ratelimiter::clear*F
+
+__unknown_file (*"(
+&illuminate\support\facades\ratelimiter*"
+
+__unknown_file (
+
+%7*
+4*8
+4
+LoginRequest.php"
+5 5(
+implicit return*è
+1* *((om
+* *('
+%1*C
+
+__unknown_file ('%
+#app\http\requests\auth\loginrequest2ensureisnotratelimitedØ¨
+, ,(<
+%2*C
+
+__unknown_file ('%
+#app\http\requests\auth\loginrequest*%
+
+__unknown_file (	
+email*(
+
+__unknown_file (
+
+password2onlyãà
+,> ,(X
+%3*C
+
+__unknown_file ('%
+#app\http\requests\auth\loginrequest*(
+
+__unknown_file (
+
+remember2boolean∆
+√
+, ,(Y
+%4"(illuminate\support\facades\auth::attempt*?
+
+__unknown_file (#"!
+illuminate\support\facades\auth*"
+
+__unknown_file (
+
+%2*"
+
+__unknown_file (
+
+%3*
+2
+3B'%
+#app\http\requests\auth\loginrequestH

@@ -189,7 +189,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                     type="number"
                     step={0.00000001}
                     autoFocus
-                    tabIndex={1}
                     autoComplete="price"
                     value={data.price === -1 ? '' : data.price}
                     onChange={(e) => setData('price', parseFloat(e.target.value))}
@@ -208,7 +207,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                     type="number"
                     step={0.00000001}
                     autoFocus
-                    tabIndex={1}
                     autoComplete="amount"
                     value={data.total_amount === -1 ? '' : data.total_amount}
                     onChange={(e) => setData('total_amount', parseFloat(e.target.value))}
@@ -235,17 +233,17 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
     );
 
     const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + priceComparison.pair_symbol);
-    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
+    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function(data: any) {
         setPriceComparison(data.priceComparison);
     });
 
     const transactionsChannel = echo.subscribe('Transactions.Crypto.Id.' + crypto.id);
-    transactionsChannel.bind('App\\Events\\TransactionInserted', function (data: any) {
+    transactionsChannel.bind('App\\Events\\TransactionInserted', function(data: any) {
         setVolume24hState(data.volume24h);
     });
 
     const recordChannel = echo.subscribe('Records.Pair.' + priceComparison.id);
-    recordChannel.bind('App\\Events\\PriceRecordCreated', function (data: any) {
+    recordChannel.bind('App\\Events\\PriceRecordCreated', function(data: any) {
         setPriceRecords(() => [...priceRecordsState, data.priceRecord]);
     });
 
