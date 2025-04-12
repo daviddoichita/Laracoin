@@ -1,3 +1,5 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin)
+
 # Instrucciones despliegue local
 
 ## Base de datos
