@@ -2,12 +2,6 @@
 
 # Instrucciones despliegue local
 
-## Base de datos
-### Forma comoda
-Tener docker instalado, entrar a la carpeta [pgsql](https://github.com/daviddoichita/Laracoin/tree/3d501f5de7827bd7549f614db60ace44a894a4a8/pgsql) y ejectuar los dos sh (primero build luego run) desde una git bash si estas en windows
-### Forma incomoda
-Instalar postgresql (no se como se hace docker es mejor)
-
 ## Backend + Frontend
 ### Instalar composer, laravel, php, etc
 [Solo hace falta ejecutar el primer comando de esta seccion](https://laravel.com/docs/12.x/installation#creating-a-laravel-project)
