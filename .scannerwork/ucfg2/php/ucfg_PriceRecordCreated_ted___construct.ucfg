@@ -1,17 +1,0 @@
-
-*app\events\pricerecordcreated::__constructH
->/home/ddoichita/git/Laracoin/app/Events/PriceRecordCreated.php ("1*¨
-1
-PriceRecordCreated.phph
-f
- (
-$priceRecord"__id*D
-
-__unknown_file ((
-&
-$priceRecordapp\models\pricerecord"
-B (C
-implicit return:2
-  (?&
-$priceRecordapp\models\pricerecordB!
-app\events\pricerecordcreatedH

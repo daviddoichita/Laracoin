@@ -1,7 +1,0 @@
-organization=daviddoichita
-projectKey=daviddoichita_Laracoin
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.61852
-dashboardUrl=https://sonarcloud.io/dashboard?id=daviddoichita_Laracoin
-ceTaskId=AZYqcZtwup8vFoll0IJk
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZYqcZtwup8vFoll0IJk

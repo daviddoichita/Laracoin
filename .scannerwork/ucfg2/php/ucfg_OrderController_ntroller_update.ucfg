@@ -1,36 +1,0 @@
-
-,app\http\controllers\ordercontroller::updateO
-E/home/ddoichita/git/Laracoin/app/Http/Controllers/OrderController.phpN N("1*×
-1
-OrderController.php 
-
-N N(
-%1"__entrypoint¼¹
-N N(#
-$requestilluminate\http\request".illuminate\http\request::__sonar_inject_symbol*A
-
-__unknown_file (%
-#
-$requestilluminate\http\request2__sonar_inject_symbola
-_
-N N(
-
-$request"__id*A
-
-__unknown_file (%
-#
-$requestilluminate\http\requestV
-T
-N N(
-$order"__id*8
-
-__unknown_file (
-
-$orderapp\models\order"
-Q Q(
-implicit return:/
-N N(+#
-$requestilluminate\http\request:&
-N- N(9
-$orderapp\models\orderB(&
-$app\http\controllers\ordercontrollerH
