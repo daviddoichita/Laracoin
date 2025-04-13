@@ -32,12 +32,14 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 COPY nginx.conf /etc/nginx/sites-available/default
 
-COPY cronjob .
+COPY cronjob /etc/cron.d/cronjob
 
-RUN chmod 0644  cronjob
+RUN chmod 0644 /etc/cron.d/cronjob
 
-RUN crontab cronjob
+RUN crontab /etc/cron.d/cronjob
+
+RUN touch /var/log/cron.log
 
 EXPOSE 80
 
-CMD service cron start && service nginx start && php-fpm
+CMD cron && service nginx start && php-fpm && tail -f /var/log/cron.log
