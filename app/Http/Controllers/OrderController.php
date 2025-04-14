@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -28,10 +29,7 @@ class OrderController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function storeCommon(Request $request)
     {
         $request->validate([
             'user_id' => 'required',
@@ -53,9 +51,26 @@ class OrderController extends Controller
             'status' => 'pending'
         ]);
 
+        return $order;
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $order = $this->storeCommon($request);
+
         return response()->json([
             'created' => $order
         ]);
+    }
+
+    public function storeInertia(Request $request)
+    {
+        $this->storeCommon($request);
+
+        return back();
     }
 
     /**
@@ -70,7 +85,6 @@ class OrderController extends Controller
     {
         return response()->json(Order::with(['user', 'sold', 'purchased'])->find($id));
     }
-
 
     /**
      * Update the specified resource in storage.

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CryptoController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Crypto;
 use App\Models\PriceRecord;
@@ -46,6 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'userBalances' => UserBalance::with('crypto')->where('user_id', '=', Auth::user()->id)->get()
         ]);
     });
+
+    Route::post('/new-order', [OrderController::class, 'storeInertia'])->name('new-order');
 });
 
 

@@ -28,22 +28,37 @@ interface CryptoViewProps {
     state: string;
 }
 
-const localeString = (n: number) => {
-    return n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR', notation: 'compact' });
+const localeString = (n: number, compact: boolean, maxFracDigits?: number) => {
+    let opts: any = { style: 'currency', currency: 'EUR', notation: 'compact' };
+    if (compact) {
+        opts = { notation: 'compact', ...opts };
+    }
+    if (maxFracDigits) {
+        opts = { maximumFractionDigits: maxFracDigits, ...opts };
+    }
+    return n.toLocaleString('es-ES', opts);
+};
+
+const localeStringCompact = (n: number, maxFractionDigits?: number) => {
+    return localeString(n, true, maxFractionDigits);
+};
+
+const localeStringNoCompact = (n: number, maxFractionDigits?: number) => {
+    return localeString(n, false, maxFractionDigits);
 };
 
 const calculateInfoPills = (crypto: Crypto, priceComparison: PriceComparison, volume24h: number) => {
     const price = priceComparison.price;
 
-    const marketCap = localeString(crypto.circulating_supply * price);
-    const volume = localeString(volume24h * price);
-    const fdv = crypto.max_supply === -1 ? marketCap : localeString(crypto.max_supply * price);
+    const marketCap = localeStringCompact(crypto.circulating_supply * price);
+    const volume = localeStringCompact(volume24h * price);
+    const fdv = crypto.max_supply === -1 ? marketCap : localeStringCompact(crypto.max_supply * price);
     const vol_mktCap = (((volume24h * price) / (crypto.circulating_supply * price)) * 100).toLocaleString('es-ES', {
         style: 'percent',
         maximumFractionDigits: 4,
     });
-    const max_supply = localeString(crypto.max_supply);
-    const circulating_supply = localeString(crypto.circulating_supply);
+    const max_supply = localeStringCompact(crypto.max_supply);
+    const circulating_supply = localeStringCompact(crypto.circulating_supply);
 
     const rawmc = crypto.circulating_supply * price;
     const rawvol = volume24h * price;
@@ -112,7 +127,7 @@ const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => 
                     dataKey="price"
                     domain={[minPrice - minPrice * 0.08, maxPrice + maxPrice * 0.08]}
                     tickFormatter={(tick) => {
-                        return localeString(parseFloat(tick));
+                        return localeStringCompact(parseFloat(tick));
                     }}
                 ></YAxis>
                 <Tooltip content={<CustomTooltip />}></Tooltip>
@@ -166,22 +181,17 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
         price: -1,
     });
 
-    const submitBuy: FormEventHandler = (e) => {
+    const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        console.log(data);
-    };
-    const submitSell: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        console.log(data);
+        post(route('new-order'));
     };
 
     const formData: JSX.Element = (
         <>
             <div className="mt-4 flex w-full flex-col">
                 <Label htmlFor="price" className="text-md">
-                    Price
+                    Price per unit
                 </Label>
                 <Input
                     name="price"
@@ -217,15 +227,16 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
 
             <div className="flex w-full flex-row gap-2">
                 <Button
+                    disabled={processing}
                     type="reset"
-                    onClick={(e) => {
+                    onClick={(_e) => {
                         reset('price', 'total_amount');
                     }}
                     className="w-full bg-red-500 text-white hover:bg-red-600 dark:text-black"
                 >
                     Cancel
                 </Button>
-                <Button type="submit" className="w-full bg-green-500 text-white hover:bg-green-600 dark:text-black">
+                <Button type="submit" className="w-full bg-green-500 text-white hover:bg-green-600 dark:text-black" disabled={processing}>
                     Buy
                 </Button>
             </div>
@@ -233,17 +244,17 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
     );
 
     const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + priceComparison.pair_symbol);
-    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function(data: any) {
+    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
         setPriceComparison(data.priceComparison);
     });
 
     const transactionsChannel = echo.subscribe('Transactions.Crypto.Id.' + crypto.id);
-    transactionsChannel.bind('App\\Events\\TransactionInserted', function(data: any) {
+    transactionsChannel.bind('App\\Events\\TransactionInserted', function (data: any) {
         setVolume24hState(data.volume24h);
     });
 
     const recordChannel = echo.subscribe('Records.Pair.' + priceComparison.id);
-    recordChannel.bind('App\\Events\\PriceRecordCreated', function(data: any) {
+    recordChannel.bind('App\\Events\\PriceRecordCreated', function (data: any) {
         setPriceRecords(() => [...priceRecordsState, data.priceRecord]);
     });
 
@@ -321,6 +332,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                     <div className="flex w-full flex-col items-center justify-center">
                         <div className="flex w-full flex-row border-b">
                             <button
+                                disabled={processing}
                                 onClick={() => {
                                     setTab('buy');
                                     setData('sold_id', priceComparison.child_id);
@@ -332,6 +344,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                                 Buy
                             </button>
                             <button
+                                disabled={processing}
                                 onClick={() => {
                                     setTab('sell');
                                     setData('sold_id', priceComparison.main_id);
@@ -344,15 +357,16 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                             </button>
                         </div>
 
-                        {tab.match('buy') ? (
-                            <form onSubmit={submitBuy} className="flex w-full flex-col gap-2">
-                                {formData}
-                            </form>
-                        ) : (
-                            <form onSubmit={submitSell} className="flex w-full flex-col gap-2">
-                                {formData}
-                            </form>
-                        )}
+                        <form onSubmit={submit} className="flex w-full flex-col gap-2">
+                            <div className="mt-2 w-full text-center">
+                                {tab.match('buy') ? (
+                                    <p>Recommended price per unit: {localeStringNoCompact(parseFloat(priceComparison.price.toString()), 2)}</p>
+                                ) : (
+                                    <p>Recommended price per unit: {localeStringCompact(1 / priceComparison.price)}</p>
+                                )}
+                            </div>
+                            {formData}
+                        </form>
                     </div>
                 </div>
             </div>

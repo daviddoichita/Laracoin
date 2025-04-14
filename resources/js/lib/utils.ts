@@ -16,12 +16,11 @@ export function shortUUID(len: number = 6): string {
     // Comment out because it cant be used in server side
     // const crypto = window.crypto
     // return crypto.randomUUID().slice(0, len)
-    const chars = 'ABCDEFGHIJKLMNOPQRSTabcdefghijklmnopqrst123456789'
-    let result = ''
+    const chars = 'ABCDEFGHIJKLMNOPQRSTabcdefghijklmnopqrst123456789';
+    let result = '';
     for (let i = 0; i < len; i++) {
-        result += chars[Math.random() * chars.length]
+        result += chars[Math.floor(Math.random() * chars.length)];
     }
 
-    return result
+    return result;
 }
-
