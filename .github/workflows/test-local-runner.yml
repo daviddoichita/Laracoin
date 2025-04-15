@@ -9,8 +9,12 @@ jobs:
       - name: Display message
         id: display_message
         run: | 
-          echo 'runner test'
+          echo 'ls'
           echo 'message=ok' >> $GITHUB_OUTPUT
+      - name: Test runner image
+        id: test-runner-image
+        run: |
+          cat /etc/*-release
       - name: Report Quality Gate Results
         if: always()
         run: |
