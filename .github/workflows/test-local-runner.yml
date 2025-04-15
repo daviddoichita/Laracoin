@@ -3,16 +3,6 @@ name: Test runner
 on: workflow_dispatch
 
 jobs:
-  prepare_job:
-    runs-on: ddoichita
-    container:
-      image: node:latest
-    steps:
-      - name: Test node
-        run: |
-          node -v
-          npm -v
-
   test:
     runs-on: ddoichita
     steps:
@@ -25,6 +15,20 @@ jobs:
         id: test-runner-image
         run: |
           cat /etc/*-release
+      - name: Checkout code
+        id: checkout_code
+        uses: actions/checkout@v2
+      - name: Set up nodejs
+        id: setup_nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install deps
+        id: install_deps
+        run: npm i
+      - name: Build app
+        id: build_app
+        run: npm run build
       - name: Test outputs and step summary
         if: always()
         run: |
