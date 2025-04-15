@@ -1,0 +1,10 @@
+name: Test runner
+
+on: workflow_dispatch
+
+jobs:
+  test:
+    runs-on: ddoichita
+    steps:
+      - name: Display message
+        run: echo 'runner test'
