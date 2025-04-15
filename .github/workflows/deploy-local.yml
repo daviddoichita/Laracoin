@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Start docker
-        run: sudo systemctl start docker.service --force
+        run: sudo service docker start
 
       - name: Docker build and push
         uses: docker/build-push-action@v6.15.0
