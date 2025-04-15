@@ -6,7 +6,12 @@ jobs:
   deploy:
     runs-on: arc-runner-set
     steps:
-      - name: Test docker presence
-        run: |
-          docker --help
-        
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Docker build and push
+        uses: docker/build-push-action@v6.15.0
+        with:
+          tags: host.minikube.internal:5000/laracoin:latest
+          push: true
+          context: .
