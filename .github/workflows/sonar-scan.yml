@@ -1,0 +1,16 @@
+name: Run SonarCloud Scanning
+
+on: workflow_dispatch
+
+jobs:
+  scan:
+    runs-on: ddoichita
+    steps:
+      - name: Checkout repo
+        id: checkout_repo
+        uses: actions/checkout@v2
+      - name: Run scanning
+        id: run_scanning
+        uses: SonarSource/sonarqube-scan-action@v5.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
