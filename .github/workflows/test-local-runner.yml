@@ -3,6 +3,16 @@ name: Test runner
 on: workflow_dispatch
 
 jobs:
+  prepare_job:
+    runs-on: ddoichita
+    container:
+      image: node:latest
+    steps:
+      - name: Test node
+        run: |
+          node -v
+          npm -v
+
   test:
     runs-on: ddoichita
     steps:
@@ -15,7 +25,7 @@ jobs:
         id: test-runner-image
         run: |
           cat /etc/*-release
-      - name: Report Quality Gate Results
+      - name: Test outputs and step summary
         if: always()
         run: |
           echo "## Test step summary" >> $GITHUB_STEP_SUMMARY
