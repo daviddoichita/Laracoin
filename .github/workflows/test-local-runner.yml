@@ -22,6 +22,6 @@ jobs:
         run: npm run build
       - name: Run sonar scanner
         id: run_sonar_scanner
-        uses: SonarSource/sonarqube-scan-action@5.1.0
+        uses: SonarSource/sonarqube-scan-action@v5.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
