@@ -9,6 +9,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
+      - name: Install iptables
+        run: |
+            apt update
+            apt-get install iptables
+
       - name: Set up docker
         uses: docker/setup-docker-action@v4
 
