@@ -11,8 +11,8 @@ jobs:
 
       - name: Install iptables
         run: |
-            apt update
-            apt-get install iptables
+            sudo apt update
+            sudo apt-get install iptables
 
       - name: Set up docker
         uses: docker/setup-docker-action@v4
