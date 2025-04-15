@@ -6,36 +6,22 @@ jobs:
   test:
     runs-on: ddoichita
     steps:
-      - name: Display message
-        id: display_message
-        run: | 
-          echo 'ls'
-          echo 'message=ok' >> $GITHUB_OUTPUT
-      - name: Test runner image
-        id: test-runner-image
-        run: |
-          cat /etc/*-release
-      - name: Checkout code
-        id: checkout_code
-        uses: actions/checkout@v2
       - name: Set up nodejs
         id: setup_nodejs
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Checkout code
+        id: checkout_code
+        uses: actions/checkout@v2
       - name: Install deps
         id: install_deps
         run: npm i
       - name: Build app
         id: build_app
         run: npm run build
-      - name: Test outputs and step summary
-        if: always()
-        run: |
-          echo "## Test step summary" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ steps.display_message.outputs.message }}" != "ok" ]; then
-            echo "- **Estado**: ❌ Fallido" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **Estado**: ✅ OK" >> $GITHUB_STEP_SUMMARY
-          fi
+      - name: Run sonar scanner
+        id: run_sonar_scanner
+        uses: SonarSource/sonarqube-scan-action@5.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
