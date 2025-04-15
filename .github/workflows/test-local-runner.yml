@@ -7,4 +7,17 @@ jobs:
     runs-on: ddoichita
     steps:
       - name: Display message
-        run: echo 'runner test'
+        id: display_message
+        run: | 
+          echo 'runner test'
+          echo 'message=ok' >> $GITHUB_OUTPUT
+      - name: Report Quality Gate Results
+        if: always()
+        run: |
+          echo "## Test step summary" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.display_message.outputs.message }}" != "ok" ]; then
+            echo "- **Estado**: ❌ Fallido" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Estado**: ✅ OK" >> $GITHUB_STEP_SUMMARY
+          fi
