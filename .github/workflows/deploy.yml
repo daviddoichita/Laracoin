@@ -9,15 +9,49 @@ jobs:
       - 
         name: Checkout repo
         uses: actions/checkout@v2
+      -
+        name: Configure .env
+        run: |
+          cp .env.example .env
+          sed -i 's/^DB_HOST=.*/DB_HOST=${{ vars.DB_HOST }}/' .env
+          sed -i 's/^DB_DATABASE=.*/DB_DATABASE=${{ vars.DB_DATABASE }}/' .env
+          sed -i 's/^DB_USERNAME=.*/DB_USERNAME=${{ vars.DB_USERNAME }}/' .env
+          sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/' .env
+          sed -i 's/^PUSHER_APP_ID=.*/PUSHER_APP_ID=${{ secrets.PUSHER_APP_ID }}/' .env
+          sed -i 's/^PUSHER_APP_KEY=.*/PUSHER_APP_KEY=${{ secrets.PUSHER_APP_KEY }}/' .env
+          sed -i 's/^PUSHER_APP_SECRET=.*/PUSHER_APP_SECRET=${{ secrets.PUSHER_APP_SECRET }}/' .env
+          sed -i 's/^PUSHER_APP_CLUSTER=.*/PUSHER_APP_CLUSTER=${{ vars.PUSHER_APP_CLUSTER }}/' .env
       - 
-        name: Check status
-        run: ls
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - 
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: doichitadavid/laracoin:latest
       - 
         name: Clone chart repository
         uses: actions/checkout@v2
         with:
           repository: daviddoichita/laracoin-chart
       - 
-        name: Check status
-        run: ls
+        name: Bump app version
+        run: |
+          sed -i -E 's/(appVersion: ")([0-9]+)\.([0-9]+)\.([0-9]+)"/echo "\1\2.$((\3 + 1)).0"/e' chart/Chart.yaml
+      - 
+        name: Configure git
+        run: |
+          git config user.name "laracoin-workflow"
+          git config user.email "daviddoichita@proton.me"
+      -
+        name: Push changes
+        run: |
+          git add .
+          git commit -m 'Bump app version'
+          git push https://x-access-token:${{ secrets.LARACOIN_CHART_PAT }}@github.com/daviddoichita/laracoin-chart.git HEAD:main
       
