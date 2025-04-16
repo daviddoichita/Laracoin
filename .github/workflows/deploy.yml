@@ -22,6 +22,8 @@ jobs:
       - 
         name: Push changes
         run: |
+          git config user.name "ddoichita-bot"
+          git config user.email "daviddoichita@proton.me"
           git add .
           git commit -m 'Bump app version'
           git push
