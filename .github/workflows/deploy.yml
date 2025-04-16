@@ -46,7 +46,7 @@ jobs:
       -
         name: Bump app version
         run: |
-          sed -i -E 's/(appVersion: ")([0-9]+)\.([0-9]+)\.([0-9]+)"/echo "\1\2.$((\3 + 1)).0"/e' chart/Chart.yaml
+           sed -Ei 's/appVersion: "([0-9]+)\.([0-9]+)\.([0-9]+)"/echo appVersion: \"\1.\2.$((\3 + 1))\"/e' chart/Chart.yaml
       - 
         name: Configure git
         run: |
