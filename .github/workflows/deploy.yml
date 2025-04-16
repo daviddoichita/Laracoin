@@ -1,11 +1,45 @@
 name: Deploy
 
-on: workflow_dispatch
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout repo
+        uses: actions/checkout@v2
+      -
+        name: Configure .env
+        run: |
+          cp .env.example .env
+          sed -i 's/^DB_HOST=.*/DB_HOST=${{ vars.DB_HOST }}/' .env
+          sed -i 's/^DB_DATABASE=.*/DB_DATABASE=${{ vars.DB_DATABASE }}/' .env
+          sed -i 's/^DB_USERNAME=.*/DB_USERNAME=${{ vars.DB_USERNAME }}/' .env
+          sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/' .env
+          sed -i 's/^PUSHER_APP_ID=.*/PUSHER_APP_ID=${{ secrets.PUSHER_APP_ID }}/' .env
+          sed -i 's/^PUSHER_APP_KEY=.*/PUSHER_APP_KEY=${{ secrets.PUSHER_APP_KEY }}/' .env
+          sed -i 's/^PUSHER_APP_SECRET=.*/PUSHER_APP_SECRET=${{ secrets.PUSHER_APP_SECRET }}/' .env
+          sed -i 's/^PUSHER_APP_CLUSTER=.*/PUSHER_APP_CLUSTER=${{ vars.PUSHER_APP_CLUSTER }}/' .env
+      - 
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - 
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: doichitadavid/laracoin:latest
   deploy:
     runs-on: ubuntu-latest
-    # needs: build
+    needs: build
     permissions:
       contents: write
     steps:
