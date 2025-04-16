@@ -33,3 +33,12 @@ jobs:
           context: .
           push: true
           tags: doichitadavid/laracoin:latest
+
+      - name: Clone chart repository
+        uses: actions/checkout@v2
+        with:
+          repository: daviddoichita/laracoin-chart
+
+      - name: Check status
+        run: ls
+      
