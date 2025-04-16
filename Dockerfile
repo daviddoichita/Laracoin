@@ -42,4 +42,6 @@ RUN touch /var/log/cron.log
 
 EXPOSE 80
 
+RUN php artisan key:generate
+
 CMD cron && service nginx start && php-fpm && tail -f /var/log/cron.log
