@@ -6,12 +6,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Clone chart repository
+      - 
+        name: Checkout repo
+        uses: actions/checkout@v2
+      - 
+        name: Check status
+        run: ls
+      - 
+        name: Clone chart repository
         uses: actions/checkout@v2
         with:
           repository: daviddoichita/laracoin-chart
-
-      - name: Check status
+      - 
+        name: Check status
         run: ls
       
