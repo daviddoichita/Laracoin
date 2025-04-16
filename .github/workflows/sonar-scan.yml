@@ -1,6 +1,9 @@
 name: Run SonarCloud Scanning
 
-on: workflow_dispatch
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   scan:
