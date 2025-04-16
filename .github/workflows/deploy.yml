@@ -34,12 +34,16 @@ jobs:
           context: .
           push: true
           tags: doichitadavid/laracoin:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - 
         name: Clone chart repository
         uses: actions/checkout@v2
         with:
           repository: daviddoichita/laracoin-chart
-      - 
+      -
         name: Bump app version
         run: |
           sed -i -E 's/(appVersion: ")([0-9]+)\.([0-9]+)\.([0-9]+)"/echo "\1\2.$((\3 + 1)).0"/e' chart/Chart.yaml
