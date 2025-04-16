@@ -40,7 +40,7 @@ class OrderController extends Controller
             'price' => 'required',
         ]);
 
-        $order = Order::create([
+        return Order::create([
             'user_id' => $request->user_id,
             'sold_id' => $request->sold_id,
             'purchased_id' => $request->purchased_id,
@@ -50,8 +50,6 @@ class OrderController extends Controller
             'filled' => 0,
             'status' => 'pending'
         ]);
-
-        return $order;
     }
 
     /**
