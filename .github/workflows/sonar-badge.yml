@@ -1,0 +1,21 @@
+name: SonarQube Badge
+
+on: workflow_dispatch
+
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: microk8s
+    steps:
+      - name: Setup network
+        run: |
+          echo "${{ secrets.SERVER_URL microk8s.local }}" | sudo tee /etc/hosts
+      - name: badge action
+        uses: jadewon/sonar-badge@v1
+        id: badge
+        env:
+          GITHUB_TOKEN: ${{ secrets.BADGES_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_LOCAL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT: ${{ secrets.SONAR_PROJECT }}
