@@ -7,7 +7,7 @@ on:
 
 jobs:
   scan:
-    runs-on: arc-runner-set
+    runs-on: microk8s
     steps:
       - name: Checkout repo
         id: checkout_repo
