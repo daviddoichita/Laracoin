@@ -3,11 +3,11 @@ name: Deploy
 on: 
   push:
     branches:
-      - main
+      - prod
 
 jobs:
   build:
-    runs-on: microk8s
+    runs-on: ubuntu-latest
     steps:
       - 
         name: Checkout repo
