@@ -14,6 +14,9 @@ jobs:
       - name: Checkout repo
         id: checkout_repo
         uses: actions/checkout@v2
+      - name: Configure networking
+        run: |
+          echo "${{ secrets.SERVER_URL }} microk8s.local" >> sudo tee /etc/hosts
       - name: Run scanning
         id: run_scanning
         uses: SonarSource/sonarqube-scan-action@v5.1.0
