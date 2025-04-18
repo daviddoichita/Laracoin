@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Setup network
         run: |
-          echo "${{ secrets.SERVER_URL microk8s.local }}" | sudo tee /etc/hosts
+          echo "${{ secrets.SERVER_URL }} microk8s.local" | sudo tee /etc/hosts
       - name: badge action
         uses: jadewon/sonar-badge@v1
         id: badge
