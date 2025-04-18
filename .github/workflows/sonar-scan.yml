@@ -5,7 +5,10 @@ name: Run SonarQube Scanning
 #    branches:
 #      - prod
 
-on: workflow_dispatch
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   scan:
