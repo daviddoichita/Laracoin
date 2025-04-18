@@ -83,12 +83,4 @@ class OrderController extends Controller
     {
         return response()->json(Order::with(['user', 'sold', 'purchased'])->find($id));
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
-    }
 }
