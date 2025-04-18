@@ -170,7 +170,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
     const [priceRecordsState, setPriceRecords] = useState(priceRecords);
 
     const [tab, setTab] = useState(state ? state : 'buy');
-    const activeTab = ' bg-sky-800 hover:bg-sky-900';
+    const activeTab = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
 
     const { data, setData, post, processing, errors, reset } = useForm<Required<OrderForm>>({
         user_id: auth.user.id,

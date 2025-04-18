@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, List, Plus, Wallet } from 'lucide-react';
+import { ChartNoAxesCombined, LayoutGrid, List, Plus, Wallet } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -30,6 +30,11 @@ const adminNavItems: NavItem[] = [
         title: 'Cryptos list',
         href: '/crypto/list',
         icon: List,
+    },
+    {
+        title: 'Metric endpoints',
+        href: '/metrics',
+        icon: ChartNoAxesCombined,
     },
 ];
 

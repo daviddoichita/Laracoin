@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Crypto;
+use App\Models\UserBalance;
 use Hash;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -95,18 +98,21 @@ class DatabaseSeeder extends Seeder
                 'locked_balance' => 0,
                 'created_at' => $now,
                 'updated_at' => $now,
-            ],
-            [
-                'user_id' => 1,
-                'crypto_id' => 2,
-                'balance' => 10,
-                'locked_balance' => 1,
-                'created_at' => $now,
-                'updated_at' => $now,
             ]
         ];
 
         DB::table('user_balances')->insert($userBalances);
+
+        $cryptosSelect = Crypto::all()->where('symbol', '!=', 'EUR');
+        foreach ($cryptosSelect as $cryptoSelect) {
+            UserBalance::create([
+                'user_id' => 1,
+                'crypto_id' => $cryptoSelect->id,
+                'balance' => 0,
+                'locked_balance' => 0,
+            ]);
+        }
+
 
         $orders = [
             [

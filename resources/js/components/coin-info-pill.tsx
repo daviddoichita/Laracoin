@@ -17,7 +17,7 @@ export default function CoinInfoPill({ name, value, rawValue, textClassName, add
     return (
         <div
             data-tooltip-target={'tooltip-' + name}
-            className={'flex w-full flex-col items-center rounded-md border p-3 transition ' + additionalClassName}
+            className={'flex w-full flex-col items-center rounded-md border p-3 shadow transition dark:shadow-neutral-500 ' + additionalClassName}
         >
             <p className={textClassName}>{name}</p>
             {dynamic ? (
