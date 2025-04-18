@@ -10,7 +10,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn, shortUUID } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, List, Menu, Plus, Wallet } from 'lucide-react';
+import { ChartNoAxesCombined, LayoutGrid, List, Menu, Plus, Wallet } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -37,6 +37,11 @@ const adminNavItems: NavItem[] = [
         title: 'Cryptos list',
         href: '/crypto/list',
         icon: List,
+    },
+    {
+        title: 'Metric endpoints',
+        href: '/metrics',
+        icon: ChartNoAxesCombined,
     },
 ];
 
@@ -122,7 +127,8 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                                         {page.url === item.href && (
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
-                                    </NavigationMenuItem>))}
+                                    </NavigationMenuItem>
+                                ))}
                                 {auth.user?.admin ? (
                                     adminNavItems.map((item, _index) => (
                                         <NavigationMenuItem key={shortUUID()} className="relative flex h-full items-center">
@@ -141,8 +147,7 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
                                                 <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                             )}
                                         </NavigationMenuItem>
-                                    )
-                                    )
+                                    ))
                                 ) : (
                                     <></>
                                 )}
