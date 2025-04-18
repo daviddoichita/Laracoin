@@ -1,4 +1,9 @@
-name: Run SonarCloud Scanning
+name: Run SonarQube Scanning
+
+#on: 
+#  push:
+#    branches:
+#      - prod
 
 on: 
   push:
@@ -7,13 +12,17 @@ on:
 
 jobs:
   scan:
-    runs-on: arc-runner-set
+    runs-on: microk8s
     steps:
       - name: Checkout repo
         id: checkout_repo
         uses: actions/checkout@v2
+      - name: Configure networking
+        run: |
+          echo "${{ secrets.SERVER_URL }} microk8s.local" | sudo tee /etc/hosts
       - name: Run scanning
         id: run_scanning
         uses: SonarSource/sonarqube-scan-action@v5.1.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_LOCAL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

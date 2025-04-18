@@ -1,0 +1,28 @@
+name: SonarQube Badge
+
+on:
+  workflow_run:
+    workflows: ["Run SonarQube Scanning"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: microk8s
+    steps:
+      - name: Setup network
+        run: |
+          echo "${{ secrets.SERVER_URL }} microk8s.local" | sudo tee /etc/hosts    
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: badge action
+        uses: jadewon/sonar-badge@v1
+        id: badge
+        env:
+          GITHUB_TOKEN: ${{ secrets.BADGES_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_LOCAL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT: ${{ secrets.SONAR_PROJECT }}
+          SONAR_PROJECT_BADGE_TOKEN: ${{ secrets.SONAR_BADGE_TOKEN }}

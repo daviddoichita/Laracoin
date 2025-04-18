@@ -1,4 +1,15 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=daviddoichita_Laracoin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=daviddoichita_Laracoin)
+![quality gate](.badges/alert_status.svg)
+![bugs](.badges/bugs.svg)
+![code smells](.badges/code_smells.svg)
+![coverage](.badges/coverage.svg)
+![duplicated lines](.badges/duplicated_lines_density.svg)
+![lines of code](.badges/ncloc.svg)
+![reliability](.badges/reliability_rating.svg)
+![security hotspots](.badges/security_hotspots.svg)
+![security](.badges/security_rating.svg)
+![technical debt](.badges/sqale_index.svg)
+![maintainability](.badges/sqale_rating.svg)
+![vulnerabilities](.badges/vulnerabilities.svg)
 
 # Instrucciones despliegue local (actualmente me tienes que pedir las keys de pusher)
 
