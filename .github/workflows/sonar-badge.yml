@@ -1,6 +1,10 @@
 name: SonarQube Badge
 
-on: workflow_dispatch
+on:
+  workflow_run:
+    workflows: ["Run SonarQube Scanning"]
+    types:
+      - completed
 
 permissions:
   contents: write
