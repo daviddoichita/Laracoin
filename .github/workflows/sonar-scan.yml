@@ -1,4 +1,4 @@
-name: Run SonarCloud Scanning
+name: Run SonarQube Scanning
 
 #on: 
 #  push:
