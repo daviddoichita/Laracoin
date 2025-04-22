@@ -151,8 +151,8 @@ type OrderForm = {
     sold_id: number;
     purchased_id: number;
     order_type: string;
-    total_amount: number;
-    price: number;
+    total_amount: number | undefined;
+    price: number | undefined;
 };
 
 export default function CryptoView({ crypto, volume24h, priceRecords, state }: CryptoViewProps) {
@@ -177,8 +177,8 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
         sold_id: priceComparison.child_id,
         purchased_id: priceComparison.main_id,
         order_type: 'buy',
-        total_amount: -1,
-        price: -1,
+        total_amount: undefined,
+        price: undefined,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -200,7 +200,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                     step={0.00000001}
                     autoFocus
                     autoComplete="price"
-                    value={data.price === -1 ? '' : data.price}
+                    value={data.price}
                     onChange={(e) => setData('price', parseFloat(e.target.value))}
                     placeholder="€"
                 />
@@ -218,7 +218,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                     step={0.00000001}
                     autoFocus
                     autoComplete="amount"
-                    value={data.total_amount === -1 ? '' : data.total_amount}
+                    value={data.total_amount}
                     onChange={(e) => setData('total_amount', parseFloat(e.target.value))}
                     placeholder="Total amount"
                 />
