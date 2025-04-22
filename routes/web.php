@@ -25,7 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])->where('disabled', '=', false)->find($id),
             'volume24h' => TransactionController::volume24h($id),
             'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
-            'state' => request()->query('state')
+            'state' => request()->query('state'),
+            'userBalance' => UserBalance::all()->where('user_id', '=', Auth::user()->id)
         ]);
     })->name('crypto.show');
 

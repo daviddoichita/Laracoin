@@ -10,6 +10,7 @@ import { BreadcrumbItem, SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { PriceComparison } from '@/types/price-comparison';
 import { PriceRecord } from '@/types/price-record';
+import { UserBalance } from '@/types/user-balance';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, JSX, useEffect, useState } from 'react';
 import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
@@ -26,6 +27,7 @@ interface CryptoViewProps {
     volume24h: number;
     priceRecords: PriceRecord[];
     state: string;
+    userBalance: UserBalance[]
 }
 
 const localeString = (n: number, compact: boolean, maxFracDigits?: number) => {
@@ -155,12 +157,14 @@ type OrderForm = {
     price: number | undefined;
 };
 
-export default function CryptoView({ crypto, volume24h, priceRecords, state }: CryptoViewProps) {
+export default function CryptoView({ crypto, volume24h, priceRecords, state, userBalance }: CryptoViewProps) {
     useEffect(() => {
         if (!crypto) {
             window.location.href = route('dashboard');
         }
     }, []);
+
+    console.log(userBalance)
 
     const { auth } = usePage<SharedData>().props;
 
@@ -358,13 +362,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                         </div>
 
                         <form onSubmit={submit} className="flex w-full flex-col gap-2">
-                            <div className="mt-2 w-full text-center">
-                                {tab.match('buy') ? (
-                                    <p>Recommended price per unit: {localeStringNoCompact(parseFloat(priceComparison.price.toString()), 2)}</p>
-                                ) : (
-                                    <p>Recommended price per unit: {localeStringCompact(1 / priceComparison.price)}</p>
-                                )}
-                            </div>
                             {formData}
                         </form>
                     </div>
