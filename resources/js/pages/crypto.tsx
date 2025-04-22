@@ -27,7 +27,7 @@ interface CryptoViewProps {
     volume24h: number;
     priceRecords: PriceRecord[];
     state: string;
-    userBalance: UserBalance[]
+    userBalance: UserBalance[];
 }
 
 const localeString = (n: number, compact: boolean, maxFracDigits?: number) => {
@@ -153,8 +153,8 @@ type OrderForm = {
     sold_id: number;
     purchased_id: number;
     order_type: string;
-    total_amount: number | undefined;
-    price: number | undefined;
+    total_amount: number | null;
+    price: number | null;
 };
 
 export default function CryptoView({ crypto, volume24h, priceRecords, state, userBalance }: CryptoViewProps) {
@@ -163,8 +163,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
             window.location.href = route('dashboard');
         }
     }, []);
-
-    console.log(userBalance)
 
     const { auth } = usePage<SharedData>().props;
 
@@ -176,23 +174,35 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     const [tab, setTab] = useState(state ? state : 'buy');
     const activeTab = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
 
-    const { data, setData, post, processing, errors, reset } = useForm<Required<OrderForm>>({
+    const { data, setData, post, processing, errors, setError, reset } = useForm<Required<OrderForm>>({
         user_id: auth.user.id,
         sold_id: priceComparison.child_id,
         purchased_id: priceComparison.main_id,
         order_type: 'buy',
-        total_amount: undefined,
-        price: undefined,
+        total_amount: null,
+        price: null,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('new-order'));
+        const balance = userBalance.find((u) => u.crypto_id === data.sold_id);
+        if (balance) {
+            if (balance.balance > 0 && data.total_amount && data.total_amount <= balance.balance / priceComparison.price) {
+                console.log('now working');
+                post(route('new-order'));
+            } else {
+                setError('total_amount', 'Quantity greater than available balance');
+            }
+        }
     };
 
     const formData: JSX.Element = (
         <>
+            <div className="mt-4 flex w-full flex-col font-black">
+                <p>Available balance: {userBalance.find((u) => u.crypto_id === data.sold_id)?.balance}</p>
+            </div>
+
             <div className="mt-4 flex w-full flex-col">
                 <Label htmlFor="price" className="text-md">
                     Price per unit
@@ -204,7 +214,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                     step={0.00000001}
                     autoFocus
                     autoComplete="price"
-                    value={data.price}
+                    value={data.price ?? ''}
                     onChange={(e) => setData('price', parseFloat(e.target.value))}
                     placeholder="€"
                 />
@@ -215,26 +225,49 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                 <Label htmlFor="quantity" className="text-md">
                     Quantity
                 </Label>
-                <Input
-                    name="amount"
-                    id="amount"
-                    type="number"
-                    step={0.00000001}
-                    autoFocus
-                    autoComplete="amount"
-                    value={data.total_amount}
-                    onChange={(e) => setData('total_amount', parseFloat(e.target.value))}
-                    placeholder="Total amount"
-                />
-                <InputError message={errors.total_amount} />
+                <div className="flex flex-row gap-2">
+                    <div className="w-full">
+                        <Input
+                            name="amount"
+                            className="w-ful"
+                            id="amount"
+                            type="number"
+                            step={0.00000001}
+                            autoFocus
+                            autoComplete="amount"
+                            value={data.total_amount ?? ''}
+                            onChange={(e) => setData('total_amount', parseFloat(e.target.value))}
+                            placeholder="Total amount"
+                        />
+                        <InputError message={errors.total_amount} />
+                    </div>
+                    <Button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            const balance = userBalance.find((u) => u.crypto_id === data.sold_id)?.balance;
+                            if (balance) {
+                                const price = data.price;
+                                if (price) {
+                                    setData('total_amount', balance / price);
+                                } else {
+                                    setData('total_amount', balance / priceComparison.price);
+                                }
+                            }
+                        }}
+                    >
+                        Max
+                    </Button>
+                </div>
             </div>
 
             <div className="flex w-full flex-row gap-2">
                 <Button
                     disabled={processing}
                     type="reset"
-                    onClick={(_e) => {
-                        reset('price', 'total_amount');
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setData('price', null);
+                        setData('total_amount', null);
                     }}
                     className="w-full bg-red-500 text-white hover:bg-red-600 dark:text-black"
                 >
