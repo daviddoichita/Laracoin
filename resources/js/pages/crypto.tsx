@@ -182,7 +182,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     const [spend, setSpend] = useState<number | null>(null);
     const [buy, setBuy] = useState<number | null>(null);
 
-    const { data, setData, post, processing, errors, setError, reset } = useForm<Required<OrderForm>>({
+    const { data, setData, post, processing, errors, setError } = useForm<Required<OrderForm>>({
         user_id: auth.user.id,
         sold_id: priceComparison.child_id,
         purchased_id: priceComparison.main_id,
@@ -193,6 +193,10 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+
+        if (!customPrice) {
+            setData('price', priceComparison.price);
+        }
 
         const balance = userBalance.find((u) => u.crypto_id === data.sold_id);
         if (balance) {
@@ -255,18 +259,23 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                     Custom price
                     <Checkbox id="custom-price-check" checked={customPrice} onClick={(_e) => setCustomPrice(!customPrice)} />
                 </Label>
-                <Input
-                    disabled={!customPrice}
-                    name="price"
-                    id="price"
-                    type="number"
-                    step={0.00000001}
-                    autoFocus
-                    autoComplete="price"
-                    value={data.price ?? ''}
-                    onChange={(e) => setData('price', parseFloat(e.target.value))}
-                />
-                <InputError message={errors.price} />
+                {customPrice ? (
+                    <>
+                        <Input
+                            disabled={!customPrice}
+                            name="price"
+                            id="price"
+                            type="number"
+                            step={0.00000001}
+                            autoFocus
+                            autoComplete="price"
+                            onChange={(e) => setData('price', parseFloat(e.target.value))}
+                        />
+                        <InputError message={errors.price} />
+                    </>
+                ) : (
+                    <></>
+                )}
             </div>
 
             <div className="flex w-full flex-col">
@@ -425,6 +434,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                 Buy
                             </button>
                             <button
+                                disabled={processing || currentCryptoBalance < 1}
                                 onClick={() => {
                                     setTab('sell');
                                     setData('sold_id', priceComparison.main_id);
