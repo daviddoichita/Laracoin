@@ -27,14 +27,14 @@ export default function BalancePill({ userBalance }: Readonly<BalancePillProps>)
 
     if (userBalance.crypto.symbol !== 'EUR') {
         const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + pairSymbol);
-        priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function(data: any) {
+        priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
             setPriceComparison(data.priceComparison);
         });
     }
 
     return (
         <>
-            <div className="flex w-[32.5%] flex-col items-center gap-3 rounded-xl border p-3">
+            <div className="flex w-[32.5%] flex-col items-center gap-3 rounded-xl border p-3 shadow dark:shadow-neutral-500">
                 <div className="flex w-full flex-row justify-center gap-3 text-xl font-black">
                     <p>{userBalance.crypto.name}</p>
                     <p>{userBalance.crypto.symbol}</p>
@@ -76,6 +76,7 @@ export default function BalancePill({ userBalance }: Readonly<BalancePillProps>)
                         <>
                             <Button
                                 className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400"
+                                disabled={userBalance.balance <= 0}
                                 onClick={() => {
                                     window.location.href = route('crypto.show', { id: userBalance.crypto_id, state: 'sell' });
                                 }}

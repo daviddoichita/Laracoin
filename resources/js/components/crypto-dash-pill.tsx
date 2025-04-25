@@ -12,15 +12,15 @@ interface CryptoDashPillProps {
 export function CryptoDashPill({ crypto }: Readonly<CryptoDashPillProps>) {
     const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
 
-    const channel = echo.subscribe('PriceComparison.Pair.' + crypto.main_price_comparison[0].pair_symbol)
-    channel.bind('App\\Events\\PriceComparisonUpdated', function(data: any) {
-        setPriceComparison(data.priceComparison)
-    })
+    const channel = echo.subscribe('PriceComparison.Pair.' + crypto.main_price_comparison[0].pair_symbol);
+    channel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
+        setPriceComparison(data.priceComparison);
+    });
 
     return (
         <Link
             href={route('crypto.show', { id: crypto.id })}
-            className="flex max-w-7xl min-w-7xl flex-row items-center justify-between rounded-xl border p-3 font-sans transition duration-[0.2s] ease-in-out hover:cursor-pointer hover:bg-neutral-200 dark:bg-neutral-950 dark:hover:bg-neutral-900"
+            className="flex max-w-7xl min-w-7xl flex-row items-center justify-between rounded-xl border p-3 font-sans shadow transition duration-[0.2s] ease-in-out hover:cursor-pointer hover:bg-neutral-200 dark:bg-neutral-950 dark:shadow-neutral-500 dark:hover:bg-neutral-900"
         >
             <div className="flex flex-row gap-3">
                 <DynamicIcon name={crypto.icon} />

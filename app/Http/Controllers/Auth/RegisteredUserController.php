@@ -59,6 +59,17 @@ class RegisteredUserController extends Controller
             'locked_balance' => 0
         ]);
 
+        $cryptos = Crypto::all()->where('symbol', '!=', 'EUR');
+
+        foreach ($cryptos as $crypto) {
+            UserBalance::create([
+                'user_id' => $user->id,
+                'crypto_id' => $crypto->id,
+                'balance' => 0,
+                'locked_balance' => 0
+            ]);
+        }
+
         event(new Registered($user));
 
         Auth::login($user);

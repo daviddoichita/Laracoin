@@ -25,7 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])->where('disabled', '=', false)->find($id),
             'volume24h' => TransactionController::volume24h($id),
             'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
-            'state' => request()->query('state')
+            'state' => request()->query('state'),
+            'userBalance' => UserBalance::all()->where('user_id', '=', Auth::user()->id)
         ]);
     })->name('crypto.show');
 
@@ -49,6 +50,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::post('/new-order', [OrderController::class, 'storeInertia'])->name('new-order');
+
+    Route::get('/metrics', function () {
+        return Inertia::render('metrics');
+    });
+
+    Route::get('/admin/pulse', function () {
+        return redirect('/pulse');
+    })->name('pulse');
+
+    Route::get('/admin/telescope', function () {
+        return redirect('/telescope');
+    })->name('telescope');
 });
 
 

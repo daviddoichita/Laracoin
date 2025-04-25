@@ -2,6 +2,7 @@ import CoinInfoPill from '@/components/coin-info-pill';
 import { CryptoDashPillPrice } from '@/components/crypto-dash-pill-price';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import echo from '@/echo';
@@ -10,6 +11,7 @@ import { BreadcrumbItem, SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { PriceComparison } from '@/types/price-comparison';
 import { PriceRecord } from '@/types/price-record';
+import { UserBalance } from '@/types/user-balance';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, JSX, useEffect, useState } from 'react';
 import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
@@ -26,6 +28,7 @@ interface CryptoViewProps {
     volume24h: number;
     priceRecords: PriceRecord[];
     state: string;
+    userBalance: UserBalance[];
 }
 
 const localeString = (n: number, compact: boolean, maxFracDigits?: number) => {
@@ -151,11 +154,11 @@ type OrderForm = {
     sold_id: number;
     purchased_id: number;
     order_type: string;
-    total_amount: number;
-    price: number;
+    total_amount: number | null;
+    price: number | null;
 };
 
-export default function CryptoView({ crypto, volume24h, priceRecords, state }: CryptoViewProps) {
+export default function CryptoView({ crypto, volume24h, priceRecords, state, userBalance }: CryptoViewProps) {
     useEffect(() => {
         if (!crypto) {
             window.location.href = route('dashboard');
@@ -170,28 +173,114 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
     const [priceRecordsState, setPriceRecords] = useState(priceRecords);
 
     const [tab, setTab] = useState(state ? state : 'buy');
-    const activeTab = ' bg-sky-800 hover:bg-sky-900';
+    const activeTab = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
+    const [customPrice, setCustomPrice] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm<Required<OrderForm>>({
+    const currentCryptoBalance = userBalance.find((u) => u.crypto_id === priceComparison.main_id)?.balance ?? 0;
+    const euroBalance = userBalance.find((u) => u.crypto_id === priceComparison.child_id)?.balance ?? 0;
+
+    const [spend, setSpend] = useState<number | null>(null);
+    const [buy, setBuy] = useState<number | null>(null);
+
+    const { data, setData, post, processing, errors, setError } = useForm<Required<OrderForm>>({
         user_id: auth.user.id,
         sold_id: priceComparison.child_id,
         purchased_id: priceComparison.main_id,
         order_type: 'buy',
-        total_amount: -1,
-        price: -1,
+        total_amount: null,
+        price: null,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('new-order'));
+        if (!customPrice) {
+            setData('price', priceComparison.price);
+        }
+
+        const balance = userBalance.find((u) => u.crypto_id === data.sold_id);
+        if (balance) {
+            if (balance.balance > 0 && data.total_amount && data.total_amount <= balance.balance / priceComparison.price) {
+                console.log('now working');
+                post(route('new-order'));
+            } else {
+                setError('total_amount', 'Quantity greater than available balance');
+            }
+        }
+    };
+
+    useEffect(() => {
+        setAmount('buy', buy ?? 0);
+    }, [priceComparison.price]);
+
+    const setAmount = (origin: string, amount: number) => {
+        const buyCallback = () => {
+            setData('total_amount', amount);
+            setBuy(amount);
+            setSpend(amount * priceComparison.price);
+        };
+
+        const spendCallback = () => {
+            setSpend(amount);
+            const buyTemp = amount / priceComparison.price;
+            setBuy(buyTemp);
+            setData('total_amount', buyTemp);
+        };
+
+        if (tab.match('buy')) {
+            origin.match('buy') ? buyCallback() : spendCallback();
+        } else {
+            origin.match('spend') ? buyCallback() : spendCallback();
+        }
     };
 
     const formData: JSX.Element = (
         <>
-            <div className="mt-4 flex w-full flex-col">
+            <div className="mt-4 flex w-full flex-col font-black">
+                <p>
+                    Available balance ({tab.match('sell') ? crypto.symbol : 'EUR'}):{' '}
+                    {parseFloat(userBalance.find((u) => u.crypto_id === data.sold_id)?.balance.toString() ?? '').toLocaleString('es-ES', {
+                        maximumFractionDigits: 2,
+                    })}
+                </p>
+            </div>
+            <div className="flex w-full flex-col font-black">
+                <p>
+                    Price: ~
+                    {parseFloat(priceComparison.price.toString()).toLocaleString('es-ES', {
+                        style: 'currency',
+                        currency: 'EUR',
+                        maximumFractionDigits: 2,
+                    })}
+                </p>
+            </div>
+            <div className="flex w-full flex-col">
+                <Label htmlFor="price" className="text-md flex items-center gap-2">
+                    Custom price
+                    <Checkbox id="custom-price-check" checked={customPrice} onClick={(_e) => setCustomPrice(!customPrice)} />
+                </Label>
+                {customPrice ? (
+                    <>
+                        <Input
+                            disabled={!customPrice}
+                            name="price"
+                            id="price"
+                            type="number"
+                            step={0.00000001}
+                            autoFocus
+                            autoComplete="price"
+                            onChange={(e) => setData('price', parseFloat(e.target.value))}
+                        />
+                        <InputError message={errors.price} />
+                    </>
+                ) : (
+                    <></>
+                )}
+            </div>
+
+            <div className="flex w-full flex-col">
                 <Label htmlFor="price" className="text-md">
-                    Price per unit
+                    You buy ({tab.match('buy') ? crypto.symbol : 'EUR'})
                 </Label>
                 <Input
                     name="price"
@@ -200,27 +289,24 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                     step={0.00000001}
                     autoFocus
                     autoComplete="price"
-                    value={data.price === -1 ? '' : data.price}
-                    onChange={(e) => setData('price', parseFloat(e.target.value))}
-                    placeholder="€"
+                    value={tab.match('buy') ? (buy ?? '') : (spend ?? '')}
+                    onChange={(e) => setAmount('buy', parseFloat(e.target.value))}
                 />
-                <InputError message={errors.price} />
+                <InputError message={errors.total_amount} />
             </div>
-
             <div className="flex w-full flex-col">
-                <Label htmlFor="quantity" className="text-md">
-                    Quantity
+                <Label htmlFor="price" className="text-md">
+                    You spend ({tab.match('sell') ? crypto.symbol : 'EUR'})
                 </Label>
                 <Input
-                    name="amount"
-                    id="amount"
+                    name="price"
+                    id="price"
                     type="number"
                     step={0.00000001}
                     autoFocus
-                    autoComplete="amount"
-                    value={data.total_amount === -1 ? '' : data.total_amount}
-                    onChange={(e) => setData('total_amount', parseFloat(e.target.value))}
-                    placeholder="Total amount"
+                    autoComplete="price"
+                    value={tab.match('sell') ? (buy ?? '') : (spend ?? '')}
+                    onChange={(e) => setAmount('spend', parseFloat(e.target.value))}
                 />
                 <InputError message={errors.total_amount} />
             </div>
@@ -229,8 +315,12 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                 <Button
                     disabled={processing}
                     type="reset"
-                    onClick={(_e) => {
-                        reset('price', 'total_amount');
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setData('price', null);
+                        setData('total_amount', null);
+                        setBuy(null);
+                        setSpend(null);
                     }}
                     className="w-full bg-red-500 text-white hover:bg-red-600 dark:text-black"
                 >
@@ -332,7 +422,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                     <div className="flex w-full flex-col items-center justify-center">
                         <div className="flex w-full flex-row border-b">
                             <button
-                                disabled={processing}
+                                disabled={processing || euroBalance < 1}
                                 onClick={() => {
                                     setTab('buy');
                                     setData('sold_id', priceComparison.child_id);
@@ -344,7 +434,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                                 Buy
                             </button>
                             <button
-                                disabled={processing}
+                                disabled={processing || currentCryptoBalance < 1}
                                 onClick={() => {
                                     setTab('sell');
                                     setData('sold_id', priceComparison.main_id);
@@ -358,13 +448,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state }: C
                         </div>
 
                         <form onSubmit={submit} className="flex w-full flex-col gap-2">
-                            <div className="mt-2 w-full text-center">
-                                {tab.match('buy') ? (
-                                    <p>Recommended price per unit: {localeStringNoCompact(parseFloat(priceComparison.price.toString()), 2)}</p>
-                                ) : (
-                                    <p>Recommended price per unit: {localeStringCompact(1 / priceComparison.price)}</p>
-                                )}
-                            </div>
                             {formData}
                         </form>
                     </div>
