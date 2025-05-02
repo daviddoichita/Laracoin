@@ -71,6 +71,15 @@ class OrderController extends Controller
         return back();
     }
 
+    public function cancelOrderInertia(int $id)
+    {
+        $order = Order::find($id);
+        $order->status = 'canceled';
+        $order->save();
+
+        return back();
+    }
+
     /**
      * Display the specified resource.
      */

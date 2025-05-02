@@ -4,6 +4,7 @@ use App\Http\Controllers\CryptoController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Crypto;
+use App\Models\Order;
 use App\Models\PriceRecord;
 use App\Models\UserBalance;
 use Illuminate\Support\Facades\Route;
@@ -49,7 +50,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     });
 
+    Route::get('/my-orders', function () {
+        return Inertia::render('orders', [
+            'userOrders' => Order::where('user_id', '=', Auth::user()->id)->get(),
+            'cryptos' => Crypto::all()
+        ]);
+    });
+
     Route::post('/new-order', [OrderController::class, 'storeInertia'])->name('new-order');
+    Route::get('/cancel-order/{id}', [OrderController::class, 'cancelOrderInertia'])->name('cancel-order');
 
     Route::get('/metrics', function () {
         return Inertia::render('metrics');

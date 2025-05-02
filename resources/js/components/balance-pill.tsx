@@ -51,7 +51,7 @@ export default function BalancePill({ userBalance }: Readonly<BalancePillProps>)
                     <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                         <p>Euro value</p>
                         {userBalance.crypto.symbol === 'EUR' ? (
-                            <p>{formatPrice(userBalance.balance)}</p>
+                            <p>{formatPrice(parseFloat(userBalance.balance.toString()))}</p>
                         ) : (
                             <p className={priceComparison.last_update > 0 ? 'text-green-500' : 'text-red-500'}>
                                 {formatPrice(userBalance.balance * priceComparison.price)}
@@ -61,7 +61,7 @@ export default function BalancePill({ userBalance }: Readonly<BalancePillProps>)
                     <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                         <p>Locked euro value</p>
                         {userBalance.crypto.symbol === 'EUR' ? (
-                            <p>{formatPrice(userBalance.locked_balance)}</p>
+                            <p>{formatPrice(parseFloat(userBalance.locked_balance.toString()))}</p>
                         ) : (
                             <p className={priceComparison.last_update > 0 ? 'text-green-500' : 'text-red-500'}>
                                 {formatPrice(userBalance.locked_balance * priceComparison.price)}
