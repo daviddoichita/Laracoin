@@ -1,0 +1,11 @@
+export interface Order {
+    id: number;
+    user_id: number;
+    sold_id: number;
+    purchased_id: number;
+    order_type: string;
+    total_amount: number;
+    filled: number;
+    price: number;
+    status: string;
+}

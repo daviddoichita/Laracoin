@@ -10,7 +10,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn, shortUUID } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { ChartNoAxesCombined, LayoutGrid, List, Menu, Plus, Wallet } from 'lucide-react';
+import { ChartNoAxesCombined, LayoutGrid, List, Menu, Plus, ReceiptText, Wallet } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -24,6 +24,11 @@ const mainNavItems: NavItem[] = [
         title: 'My balances',
         href: '/my-balances',
         icon: Wallet,
+    },
+    {
+        title: 'My orders',
+        href: '/my-orders',
+        icon: ReceiptText,
     },
 ];
 
