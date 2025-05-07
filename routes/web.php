@@ -10,6 +10,8 @@ use App\Models\UserBalance;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use function Illuminate\Log\log;
+
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
@@ -27,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'volume24h' => TransactionController::volume24h($id),
             'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
             'state' => request()->query('state'),
-            'userBalance' => UserBalance::all()->where('user_id', '=', Auth::user()->id)
+            'userBalance' => UserBalance::all()->where('user_id', '=', Auth::user()->id)->values()->toArray()
         ]);
     })->name('crypto.show');
 
