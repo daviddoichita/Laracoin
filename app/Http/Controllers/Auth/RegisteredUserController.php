@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserBalance;
 use App\Rules\SpanishId;
 use App\Rules\SpanishPhone;
+use DB;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+
+use function Illuminate\Log\log;
 
 class RegisteredUserController extends Controller
 {
@@ -61,14 +64,17 @@ class RegisteredUserController extends Controller
 
         $cryptos = Crypto::all()->where('symbol', '!=', 'EUR');
 
+        $balances = [];
         foreach ($cryptos as $crypto) {
-            UserBalance::create([
+            array_push($balances, [
                 'user_id' => $user->id,
                 'crypto_id' => $crypto->id,
                 'balance' => 0,
                 'locked_balance' => 0
             ]);
         }
+
+        DB::table('user_balances')->insert($balances);
 
         event(new Registered($user));
 

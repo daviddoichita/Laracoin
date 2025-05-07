@@ -176,6 +176,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     const activeTab = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
     const [customPrice, setCustomPrice] = useState(false);
 
+    console.log(userBalance);
     const currentCryptoBalance = userBalance.find((u) => u.crypto_id === priceComparison.main_id)?.balance ?? 0;
     const euroBalance = userBalance.find((u) => u.crypto_id === priceComparison.child_id)?.balance ?? 0;
 
