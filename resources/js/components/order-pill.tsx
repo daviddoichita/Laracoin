@@ -15,7 +15,16 @@ const formatPrice = (n: number) => {
 export default function OrderPill({ order, sold, purchased }: OrderPillProps) {
     return (
         <>
-            <div className="mb-5 flex w-[49.5%] flex-col items-center gap-3 rounded-xl border p-3 shadow dark:shadow-neutral-500">
+            <div
+                className={
+                    'mb-5 flex w-[49.5%] flex-col items-center gap-3 rounded-xl border p-3 ' +
+                    (order.status === 'completed'
+                        ? 'border-green-500 shadow-md shadow-green-500'
+                        : order.status === 'pending'
+                          ? 'border-yellow-500 shadow-md shadow-yellow-500'
+                          : 'border-red-500 shadow-md shadow-red-500')
+                }
+            >
                 <div className="flex w-full flex-row justify-center gap-3 text-lg font-black">
                     <p>Order id: {order.id}</p>
                     <p>Sold: {sold?.name}</p>
@@ -54,10 +63,11 @@ export default function OrderPill({ order, sold, purchased }: OrderPillProps) {
                     </div>
                 </div>
                 <Button
+                    disabled={order.status === 'completed' || order.status === 'canceled'}
                     onClick={() => {
                         window.location.href = route('cancel-order', { id: order.id });
                     }}
-                    className="w-full bg-red-500 hover:cursor-pointer"
+                    className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400"
                 >
                     Cancel
                 </Button>
