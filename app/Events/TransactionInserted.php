@@ -27,7 +27,9 @@ class TransactionInserted implements ShouldBroadcastNow
      */
     public function __construct(public Transaction $lastTransaction)
     {
-        $transactions24h = Transaction::with('crypto')->where('crypto_id', '=', $this->lastTransaction->crypto_id)->where('created_at', '>=', Carbon::now()->subDay())->get();
+        $transactions24h = Transaction::with('crypto')
+            ->where('crypto_id', '=', $this->lastTransaction->crypto_id)
+            ->where('created_at', '>=', Carbon::now()->subDay())->get();
         $volume = 0;
         foreach ($transactions24h as $transaction) {
             $volume += $transaction->amount;

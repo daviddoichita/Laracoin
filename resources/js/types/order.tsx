@@ -4,7 +4,8 @@ export interface Order {
     sold_id: number;
     purchased_id: number;
     order_type: string;
-    total_amount: number;
+    purchased_amount: number;
+    sold_amount: number;
     filled: number;
     price: number;
     status: string;

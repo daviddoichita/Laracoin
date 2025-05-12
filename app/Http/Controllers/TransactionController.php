@@ -73,7 +73,9 @@ class TransactionController extends Controller
 
     public static function volume24h(int $id)
     {
-        $transactions = Transaction::with('crypto')->where('crypto_id', '=', $id)->where('created_at', '>=', Carbon::now()->subDay())->get();
+        $transactions = Transaction::with('crypto')
+            ->where('crypto_id', '=', $id)
+            ->where('created_at', '>=', Carbon::now()->subDay())->get();
         $volume = 0;
         foreach ($transactions as $transaction) {
             $volume += $transaction->amount;

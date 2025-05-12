@@ -7,10 +7,9 @@ use App\Models\Crypto;
 use App\Models\Order;
 use App\Models\PriceRecord;
 use App\Models\UserBalance;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-use function Illuminate\Log\log;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -19,13 +18,16 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard', [
-            'cryptos' => Crypto::with('mainPriceComparison', 'childPriceComparison')->where('disabled', '=', false)->where('symbol', '!=', 'EUR')->get()
+            'cryptos' => Crypto::with('mainPriceComparison', 'childPriceComparison')
+                ->where('disabled', '=', false)
+                ->where('symbol', '!=', 'EUR')->get()
         ]);
     })->name('dashboard');
 
     Route::get('/crypto/show/{id}', function (int $id) {
         return Inertia::render('crypto', [
-            'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])->where('disabled', '=', false)->find($id),
+            'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])
+                ->where('disabled', '=', false)->find($id),
             'volume24h' => TransactionController::volume24h($id),
             'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
             'state' => request()->query('state'),
@@ -73,6 +75,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/telescope', function () {
         return redirect('/telescope');
     })->name('telescope');
+
+    Route::post('/user_balance/add-euro/{euro}', function ($euro) {
+        $user = Auth::user();
+        $euroBalance = UserBalance::all()->where('user_id', '=', $user->id)
+            ->where('crypto.symbol', '=', 'EUR')
+            ->firstOrFail();
+        $euroBalance->balance = $euroBalance->balance + $euro;
+        $euroBalance->save();
+
+        return back();
+    })->name('add-euro');
 });
 
 

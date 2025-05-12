@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('sold_id');
             $table->foreignId('purchased_id');
             $table->enum('order_type', ['buy', 'sell']);
-            $table->decimal('total_amount', 18, 8);
+            $table->decimal('sold_amount', 18, 8);
+            $table->decimal('purchased_amount', 18, 8);
             $table->decimal('filled', 18, 8);
             $table->decimal('price', 18, 8);
             $table->enum('status', ['pending', 'completed', 'canceled']);
