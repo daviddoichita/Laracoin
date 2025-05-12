@@ -22,7 +22,10 @@ class PriceRecordCreated implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public PriceRecord $priceRecord) {}
+    public function __construct(public PriceRecord $priceRecord)
+    {
+        //
+    }
 
     /**
      * Get the channels the event should broadcast on.
