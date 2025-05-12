@@ -13,10 +13,11 @@ export default function Balances({ userBalances }: BalancesProps) {
             <Head title="My balances" />
 
             <div className="mt-10 flex max-w-7xl min-w-7xl flex-row flex-wrap gap-3 self-center">
-                {userBalances.map((v, _i) => {
-                    if (!v.crypto.disabled)
-                        return <BalancePill userBalance={v} key={v.id} />
-                })}
+                {userBalances
+                    .sort((a, b) => a.id - b.id)
+                    .map((v, _i) => {
+                        if (!v.crypto.disabled) return <BalancePill userBalance={v} key={v.id} />;
+                    })}
             </div>
         </AppLayout>
     );

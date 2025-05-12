@@ -36,7 +36,8 @@ class OrderController extends Controller
             'sold_id' => 'required',
             'purchased_id' => 'required',
             'order_type' => 'required',
-            'total_amount' => 'required',
+            'purchased_amount' => 'required',
+            'sold_amount' => 'required',
             'price' => 'required',
         ]);
 
@@ -45,7 +46,8 @@ class OrderController extends Controller
             'sold_id' => $request->sold_id,
             'purchased_id' => $request->purchased_id,
             'order_type' => $request->order_type,
-            'total_amount' => $request->total_amount,
+            'purchased_amount' => $request->purchased_amount,
+            'sold_amount' => $request->sold_amount,
             'price' => $request->price,
             'filled' => 0,
             'status' => 'pending'

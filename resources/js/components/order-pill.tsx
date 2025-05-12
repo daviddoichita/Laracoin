@@ -47,7 +47,7 @@ export default function OrderPill({ order, sold, purchased }: OrderPillProps) {
                     </div>
                     <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                         <p>Total amount</p>
-                        <p>{formatPrice(parseFloat(order.total_amount.toString()))}</p>
+                        <p>{formatPrice(parseFloat(order.purchased_amount.toString()))}</p>
                     </div>
                     <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                         <p>Price</p>
@@ -55,7 +55,7 @@ export default function OrderPill({ order, sold, purchased }: OrderPillProps) {
                     </div>
                     <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                         <p>Total price</p>
-                        <p>{formatPrice(order.price * order.total_amount)}</p>
+                        <p>{formatPrice(parseFloat(order.sold_amount.toString()))}</p>
                     </div>
                     <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                         <p>Filled</p>

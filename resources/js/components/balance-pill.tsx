@@ -1,8 +1,10 @@
 import echo from '@/echo';
 import { PriceComparison } from '@/types/price-comparison';
 import { UserBalance } from '@/types/user-balance';
+import { useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 export interface BalancePillProps {
     userBalance: UserBalance;
@@ -15,6 +17,11 @@ const formatPrice = (n: number) => {
 export default function BalancePill({ userBalance }: Readonly<BalancePillProps>) {
     const [priceComparison, setPriceComparison] = useState({} as PriceComparison);
     const pairSymbol = `${userBalance.crypto.symbol}_EUR`;
+    const [showAdd, setShowAdd] = useState(false);
+    const [add, setAdd] = useState<number | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const { post } = useForm();
 
     useEffect(() => {
         fetch(route('comparison_by_pair', { symbol: pairSymbol }))
@@ -71,7 +78,56 @@ export default function BalancePill({ userBalance }: Readonly<BalancePillProps>)
                 </div>
                 <div className="flex w-full flex-row justify-center gap-3">
                     {userBalance.crypto.symbol === 'EUR' ? (
-                        <Button className="w-full hover:cursor-pointer">Add</Button>
+                        <div className="flex w-full flex-col gap-3">
+                            <Button
+                                onClick={() => {
+                                    setShowAdd(true);
+                                }}
+                                id="add-euro"
+                                className="w-full hover:cursor-pointer"
+                            >
+                                Add
+                            </Button>
+                            <div className={showAdd ? 'flex flex-col items-center gap-2' : 'hidden'}>
+                                <Input
+                                    name="add-euro"
+                                    id="add-euro"
+                                    type="number"
+                                    step={0.01}
+                                    autoComplete="price"
+                                    value={add ?? ''}
+                                    onChange={(e) => setAdd(parseFloat(e.target.value))}
+                                ></Input>
+                                <p id="error" className="text-red-500">
+                                    {error}
+                                </p>
+                                <Button
+                                    onClick={() => {
+                                        if (add !== null) {
+                                            setError(null);
+                                            setShowAdd(false);
+                                            setAdd(null);
+                                            post(route('add-euro', { euro: add }));
+                                        } else {
+                                            setError('You must add an amount');
+                                        }
+                                    }}
+                                    className="w-full bg-green-500 hover:cursor-pointer hover:bg-green-400"
+                                >
+                                    Confirm
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        setAdd(null);
+                                        setError(null);
+                                        setShowAdd(false);
+                                    }}
+                                    className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400"
+                                >
+                                    Cancel
+                                </Button>
+                            </div>
+                        </div>
                     ) : (
                         <>
                             <Button

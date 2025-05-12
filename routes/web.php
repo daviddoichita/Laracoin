@@ -7,10 +7,9 @@ use App\Models\Crypto;
 use App\Models\Order;
 use App\Models\PriceRecord;
 use App\Models\UserBalance;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-use function Illuminate\Log\log;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -73,6 +72,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/telescope', function () {
         return redirect('/telescope');
     })->name('telescope');
+
+    Route::post('/user_balance/add-euro/{euro}', function ($euro) {
+        $user = Auth::user();
+        $euroBalance = UserBalance::all()->where('user_id', '=', $user->id)->where('crypto.symbol', '=', 'EUR')->firstOrFail();
+        $euroBalance->balance = $euroBalance->balance + $euro;
+        $euroBalance->save();
+
+        return back();
+    })->name('add-euro');
 });
 
 
