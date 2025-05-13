@@ -85,6 +85,7 @@ class OrderCreatedListener
 
         if (bccomp($overlaping->remaining_to_sell, '0', 8) === 0) {
             $overlaping = $this->completeOrder($overlaping);
+            $overlaping->save();
         }
     }
 
