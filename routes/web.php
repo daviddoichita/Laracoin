@@ -25,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/crypto/show/{id}', function (int $id) {
+        if ($id == Crypto::where('symbol', 'EUR')->get()->first()->id) {
+            return redirect('dashboard');
+        }
+
         return Inertia::render('crypto', [
             'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])
                 ->where('disabled', '=', false)->find($id),

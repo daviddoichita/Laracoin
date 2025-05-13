@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderCreated;
 use App\Models\Order;
+use App\Models\UserBalance;
+use Auth;
+use Illuminate\Database\Eloquent\JsonEncodingException;
 use Illuminate\Http\Request;
+use Log;
 
 class OrderController extends Controller
 {
@@ -41,17 +46,30 @@ class OrderController extends Controller
             'price' => 'required',
         ]);
 
-        return Order::create([
+        $order = Order::create([
             'user_id' => $request->user_id,
             'sold_id' => $request->sold_id,
             'purchased_id' => $request->purchased_id,
             'order_type' => $request->order_type,
             'purchased_amount' => $request->purchased_amount,
             'sold_amount' => $request->sold_amount,
+            'remaining_to_sell' => $request->sold_amount,
             'price' => $request->price,
             'filled' => 0,
             'status' => 'pending'
         ]);
+
+        $userBalance = UserBalance::where('user_id', Auth::user()->id)
+            ->where('crypto_id', $order->sold_id)
+            ->get()[0];
+
+        $userBalance->balance -= $order->sold_amount;
+
+        $userBalance->save();
+
+        event(new OrderCreated($order));
+
+        return $order;
     }
 
     /**
@@ -68,7 +86,9 @@ class OrderController extends Controller
 
     public function storeInertia(Request $request)
     {
-        $this->storeCommon($request);
+        $order = $this->storeCommon($request);
+
+        Log::info('storeCommon result: ' . json_encode($order));
 
         return back();
     }
@@ -77,6 +97,14 @@ class OrderController extends Controller
     {
         $order = Order::find($id);
         $order->status = 'canceled';
+
+        if ($order->remaining_to_sell > 0) {
+            $userBalance = UserBalance::where('user_id', Auth::user()->id)
+                ->where('crypto_id', $order->sold_id)->get()->first();
+            $userBalance->balance += $order->remaining_to_sell;
+            $userBalance->save();
+        }
+
         $order->save();
 
         return back();

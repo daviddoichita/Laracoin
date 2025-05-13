@@ -27,7 +27,7 @@ Schedule::call(function () {
 
         event(new PriceRecordCreated($priceRecord));
     }
-})->everyFiveMinutes();
+})->everyThirtySeconds();
 
 Schedule::call(function () {
     $priceComparisonArray = PriceComparison::all();
@@ -52,4 +52,4 @@ Schedule::call(function () {
         event(new PriceComparisonUpdated($priceComparison));
         log($new);
     }
-})->everyThirtySeconds();
+})->everyFiveSeconds();

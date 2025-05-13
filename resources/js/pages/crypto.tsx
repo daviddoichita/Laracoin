@@ -76,7 +76,7 @@ interface CustomTooltipProps {
 }
 
 const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-    if (active && payload && payload.length) {
+    if (active && payload?.length) {
         const { created_at, price } = payload[0].payload;
         return (
             <div className="rounded border border-black bg-white p-1 dark:border-white dark:bg-neutral-950">
@@ -159,7 +159,15 @@ type OrderForm = {
     price: number | null;
 };
 
-export default function CryptoView({ crypto, volume24h, priceRecords, state, userBalance }: CryptoViewProps) {
+const truncateTo8Decimals = (n: number): number => {
+    return Math.floor(n * 1e8) / 1e8;
+};
+
+const precisize = (n: number): number => {
+    return truncateTo8Decimals(n);
+};
+
+export default function CryptoView({ crypto, volume24h, priceRecords, state, userBalance }: Readonly<CryptoViewProps>) {
     useEffect(() => {
         if (!crypto) {
             window.location.href = route('dashboard');
@@ -171,21 +179,21 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
     const [volume24hState, setVolume24hState] = useState(volume24h);
     const [infoPills, setInfoPills] = useState(calculateInfoPills(crypto, priceComparison, volume24h));
-    const [priceRecordsState, setPriceRecords] = useState(priceRecords);
+    const [priceRecordsState, setPriceRecordsState] = useState(priceRecords);
 
-    const [tab, setTab] = useState(state ? state : 'buy');
+    const [tab, setTab] = useState(state ?? 'buy');
     const activeTab = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
     const [customPrice, setCustomPrice] = useState(false);
-    const [isBuying, setIsBuying] = useState(true);
+    const [isBuying, setIsBuying] = useState(tab === 'buy');
 
     const currentCryptoBalance = userBalance.find((u) => u.crypto_id === priceComparison.main_id)?.balance ?? 0;
     const euroBalance = userBalance.find((u) => u.crypto_id === priceComparison.child_id)?.balance ?? 0;
 
     const { data, setData, post, processing, errors, setError } = useForm<Required<OrderForm>>({
         user_id: auth.user.id,
-        sold_id: state === 'buy' ? priceComparison.main_id : priceComparison.child_id,
-        purchased_id: state === 'buy' ? priceComparison.child_id : priceComparison.main_id,
-        order_type: state,
+        sold_id: tab === 'buy' ? priceComparison.child_id : priceComparison.main_id,
+        purchased_id: tab === 'buy' ? priceComparison.main_id : priceComparison.child_id,
+        order_type: state ?? 'buy',
         sold_amount: null,
         purchased_amount: null,
         price: null,
@@ -211,27 +219,28 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
 
     const setAmount = (pur: boolean, am: number) => {
         const price = customPrice ? (data.price ?? 0) : priceComparison.price;
+        const amount = precisize(am)
         if (isBuying) {
             if (pur) {
-                setData('purchased_amount', am);
-                setData('sold_amount', am * price);
+                setData('purchased_amount', amount);
+                setData('sold_amount', precisize(amount * price));
             } else {
-                setData('sold_amount', am);
-                setData('purchased_amount', am * (1 / price));
+                setData('sold_amount', amount);
+                setData('purchased_amount', precisize(amount * (1 / price)));
             }
+        } else if (pur) {
+            setData('purchased_amount', amount);
+            setData('sold_amount', precisize(amount * (1 / price)));
         } else {
-            if (pur) {
-                setData('purchased_amount', am);
-                setData('sold_amount', am * (1 / price));
-            } else {
-                setData('sold_amount', am);
-                setData('purchased_amount', am * price);
-            }
+            setData('sold_amount', amount);
+            setData('purchased_amount', precisize(amount * price));
         }
     };
 
     useEffect(() => {
-        setAmount(isBuying, data.purchased_amount ?? 0);
+        if (!customPrice) {
+            isBuying ? setAmount(isBuying, data.purchased_amount ?? 0) : setAmount(isBuying, data.sold_amount ?? 0)
+        }
     }, [priceComparison.price]);
 
     const formData: JSX.Element = (
@@ -356,7 +365,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
 
     const recordChannel = echo.subscribe('Records.Pair.' + priceComparison.id);
     recordChannel.bind('App\\Events\\PriceRecordCreated', function (data: any) {
-        setPriceRecords(() => [...priceRecordsState, data.priceRecord]);
+        setPriceRecordsState(() => [...priceRecordsState, data.priceRecord]);
     });
 
     useEffect(() => {
@@ -431,7 +440,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                     <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{tab.toUpperCase()}</h2>
 
                     <div className="flex w-full flex-col items-center justify-center">
-                        <div className="flex w-full flex-row border-b">
+                        <div className="flex w-full flex-row">
                             <button
                                 disabled={processing || euroBalance < 1}
                                 onClick={() => {
@@ -441,7 +450,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setData('purchased_id', priceComparison.main_id);
                                     setData('order_type', 'buy');
                                 }}
-                                className={'w-full cursor-pointer rounded-t p-2 ' + (isBuying ? activeTab : '')}
+                                className={'w-full cursor-pointer rounded p-2 ' + (isBuying ? activeTab : '')}
                             >
                                 Buy
                             </button>
@@ -454,7 +463,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setData('purchased_id', priceComparison.child_id);
                                     setData('order_type', 'sell');
                                 }}
-                                className={'w-full cursor-pointer rounded-t p-2 ' + (!isBuying ? activeTab : '')}
+                                className={'w-full cursor-pointer rounded p-2 ' + (!isBuying ? activeTab : '')}
                             >
                                 Sell
                             </button>

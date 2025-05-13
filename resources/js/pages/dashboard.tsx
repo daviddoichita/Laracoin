@@ -21,7 +21,7 @@ interface DashboardProps {
     cryptos: Crypto[];
 }
 
-export default function Dashboard({ cryptos }: DashboardProps) {
+export default function Dashboard({ cryptos }: Readonly<DashboardProps>) {
     const [filteredCryptos, setFilteredCryptos] = useState(cryptos);
     const [filtering, setFiltering] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -78,7 +78,7 @@ export default function Dashboard({ cryptos }: DashboardProps) {
             </div>
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl">
                 <div className="flex w-full flex-col items-center justify-center gap-5">
-                    {filteredCryptos.map(function(crypto, _i) {
+                    {filteredCryptos.map(function (crypto, _i) {
                         return <CryptoDashPill key={shortUUID()} crypto={crypto} />;
                     })}
                 </div>

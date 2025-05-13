@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('purchased_id');
             $table->enum('order_type', ['buy', 'sell']);
             $table->decimal('sold_amount', 18, 8);
+            $table->decimal('remaining_to_sell', 18, 8);
             $table->decimal('purchased_amount', 18, 8);
             $table->decimal('filled', 18, 8);
             $table->decimal('price', 18, 8);

@@ -17,6 +17,7 @@ class Order extends Model
         'purchased_id',
         'order_type',
         'purchased_amount',
+        'remaining_to_sell',
         'sold_amount',
         'filled',
         'price',
