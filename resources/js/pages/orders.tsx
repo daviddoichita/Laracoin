@@ -10,22 +10,24 @@ export interface OrdersProps {
     cryptos: Crypto[];
 }
 
-export default function Orders({ userOrders, cryptos }: OrdersProps) {
+export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
     return (
         <AppLayout>
             <Head title="My orders" />
 
             <div className="mt-10 flex max-w-7xl min-w-7xl flex-row flex-wrap gap-3 self-center">
-                {userOrders.map((v, _i) => {
-                    return (
-                        <OrderPill
-                            order={v}
-                            sold={cryptos.find((c) => c.id === v.sold_id)}
-                            purchased={cryptos.find((c) => c.id === v.purchased_id)}
-                            key={shortUUID()}
-                        />
-                    );
-                })}
+                {userOrders
+                    .toSorted((a, b) => a.id - b.id)
+                    .map((v, _i) => {
+                        return (
+                            <OrderPill
+                                order={v}
+                                sold={cryptos.find((c) => c.id === v.sold_id)}
+                                purchased={cryptos.find((c) => c.id === v.purchased_id)}
+                                key={shortUUID()}
+                            />
+                        );
+                    })}
             </div>
         </AppLayout>
     );
