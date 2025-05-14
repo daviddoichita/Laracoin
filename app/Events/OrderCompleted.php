@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Crypto;
 use App\Models\Order;
 use Auth;
 use Illuminate\Broadcasting\Channel;
@@ -14,14 +13,14 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderCreated implements ShouldBroadcastNow
+class OrderCompleted implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Order $order, public Crypto $purchased, public Crypto $sold)
+    public function __construct(public Order $order)
     {
         //
     }
@@ -33,6 +32,6 @@ class OrderCreated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('Orders.Created.' . $this->order->user_id);
+        return new Channel('Orders.Completed.' . $this->order->user_id);
     }
 }

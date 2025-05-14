@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\OrderCompleted;
 use App\Events\OrderCreated;
 use App\Models\Order;
 use App\Models\UserBalance;
@@ -57,27 +58,46 @@ class OrderCreatedListener
             ->where('price', $order->price)
             ->get();
     }
-
     private function processOrderMatching(Order $order, Order $overlaping): void
     {
-        $orderRemainingToFill = $this->truncateTo8Decimals(bcsub($order->purchased_amount, $order->filled, 8));
-        $overlapingRemainingToFill = $this->truncateTo8Decimals(bcsub($overlaping->purchased_amount, $overlaping->filled, 8));
+        $orderRemainingToFill = $this->truncateTo8Decimals(
+            $order->order_type === 'sell'
+                ? bcsub($order->sold_amount, $order->filled, 8)
+                : bcsub($order->purchased_amount, $order->filled, 8)
+        );
+
+        $overlapingRemainingToFill = $this->truncateTo8Decimals(
+            $overlaping->order_type === 'sell'
+                ? bcsub($overlaping->sold_amount, $overlaping->filled, 8)
+                : bcsub($overlaping->purchased_amount, $overlaping->filled, 8)
+        );
 
         $remainingToFill = min($orderRemainingToFill, $overlapingRemainingToFill);
 
         if (bccomp($remainingToFill, '0', 8) > 0) {
             $this->updateOrderFilling($order, $overlaping, $remainingToFill);
-            $overlaping->save();
         }
     }
 
     private function updateOrderFilling(Order $order, Order $overlaping, string $remainingToFill): void
     {
-        $order->filled = $this->truncateTo8Decimals(bcadd($order->filled, $remainingToFill, 8));
+        $orderFillAmount = $order->order_type === 'sell'
+            ? $remainingToFill
+            : $this->truncateTo8Decimals(bcmul($remainingToFill, $order->price, 8));
+
+        $order->filled = $this->truncateTo8Decimals(bcadd($order->filled, $orderFillAmount, 8));
         $overlaping->filled = $this->truncateTo8Decimals(bcadd($overlaping->filled, $remainingToFill, 8));
 
         $this->updateRemainingToSell($order);
         $this->updateRemainingToSell($overlaping);
+
+        if (bccomp($order->remaining_to_sell, '0', 8) < 0) {
+            $order->remaining_to_sell = '0';
+        }
+
+        if (bccomp($overlaping->remaining_to_sell, '0', 8) < 0) {
+            $overlaping->remaining_to_sell = '0';
+        }
 
         if (bccomp($order->remaining_to_sell, '0', 8) === 0) {
             $order = $this->completeOrder($order);
@@ -85,8 +105,9 @@ class OrderCreatedListener
 
         if (bccomp($overlaping->remaining_to_sell, '0', 8) === 0) {
             $overlaping = $this->completeOrder($overlaping);
-            $overlaping->save();
         }
+
+        $overlaping->save();
     }
 
     private function updateRemainingToSell(Order $order): void
@@ -111,6 +132,8 @@ class OrderCreatedListener
             ->get()->first();
         $userBalance->balance += $order->purchased_amount;
         $userBalance->save();
+
+        event(new OrderCompleted($order));
 
         return $order;
     }
