@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\OrderCreated;
+use App\Models\Crypto;
 use App\Models\Order;
 use App\Models\UserBalance;
 use Auth;
@@ -67,7 +68,7 @@ class OrderController extends Controller
 
         $userBalance->save();
 
-        event(new OrderCreated($order));
+        event(new OrderCreated($order, Crypto::find($order->purchased_id), Crypto::find($order->sold_id)));
 
         return $order;
     }

@@ -238,7 +238,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     };
 
     useEffect(() => {
-        if (!customPrice) {
+        if (!customPrice && data.purchased_amount && data.sold_amount) {
             isBuying ? setAmount(isBuying, data.purchased_amount ?? 0) : setAmount(isBuying, data.sold_amount ?? 0)
         }
     }, [priceComparison.price]);
@@ -249,7 +249,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                 <p>
                     Available balance ({!isBuying ? crypto.symbol : 'EUR'}):{' '}
                     {parseFloat(userBalance.find((u) => u.crypto_id === data.sold_id)?.balance.toString() ?? '').toLocaleString('es-ES', {
-                        maximumFractionDigits: 2,
+                        maximumFractionDigits: 8,
                     })}
                 </p>
             </div>
@@ -442,12 +442,14 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                     <div className="flex w-full flex-col items-center justify-center">
                         <div className="flex w-full flex-row">
                             <button
-                                disabled={processing || euroBalance < 1}
+                                disabled={processing || euroBalance <= 0}
                                 onClick={() => {
                                     setTab('buy');
                                     setIsBuying(true);
                                     setData('sold_id', priceComparison.child_id);
                                     setData('purchased_id', priceComparison.main_id);
+                                    setData('purchased_amount', null)
+                                    setData('sold_amount', null)
                                     setData('order_type', 'buy');
                                 }}
                                 className={'w-full cursor-pointer rounded p-2 ' + (isBuying ? activeTab : '')}
@@ -455,12 +457,14 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                 Buy
                             </button>
                             <button
-                                disabled={processing || currentCryptoBalance < 1}
+                                disabled={processing || currentCryptoBalance <= 0}
                                 onClick={() => {
                                     setTab('sell');
                                     setIsBuying(false);
                                     setData('sold_id', priceComparison.main_id);
                                     setData('purchased_id', priceComparison.child_id);
+                                    setData('purchased_amount', null)
+                                    setData('sold_amount', null)
                                     setData('order_type', 'sell');
                                 }}
                                 className={'w-full cursor-pointer rounded p-2 ' + (!isBuying ? activeTab : '')}
