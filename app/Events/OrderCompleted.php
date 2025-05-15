@@ -12,6 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class OrderCompleted implements ShouldBroadcastNow
 {
@@ -32,6 +33,7 @@ class OrderCompleted implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
+        Log::info('ordercompleted broadcasting on: ' . 'RTSocket.Client.' . $this->order->user_id);
         return new Channel('RTSocket.Client.' . $this->order->user_id);
     }
 }
