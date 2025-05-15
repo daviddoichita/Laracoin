@@ -20,7 +20,7 @@ export interface ListCryptosProps {
     cryptos: Crypto[];
 }
 
-export default function ListCryptos({ cryptos }: ListCryptosProps) {
+export default function ListCryptos({ cryptos }: Readonly<ListCryptosProps>) {
     const { post } = useForm<{}>({});
     const { auth } = usePage<SharedData>().props;
     const [query, setQuery] = useState('');
@@ -62,7 +62,7 @@ export default function ListCryptos({ cryptos }: ListCryptosProps) {
         <AppLayout>
             <Head title="Cryptos list"></Head>
 
-            <div className={'flex w-[85%] flex-col items-center justify-start gap-3 self-center p-4 ' + (auth.user.admin ? '' : 'hidden')}>
+            <div className={'mt-5 mb-5 flex w-[40%] max-w-7xl flex-row gap-2 self-center ' + (auth.user.admin ? '' : 'hidden')}>
                 <div className="flex w-full flex-row items-center justify-center gap-3 p-4">
                     {filtering ? (
                         <Button
