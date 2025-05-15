@@ -65,11 +65,11 @@ function OrderListener() {
         orderCompletedChannel.bind('App\\Events\\OrderCompleted', handleOrderCompleted);
         orderFilledChannel.bind('App\\Events\\OrderFilled', handleOrderFilled);
 
-        return () => {
-            orderCreatedChannel.unbind('App\\Events\\OrderCreated', handleOrderCreated);
-            orderCompletedChannel.unbind('App\\Events\\OrderCompleted', handleOrderCompleted);
-            orderFilledChannel.unbind('App\\Events\\OrderFilled', handleOrderFilled);
-        };
+        // return () => {
+        //     orderCreatedChannel.unbind('App\\Events\\OrderCreated', handleOrderCreated);
+        //     orderCompletedChannel.unbind('App\\Events\\OrderCompleted', handleOrderCompleted);
+        //     orderFilledChannel.unbind('App\\Events\\OrderFilled', handleOrderFilled);
+        // };
     }, [auth.user.id, toastManager]);
 
     return <></>;
