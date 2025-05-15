@@ -6,11 +6,13 @@ use App\Models\Crypto;
 use App\Models\PriceComparison;
 use App\Models\PriceRecord;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Log;
 
 class CryptoController extends Controller
 {
-    private const NAME_VALIDATIONS = 'required|string|max:50';
-    private const SYMBOL_VALIDATIONS = 'required|string|max:10';
+    private const NAME_VALIDATIONS = 'required|string|max:50|unique:cryptos,name';
+    private const SYMBOL_VALIDATIONS = 'required|string|max:10|unique:cryptos,symbol';
 
     /**
      * Display a listing of the resource.
@@ -43,7 +45,14 @@ class CryptoController extends Controller
             'symbol' => self::SYMBOL_VALIDATIONS,
             'icon' => 'required|string',
             'max_supply' => 'required',
-            'circulating_supply' => 'required'
+            'circulating_supply' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value > $request->max_supply && $request->max_supply != -1) {
+                        $fail('Circulating supply cannot be greater than max supply');
+                    }
+                },
+            ],
         ]);
 
         $crypto = Crypto::create([
@@ -66,8 +75,14 @@ class CryptoController extends Controller
             'symbol' => self::SYMBOL_VALIDATIONS,
             'icon' => 'required|string',
             'max_supply' => 'required',
-            'circulating_supply' => 'required',
-            'price' => 'required'
+            'circulating_supply' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value > $request->max_supply && $request->max_supply != -1) {
+                        $fail('Circulating supply cannot be greater than max supply');
+                    }
+                },
+            ],
         ]);
 
         $crypto = Crypto::create([
@@ -91,7 +106,7 @@ class CryptoController extends Controller
             'price' => $priceComparison->price,
         ]);
 
-        return redirect()->intended(route('crypto.add', absolute: false));
+        return Inertia::render('add-crypto');
     }
 
     /**

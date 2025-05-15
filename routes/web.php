@@ -58,7 +58,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'userBalances' => UserBalance::with('crypto')->where('user_id', '=', Auth::user()->id)->get(),
             'priceComparison' => PriceComparison::all()
         ]);
-    });
+    })->name('my-balances');
 
     Route::get('/my-orders', function () {
         return Inertia::render('orders', [
@@ -90,7 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $euroBalance->balance = $euroBalance->balance + $euro;
         $euroBalance->save();
 
-        return back();
+        return Inertia::location(route('my-balances'));
     })->name('add-euro');
 });
 

@@ -159,12 +159,8 @@ type OrderForm = {
     price: number | null;
 };
 
-const truncateTo8Decimals = (n: number): number => {
-    return Math.floor(n * 1e8) / 1e8;
-};
-
 const precisize = (n: number): number => {
-    return truncateTo8Decimals(n);
+    return Math.floor(n * 1e8) / 1e8;
 };
 
 export default function CryptoView({ crypto, volume24h, priceRecords, state, userBalance }: Readonly<CryptoViewProps>) {
@@ -353,17 +349,13 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     );
 
     useEchoPublic(`Prices.Pair.${priceComparison?.id}`, ['PriceComparisonUpdated', 'PriceRecordCreated'], (e: any) => {
-        if (e.priceComparison.pair_symbol.includes(crypto.symbol)) {
+        if (e.priceComparison?.pair_symbol.includes(crypto.symbol)) {
             setPriceComparison(e.priceComparison);
         }
-        if (e.priceRecord.pair_id === priceComparison.id) {
+        if (e.priceRecord?.pair_id === priceComparison?.id) {
             setPriceRecordsState(() => [...priceRecordsState, e.priceRecord]);
         }
     });
-
-    // rtSocket.bind('App\\Events\\TransactionInserted', function (data: any) {
-    //     setVolume24hState(data.volume24h);
-    // });
 
     useEchoPublic(`Transactions.Crypto.Id.${crypto.id}`, 'TransactionInserted', (e: any) => {
         setVolume24hState(e.volume24h);

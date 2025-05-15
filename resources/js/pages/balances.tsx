@@ -1,4 +1,4 @@
-import BalancePill from '@/components/balance-pill';
+import { DynamicBalance, StaticBalance } from '@/components/balance-pill';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
@@ -6,8 +6,7 @@ import { PriceComparison } from '@/types/price-comparison';
 import { UserBalance } from '@/types/user-balance';
 import { Head } from '@inertiajs/react';
 import Fuse from 'fuse.js';
-import { DynamicIcon } from 'lucide-react/dynamic';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export interface BalancesProps {
     userBalances: UserBalance[];
@@ -35,6 +34,8 @@ export default function Balances({ userBalances, priceComparison }: Readonly<Bal
 
         setFilteredBalances(fuse.search(trimmed).map((result) => result.item));
     };
+
+    useEffect(() => filter(), [query]);
 
     return (
         <AppLayout>
@@ -64,12 +65,6 @@ export default function Balances({ userBalances, priceComparison }: Readonly<Bal
                     value={query}
                     placeholder="Search"
                 ></Input>
-                <Button
-                    onClick={() => filter()}
-                    className="bg-neutral-100 hover:cursor-pointer hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-                >
-                    <DynamicIcon name="search" className="text-black dark:text-white"></DynamicIcon>
-                </Button>
             </div>
 
             <div className="mt-10 flex max-w-7xl min-w-7xl flex-row flex-wrap gap-3 self-center">
@@ -78,7 +73,11 @@ export default function Balances({ userBalances, priceComparison }: Readonly<Bal
                     .map((v, _i) => {
                         const pairSymbol = `${v.crypto.symbol}_EUR`;
                         const priceComp = priceComparison.find((pc) => pc.pair_symbol === pairSymbol);
-                        if (!v.crypto.disabled) return <BalancePill userBalance={v} priceComparison={priceComp} key={v.id} />;
+                        if (!v.crypto.disabled && priceComp) {
+                            return <DynamicBalance userBalance={v} priceComparison={priceComp} key={v.id} />;
+                        } else if (!v.crypto.disabled && !priceComp) {
+                            return <StaticBalance key={v.id} userBalance={v} />;
+                        }
                     })}
             </div>
         </AppLayout>
