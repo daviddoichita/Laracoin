@@ -1,7 +1,8 @@
-import echo from '@/echo';
+import getEchoConnection from '@/rtSocket';
+import { SharedData } from '@/types';
 import { PriceComparison } from '@/types/price-comparison';
 import { UserBalance } from '@/types/user-balance';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -20,6 +21,7 @@ export default function BalancePill({ userBalance }: Readonly<BalancePillProps>)
     const [showAdd, setShowAdd] = useState(false);
     const [add, setAdd] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const { auth } = usePage<SharedData>().props;
 
     const { post } = useForm();
 
@@ -27,17 +29,23 @@ export default function BalancePill({ userBalance }: Readonly<BalancePillProps>)
         fetch(route('comparison_by_pair', { symbol: pairSymbol }))
             .then((response) => response.json())
             .then((json) => {
+                const priceComp = json[0] as PriceComparison;
                 setPriceComparison(json[0] as PriceComparison);
+                if (priceComp) {
+                    const { pairs } = getEchoConnection(auth.user, priceComp.id);
+
+                    if (userBalance.crypto.symbol !== 'EUR') {
+                        pairs?.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
+                            const dataPriceComp: PriceComparison = data.priceComparison;
+                            if (dataPriceComp.pair_symbol.includes(userBalance.crypto.symbol)) {
+                                setPriceComparison(data.priceComparison);
+                            }
+                        });
+                    }
+                }
             })
             .catch((error) => console.error(error));
     }, []);
-
-    if (userBalance.crypto.symbol !== 'EUR') {
-        const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + pairSymbol);
-        priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
-            setPriceComparison(data.priceComparison);
-        });
-    }
 
     return (
         <div className="flex w-[32.5%] flex-col items-center gap-3 rounded-xl border p-3 shadow dark:shadow-neutral-500">

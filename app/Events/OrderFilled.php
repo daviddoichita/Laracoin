@@ -31,6 +31,6 @@ class OrderFilled implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('Orders.Filled.' . $this->order->user_id);
+        return new Channel('RTSocket.Client.' . $this->order->user_id);
     }
 }
