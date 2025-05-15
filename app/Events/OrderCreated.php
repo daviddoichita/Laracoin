@@ -33,6 +33,6 @@ class OrderCreated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('Orders.Created.' . $this->order->user_id);
+        return new Channel('RTSocket.Client.' . $this->order->user_id);
     }
 }

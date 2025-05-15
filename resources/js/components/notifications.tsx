@@ -1,4 +1,4 @@
-import echo from '@/echo';
+import getEchoConnection from '@/rtSocket';
 import { SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { Order } from '@/types/order';
@@ -22,15 +22,12 @@ export default function Notifications() {
 
 function OrderListener() {
     const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const { auth } = usePage<SharedData>().props;
+    const { notifs } = getEchoConnection(auth.user);
 
     const toastManager = Toast.useToastManager();
-    const { auth } = usePage<SharedData>().props;
 
     useEffect(() => {
-        const orderCreatedChannel = echo.subscribe('Orders.Created.' + auth.user.id);
-        const orderCompletedChannel = echo.subscribe('Orders.Completed.' + auth.user.id);
-        const orderFilledChannel = echo.subscribe('Orders.Filled.' + auth.user.id);
-
         const handleOrderCreated = (data: any) => {
             const order: Order = data.order;
             const purchased: Crypto = data.purchased;
@@ -61,14 +58,14 @@ function OrderListener() {
             });
         };
 
-        orderCreatedChannel.bind('App\\Events\\OrderCreated', handleOrderCreated);
-        orderCompletedChannel.bind('App\\Events\\OrderCompleted', handleOrderCompleted);
-        orderFilledChannel.bind('App\\Events\\OrderFilled', handleOrderFilled);
+        notifs.bind('App\\Events\\OrderCreated', handleOrderCreated);
+        notifs.bind('App\\Events\\OrderCompleted', handleOrderCompleted);
+        notifs.bind('App\\Events\\OrderFilled', handleOrderFilled);
 
         return () => {
-            orderCreatedChannel.unbind('App\\Events\\OrderCreated', handleOrderCreated);
-            orderCompletedChannel.unbind('App\\Events\\OrderCompleted', handleOrderCompleted);
-            orderFilledChannel.unbind('App\\Events\\OrderFilled', handleOrderFilled);
+            notifs.unbind('App\\Events\\OrderCreated', handleOrderCreated);
+            notifs.unbind('App\\Events\\OrderCompleted', handleOrderCompleted);
+            notifs.unbind('App\\Events\\OrderFilled', handleOrderFilled);
         };
     }, [auth.user.id, toastManager]);
 

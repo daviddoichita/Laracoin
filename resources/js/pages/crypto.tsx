@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import echo from '@/echo';
 import AppLayout from '@/layouts/app-layout';
+import getEchoConnection from '@/rtSocket';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { PriceComparison } from '@/types/price-comparison';
@@ -219,7 +219,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
 
     const setAmount = (pur: boolean, am: number) => {
         const price = customPrice ? (data.price ?? 0) : priceComparison.price;
-        const amount = precisize(am)
+        const amount = precisize(am);
         if (isBuying) {
             if (pur) {
                 setData('purchased_amount', amount);
@@ -239,7 +239,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
 
     useEffect(() => {
         if (!customPrice && data.purchased_amount && data.sold_amount) {
-            isBuying ? setAmount(isBuying, data.purchased_amount ?? 0) : setAmount(isBuying, data.sold_amount ?? 0)
+            isBuying ? setAmount(isBuying, data.purchased_amount ?? 0) : setAmount(isBuying, data.sold_amount ?? 0);
         }
     }, [priceComparison.price]);
 
@@ -353,19 +353,22 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         </>
     );
 
-    const priceComparisonChannel = echo.subscribe('PriceComparison.Pair.' + priceComparison.pair_symbol);
-    priceComparisonChannel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
-        setPriceComparison(data.priceComparison);
-    });
+    const { pairs } = getEchoConnection(auth.user, priceComparison.id);
 
-    const transactionsChannel = echo.subscribe('Transactions.Crypto.Id.' + crypto.id);
-    transactionsChannel.bind('App\\Events\\TransactionInserted', function (data: any) {
-        setVolume24hState(data.volume24h);
+    pairs?.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
+        const dataPriceComp: PriceComparison = data.priceComparison;
+        if (dataPriceComp.pair_symbol.includes(crypto.symbol)) {
+            setPriceComparison(data.priceComparison);
+        }
     });
-
-    const recordChannel = echo.subscribe('Records.Pair.' + priceComparison.id);
-    recordChannel.bind('App\\Events\\PriceRecordCreated', function (data: any) {
-        setPriceRecordsState(() => [...priceRecordsState, data.priceRecord]);
+    // rtSocket.bind('App\\Events\\TransactionInserted', function (data: any) {
+    //     setVolume24hState(data.volume24h);
+    // });
+    pairs?.bind('App\\Events\\PriceRecordCreated', function (data: any) {
+        const dataPriceRecord: PriceRecord = data.priceRecord;
+        if (dataPriceRecord.pair_id === priceComparison.id) {
+            setPriceRecordsState(() => [...priceRecordsState, dataPriceRecord]);
+        }
     });
 
     useEffect(() => {
@@ -448,8 +451,8 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setIsBuying(true);
                                     setData('sold_id', priceComparison.child_id);
                                     setData('purchased_id', priceComparison.main_id);
-                                    setData('purchased_amount', null)
-                                    setData('sold_amount', null)
+                                    setData('purchased_amount', null);
+                                    setData('sold_amount', null);
                                     setData('order_type', 'buy');
                                 }}
                                 className={'w-full cursor-pointer rounded p-2 ' + (isBuying ? activeTab : '')}
@@ -463,8 +466,8 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setIsBuying(false);
                                     setData('sold_id', priceComparison.main_id);
                                     setData('purchased_id', priceComparison.child_id);
-                                    setData('purchased_amount', null)
-                                    setData('sold_amount', null)
+                                    setData('purchased_amount', null);
+                                    setData('sold_amount', null);
                                     setData('order_type', 'sell');
                                 }}
                                 className={'w-full cursor-pointer rounded p-2 ' + (!isBuying ? activeTab : '')}

@@ -1,6 +1,8 @@
-import echo from '@/echo';
+import getEchoConnection from '@/rtSocket';
+import { SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
-import { Link } from '@inertiajs/react';
+import { PriceComparison } from '@/types/price-comparison';
+import { Link, usePage } from '@inertiajs/react';
 import { DynamicIcon } from 'lucide-react/dynamic';
 import { useState } from 'react';
 import { CryptoDashPillPrice } from './crypto-dash-pill-price';
@@ -11,10 +13,14 @@ interface CryptoDashPillProps {
 
 export function CryptoDashPill({ crypto }: Readonly<CryptoDashPillProps>) {
     const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
+    const { auth } = usePage<SharedData>().props;
+    const { pairs } = getEchoConnection(auth.user, priceComparison.id);
 
-    const channel = echo.subscribe('PriceComparison.Pair.' + crypto.main_price_comparison[0].pair_symbol);
-    channel.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
-        setPriceComparison(data.priceComparison);
+    pairs?.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
+        const dataPriceComp: PriceComparison = data.priceComparison;
+        if (dataPriceComp.pair_symbol.includes(crypto.symbol)) {
+            setPriceComparison(data.priceComparison);
+        }
     });
 
     return (

@@ -14,6 +14,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class PriceComparisonUpdated implements ShouldBroadcastNow
 {
@@ -32,6 +33,6 @@ class PriceComparisonUpdated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('PriceComparison.Pair.' . $this->priceComparison->pair_symbol);
+        return new Channel('RTSocket.Pair.' . $this->priceComparison->id);
     }
 }
