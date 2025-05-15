@@ -33,6 +33,6 @@ class PriceComparisonUpdated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('RTSocket.Pair.' . $this->priceComparison->id);
+        return new Channel('Prices.Pair.' . $this->priceComparison->id);
     }
 }

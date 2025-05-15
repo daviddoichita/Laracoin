@@ -1,11 +1,10 @@
-import getEchoConnection from '@/rtSocket';
 import { SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { Order } from '@/types/order';
 import { Toast } from '@base-ui-components/react/toast';
 import { usePage } from '@inertiajs/react';
+import { useEchoPublic } from '@laravel/echo-react';
 import * as React from 'react';
-import { useEffect } from 'react';
 
 export default function Notifications() {
     return (
@@ -23,13 +22,11 @@ export default function Notifications() {
 function OrderListener() {
     const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const { auth } = usePage<SharedData>().props;
-    const { notifs } = getEchoConnection(auth.user);
-
     const toastManager = Toast.useToastManager();
 
-    useEffect(() => {
+    useEchoPublic(`Orders.Client.${auth.user.id}`, ['OrderCreated', 'OrderCompleted', 'OrderFilled'], (e: any) => {
         const handleOrderCreated = (data: any) => {
-            const order: Order = data.order;
+            const order: Order = data.created;
             const purchased: Crypto = data.purchased;
             const sold: Crypto = data.sold;
 
@@ -41,7 +38,7 @@ function OrderListener() {
         };
 
         const handleOrderCompleted = (data: any) => {
-            const order: Order = data.order;
+            const order: Order = data.completed;
 
             toastManager.add({
                 title: `order completed`,
@@ -50,7 +47,7 @@ function OrderListener() {
         };
 
         const handleOrderFilled = (data: any) => {
-            const order: Order = data.order;
+            const order: Order = data.filled;
 
             toastManager.add({
                 title: `order filled`,
@@ -58,16 +55,14 @@ function OrderListener() {
             });
         };
 
-        notifs.bind('App\\Events\\OrderCreated', handleOrderCreated);
-        notifs.bind('App\\Events\\OrderCompleted', handleOrderCompleted);
-        notifs.bind('App\\Events\\OrderFilled', handleOrderFilled);
-
-        return () => {
-            notifs.unbind('App\\Events\\OrderCreated', handleOrderCreated);
-            notifs.unbind('App\\Events\\OrderCompleted', handleOrderCompleted);
-            notifs.unbind('App\\Events\\OrderFilled', handleOrderFilled);
-        };
-    }, [auth.user.id, toastManager]);
+        if (e.created) {
+            handleOrderCreated(e);
+        } else if (e.filled) {
+            handleOrderFilled(e);
+        } else {
+            handleOrderCompleted(e);
+        }
+    });
 
     return <></>;
 }

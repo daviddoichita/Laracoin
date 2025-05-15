@@ -34,6 +34,6 @@ class PriceRecordCreated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('RTSocket.Pair.' . $this->priceRecord->pair_id);
+        return new Channel('Prices.Pair.' . $this->priceRecord->pair_id);
     }
 }

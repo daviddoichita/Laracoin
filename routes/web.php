@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Crypto;
 use App\Models\Order;
+use App\Models\PriceComparison;
 use App\Models\PriceRecord;
 use App\Models\UserBalance;
 use Illuminate\Http\Request;
@@ -54,7 +55,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/my-balances', function () {
         return Inertia::render('balances', [
-            'userBalances' => UserBalance::with('crypto')->where('user_id', '=', Auth::user()->id)->get()
+            'userBalances' => UserBalance::with('crypto')->where('user_id', '=', Auth::user()->id)->get(),
+            'priceComparison' => PriceComparison::all()
         ]);
     });
 

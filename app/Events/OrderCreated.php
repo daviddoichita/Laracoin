@@ -22,7 +22,7 @@ class OrderCreated implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public Order $order, public Crypto $purchased, public Crypto $sold)
+    public function __construct(public Order $created, public Crypto $purchased, public Crypto $sold)
     {
         //
     }
@@ -34,7 +34,6 @@ class OrderCreated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        Log::info('ordercreated broadcasting on: ' . 'RTSocket.Client.' . $this->order->user_id);
-        return new Channel('RTSocket.Client.' . $this->order->user_id);
+        return new Channel('Orders.Client.' . $this->created->user_id);
     }
 }

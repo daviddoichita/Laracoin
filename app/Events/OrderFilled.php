@@ -20,7 +20,7 @@ class OrderFilled implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public Order $order, public string $filled)
+    public function __construct(public Order $filled, public string $amount)
     {
         //
     }
@@ -32,7 +32,6 @@ class OrderFilled implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        Log::info('orderfilled broadcasting on: ' . 'RTSocket.Client.' . $this->order->user_id);
-        return new Channel('RTSocket.Client.' . $this->order->user_id);
+        return new Channel('Orders.Client.' . $this->filled->user_id);
     }
 }
