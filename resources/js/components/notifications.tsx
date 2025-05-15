@@ -25,6 +25,9 @@ function OrderListener() {
     const toastManager = Toast.useToastManager();
 
     useEchoPublic(`Orders.Client.${auth.user.id}`, ['OrderCreated', 'OrderCompleted', 'OrderFilled'], (e: any) => {
+        const location = window.location;
+        sessionStorage.setItem('scrollY', window.scrollY.toString());
+
         const handleOrderCreated = (data: any) => {
             const order: Order = data.created;
             const purchased: Crypto = data.purchased;
@@ -44,6 +47,10 @@ function OrderListener() {
                 title: `order completed`,
                 description: `${order.order_type} order with id: ${order.id} completed`,
             });
+
+            if (location.toString().includes('my-orders')) {
+                window.location.reload();
+            }
         };
 
         const handleOrderFilled = (data: any) => {
@@ -53,6 +60,10 @@ function OrderListener() {
                 title: `order filled`,
                 description: `order with id: ${order.id} has been filled. New amount: ${order.filled}`,
             });
+
+            if (location.toString().includes('my-orders')) {
+                window.location.reload();
+            }
         };
 
         if (e.created) {

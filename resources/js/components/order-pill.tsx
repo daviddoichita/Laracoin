@@ -17,20 +17,17 @@ export default function OrderPill({ order, sold, purchased }: Readonly<OrderPill
     let textClass = '';
     if (order.status === 'completed') {
         statusClass = 'border-green-500 shadow-md shadow-green-500';
-        textClass = 'text-green-500'
+        textClass = 'text-green-500';
     } else if (order.status === 'pending') {
         statusClass = 'border-yellow-500 shadow-md shadow-yellow-500';
-        textClass = 'text-yellow-500'
+        textClass = 'text-yellow-500';
     } else {
         statusClass = 'border-red-500 shadow-md shadow-red-500';
-        textClass = 'text-red-500'
-
+        textClass = 'text-red-500';
     }
 
     return (
-        <div
-            className={`mb-5 flex w-[49.5%] flex-col items-center gap-3 rounded-xl border p-3 ${statusClass}`}
-        >
+        <div className={`mb-5 flex w-[49.5%] flex-col items-center gap-3 rounded-xl border p-3 ${statusClass}`}>
             <div className="flex w-full flex-row justify-center gap-3 text-lg font-black">
                 <p>Order id: {order.id}</p>
                 <p>Sold: {sold?.name}</p>
@@ -63,11 +60,7 @@ export default function OrderPill({ order, sold, purchased }: Readonly<OrderPill
                 </div>
                 <div className="flex w-full flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Status</p>
-                    <p
-                        className={textClass}
-                    >
-                        {order.status}
-                    </p>
+                    <p className={textClass}>{order.status}</p>
                 </div>
             </div>
             <Button

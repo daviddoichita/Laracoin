@@ -23,6 +23,8 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
     const cryptosRef = useRef(cryptos);
     const userOrdersRef = useRef(userOrders);
     const fuse = new Fuse(cryptos, { keys: ['name', 'symbol'] });
+    const [selectedType, setSelectedType] = useState<OrderType>('null');
+    const [selectedStatus, setSelectedStatus] = useState<OrderStatus>('null');
 
     const filter = () => {
         setFiltering(true);
@@ -37,7 +39,8 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
         setFilteredCryptos(fuse.search(trimmed).map((result) => result.item));
     };
 
-    const [selectedType, setSelectedType] = useState<'buy' | 'sell' | 'null'>('null');
+    type OrderType = 'buy' | 'sell' | 'null';
+    type OrderStatus = 'pending' | 'completed' | 'canceled' | 'null';
 
     useEffect(() => {
         const filteredCryptoIds = new Set(filteredCryptos.map((c) => c.id));
@@ -45,10 +48,19 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
             userOrdersRef.current.filter((order) => {
                 const matchesCrypto = filteredCryptoIds.has(order.sold_id) || filteredCryptoIds.has(order.purchased_id);
                 const matchesType = selectedType === 'null' ? true : order.order_type === selectedType;
-                return matchesCrypto && matchesType;
+                const matchesStatus = selectedStatus === 'null' ? true : order.status === selectedStatus;
+                return matchesCrypto && matchesType && matchesStatus;
             }),
         );
-    }, [filteredCryptos, selectedType]);
+    }, [filteredCryptos, selectedType, selectedStatus]);
+
+    useEffect(() => {
+        const scrollY = sessionStorage.getItem('scrollY');
+        if (scrollY) {
+            window.scrollTo({ top: parseInt(scrollY) });
+            sessionStorage.removeItem('scrollY');
+        }
+    }, []);
 
     return (
         <AppLayout>
@@ -78,15 +90,16 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
                     value={searchQuery}
                     placeholder="Search"
                 ></Input>
-                <select
-                    className="rounded-md border p-2"
-                    id="type-select"
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value as 'buy' | 'sell' | 'null')}
-                >
+                <select className="rounded-md border p-2" value={selectedType} onChange={(e) => setSelectedType(e.target.value as OrderType)}>
                     <option value={'null'}>Any</option>
                     <option value={'buy'}>Buy</option>
                     <option value={'sell'}>Sell</option>
+                </select>
+                <select className="rounded-md border p-2" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value as OrderStatus)}>
+                    <option value={'null'}>Any</option>
+                    <option value={'canceled'}>Canceled</option>
+                    <option value={'completed'}>Completed</option>
+                    <option value={'pending'}>Pending</option>
                 </select>
                 <Button
                     onClick={() => filter()}
