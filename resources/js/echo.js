@@ -1,7 +1,7 @@
-import Pusher from 'pusher-js';
-window.Pusher = Pusher;
+// import Pusher from 'pusher-js';
+// window.Pusher = Pusher;
 
-const echo = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-});
-export default echo
+// const echo = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
+//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+// });
+// export default echo

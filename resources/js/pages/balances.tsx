@@ -2,6 +2,7 @@ import BalancePill from '@/components/balance-pill';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
+import { PriceComparison } from '@/types/price-comparison';
 import { UserBalance } from '@/types/user-balance';
 import { Head } from '@inertiajs/react';
 import Fuse from 'fuse.js';
@@ -10,9 +11,10 @@ import { useRef, useState } from 'react';
 
 export interface BalancesProps {
     userBalances: UserBalance[];
+    priceComparison: PriceComparison[];
 }
 
-export default function Balances({ userBalances }: Readonly<BalancesProps>) {
+export default function Balances({ userBalances, priceComparison }: Readonly<BalancesProps>) {
     const [filteredBalances, setFilteredBalances] = useState(userBalances);
     const [filtering, setFiltering] = useState(false);
     const [query, setQuery] = useState('');
@@ -74,7 +76,9 @@ export default function Balances({ userBalances }: Readonly<BalancesProps>) {
                 {filteredBalances
                     .toSorted((a, b) => a.id - b.id)
                     .map((v, _i) => {
-                        if (!v.crypto.disabled) return <BalancePill userBalance={v} key={v.id} />;
+                        const pairSymbol = `${v.crypto.symbol}_EUR`;
+                        const priceComp = priceComparison.find((pc) => pc.pair_symbol === pairSymbol);
+                        if (!v.crypto.disabled) return <BalancePill userBalance={v} priceComparison={priceComp} key={v.id} />;
                     })}
             </div>
         </AppLayout>

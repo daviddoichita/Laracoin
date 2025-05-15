@@ -1,8 +1,6 @@
-import getEchoConnection from '@/rtSocket';
-import { SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
-import { PriceComparison } from '@/types/price-comparison';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import { useEchoPublic } from '@laravel/echo-react';
 import { DynamicIcon } from 'lucide-react/dynamic';
 import { useState } from 'react';
 import { CryptoDashPillPrice } from './crypto-dash-pill-price';
@@ -13,13 +11,10 @@ interface CryptoDashPillProps {
 
 export function CryptoDashPill({ crypto }: Readonly<CryptoDashPillProps>) {
     const [priceComparison, setPriceComparison] = useState(crypto.main_price_comparison[0]);
-    const { auth } = usePage<SharedData>().props;
-    const { pairs } = getEchoConnection(auth.user, priceComparison.id);
 
-    pairs?.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
-        const dataPriceComp: PriceComparison = data.priceComparison;
-        if (dataPriceComp.pair_symbol.includes(crypto.symbol)) {
-            setPriceComparison(data.priceComparison);
+    useEchoPublic(`Prices.Pair.${priceComparison?.id}`, 'PriceComparisonUpdated', (e: any) => {
+        if (e.priceComparison.pair_symbol.includes(crypto.symbol)) {
+            setPriceComparison(e.priceComparison);
         }
     });
 

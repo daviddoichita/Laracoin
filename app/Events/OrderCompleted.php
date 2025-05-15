@@ -20,7 +20,7 @@ class OrderCompleted implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public Order $order)
+    public function __construct(public Order $completed)
     {
         //
     }
@@ -32,6 +32,6 @@ class OrderCompleted implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('RTSocket.Client.' . $this->order->user_id);
+        return new Channel('Orders.Client.' . $this->completed->user_id);
     }
 }

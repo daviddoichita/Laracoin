@@ -33,7 +33,7 @@ class OrderCreatedListener
      */
     public function handle(OrderCreated $event): void
     {
-        $order = $event->order;
+        $order = $event->created;
 
         Log::info('Order caught ' . $order);
 

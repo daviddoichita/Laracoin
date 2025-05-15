@@ -6,13 +6,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import getEchoConnection from '@/rtSocket';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { PriceComparison } from '@/types/price-comparison';
 import { PriceRecord } from '@/types/price-record';
 import { UserBalance } from '@/types/user-balance';
 import { Head, useForm, usePage } from '@inertiajs/react';
+import { useEchoPublic } from '@laravel/echo-react';
 import { FormEventHandler, JSX, useEffect, useState } from 'react';
 import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
@@ -207,7 +207,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         }
 
         const balance = userBalance.find((u) => u.crypto_id === data.sold_id);
-        console.log(balance);
         if (balance) {
             if (balance.balance > 0 && data.sold_amount && data.sold_amount <= balance.balance) {
                 post(route('new-order'));
@@ -353,22 +352,21 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         </>
     );
 
-    const { pairs } = getEchoConnection(auth.user, priceComparison.id);
-
-    pairs?.bind('App\\Events\\PriceComparisonUpdated', function (data: any) {
-        const dataPriceComp: PriceComparison = data.priceComparison;
-        if (dataPriceComp.pair_symbol.includes(crypto.symbol)) {
-            setPriceComparison(data.priceComparison);
+    useEchoPublic(`Prices.Pair.${priceComparison?.id}`, ['PriceComparisonUpdated', 'PriceRecordCreated'], (e: any) => {
+        if (e.priceComparison.pair_symbol.includes(crypto.symbol)) {
+            setPriceComparison(e.priceComparison);
+        }
+        if (e.priceRecord.pair_id === priceComparison.id) {
+            setPriceRecordsState(() => [...priceRecordsState, e.priceRecord]);
         }
     });
+
     // rtSocket.bind('App\\Events\\TransactionInserted', function (data: any) {
     //     setVolume24hState(data.volume24h);
     // });
-    pairs?.bind('App\\Events\\PriceRecordCreated', function (data: any) {
-        const dataPriceRecord: PriceRecord = data.priceRecord;
-        if (dataPriceRecord.pair_id === priceComparison.id) {
-            setPriceRecordsState(() => [...priceRecordsState, dataPriceRecord]);
-        }
+
+    useEchoPublic(`Transactions.Crypto.Id.${crypto.id}`, 'TransactionInserted', (e: any) => {
+        setVolume24hState(e.volume24h);
     });
 
     useEffect(() => {
