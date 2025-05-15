@@ -87,9 +87,7 @@ class OrderController extends Controller
 
     public function storeInertia(Request $request)
     {
-        $order = $this->storeCommon($request);
-
-        Log::info('storeCommon result: ' . json_encode($order));
+        $this->storeCommon($request);
 
         return back();
     }
