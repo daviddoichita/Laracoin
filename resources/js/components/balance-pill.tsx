@@ -15,12 +15,12 @@ const formatPrice = (n: number) => {
     return isNaN(n) ? 'Loading...' : n.toLocaleString('es-ES', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' });
 };
 
-interface DynamicBalanceProps {
+export interface DynamicBalanceProps {
     userBalance: UserBalance;
     priceComparison: PriceComparison;
 }
 
-function DynamicBalance({ userBalance, priceComparison }: Readonly<DynamicBalanceProps>) {
+export function DynamicBalance({ userBalance, priceComparison }: Readonly<DynamicBalanceProps>) {
     const [priceComparisonCopy, setPriceComparisonCopy] = useState<PriceComparison | undefined>(priceComparison);
     useEchoPublic(`Prices.Pair.${priceComparison?.id}`, 'PriceComparisonUpdated', (e: any) => {
         setPriceComparisonCopy(e.priceComparison);
@@ -77,11 +77,11 @@ function DynamicBalance({ userBalance, priceComparison }: Readonly<DynamicBalanc
     );
 }
 
-interface StaticBalanceProps {
+export interface StaticBalanceProps {
     userBalance: UserBalance;
 }
 
-function StaticBalance({ userBalance }: Readonly<StaticBalanceProps>) {
+export function StaticBalance({ userBalance }: Readonly<StaticBalanceProps>) {
     const [showAdd, setShowAdd] = useState(false);
     const [add, setAdd] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -164,13 +164,5 @@ function StaticBalance({ userBalance }: Readonly<StaticBalanceProps>) {
                 </div>
             </div>
         </div>
-    );
-}
-
-export default function BalancePill({ userBalance, priceComparison }: Readonly<BalancePillProps>) {
-    return priceComparison ? (
-        <DynamicBalance userBalance={userBalance} priceComparison={priceComparison}></DynamicBalance>
-    ) : (
-        <StaticBalance userBalance={userBalance}></StaticBalance>
     );
 }

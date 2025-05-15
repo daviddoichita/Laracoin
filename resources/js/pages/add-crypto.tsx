@@ -1,5 +1,6 @@
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -7,7 +8,7 @@ import { checkRole } from '@/lib/utils';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler, useEffect } from 'react';
+import { FormEventHandler, useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,7 +30,7 @@ interface AddCryptoForm {
     price: number;
 }
 
-export default function AddCrypto({ crypto }: AddCryptoProps) {
+export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
     const { auth } = usePage<SharedData>().props;
     const { data, setData, post, processing, errors, reset } = useForm<Required<AddCryptoForm>>({
         name: '',
@@ -39,6 +40,7 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
         circulating_supply: -2,
         price: -2,
     });
+    const [inf, setInf] = useState(false);
 
     const capitalize = (str: string) => {
         if (!str) return str;
@@ -48,11 +50,7 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('crypto.add'), {
-            onFinish: () => {
-                reset('name', 'symbol', 'max_supply', 'circulating_supply', 'price');
-            },
-        });
+        post(route('crypto.add'));
     };
 
     const valueChange = (dataIdx: keyof AddCryptoForm, mod: string) => {
@@ -115,7 +113,7 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                         autoFocus
                         autoComplete="symbol"
                         value={data.symbol}
-                        onChange={(e) => setData('symbol', e.target.value)}
+                        onChange={(e) => setData('symbol', e.target.value.toUpperCase())}
                         placeholder="Symbol"
                     />
                     <InputError message={errors.symbol} />
@@ -124,8 +122,20 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                 <div className="grid gap-2">
                     <Label htmlFor="max-supply">Max supply</Label>
                     <div className="flex flex-row gap-3">
+                        <Label htmlFor="a" className="text-md flex items-center gap-2">
+                            Infinite
+                            <Checkbox
+                                id="infinite"
+                                checked={inf}
+                                onClick={(_e) => {
+                                    setInf(!inf);
+                                    setData('max_supply', -1);
+                                }}
+                            ></Checkbox>
+                        </Label>
                         <Input
                             id="max-supply"
+                            disabled={inf}
                             type="number"
                             min={-1}
                             step={0.00000001}
@@ -136,7 +146,12 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                             onChange={(e) => setData('max_supply', parseFloat(e.target.value))}
                             placeholder="Max supply"
                         />
-                        <select name="magnitude-max" className="rounded border p-1" onChange={(e) => valueChange('max_supply', e.target.value)}>
+                        <select
+                            disabled={inf}
+                            name="magnitude-max"
+                            className="rounded border p-1"
+                            onChange={(e) => valueChange('max_supply', e.target.value)}
+                        >
                             <option value={'u'} className="dark:bg-neutral-900">
                                 Units
                             </option>
@@ -208,7 +223,7 @@ export default function AddCrypto({ crypto }: AddCryptoProps) {
                         />
                         <p className="text-xl">€</p>
                     </div>
-                    <InputError message={errors.circulating_supply} />
+                    <InputError message={errors.price} />
                 </div>
 
                 <div className="flex w-full flex-row items-center justify-center gap-4">

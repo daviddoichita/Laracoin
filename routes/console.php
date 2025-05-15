@@ -1,7 +1,11 @@
 <?php
 
+use App\Events\OrderCreated;
 use App\Events\PriceComparisonUpdated;
 use App\Events\PriceRecordCreated;
+use App\Listeners\OrderCreatedListener;
+use App\Models\Crypto;
+use App\Models\Order;
 use App\Models\PriceComparison;
 use App\Models\PriceRecord;
 use Illuminate\Foundation\Inspiring;
@@ -50,6 +54,14 @@ Schedule::call(function () {
         $priceComparison->save();
 
         event(new PriceComparisonUpdated($priceComparison));
-        log($new);
     }
 })->everyThirtySeconds();
+
+Schedule::call(function () {
+    $orders = Order::where('status', 'pending')->get();
+
+    foreach ($orders as $order) {
+        $orderCreatedListener = new OrderCreatedListener;
+        $orderCreatedListener->handle(new OrderCreated($order, Crypto::find($order->purchased_id), Crypto::find($order->sold_id)));
+    }
+})->everyMinute();

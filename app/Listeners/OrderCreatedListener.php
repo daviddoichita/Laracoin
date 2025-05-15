@@ -97,7 +97,6 @@ class OrderCreatedListener
     {
         $executionPrice = $matchingOrder->price;
 
-        Log::info('fillAmount ' . $fillAmount);
         $order->filled = $this->truncateTo8Decimals(bcadd($order->filled, $fillAmount, 8));
         $matchingOrder->filled = $this->truncateTo8Decimals(bcadd($matchingOrder->filled, $fillAmount, 8));
 
@@ -136,7 +135,6 @@ class OrderCreatedListener
             $order->remaining_to_sell = $this->truncateTo8Decimals(bcsub($order->sold_amount, $order->filled, 16));
         } else {
             $spent = ceil($order->filled * $order->price);
-            Log::info('spent ' . $spent);
             $order->remaining_to_sell = $this->truncateTo8Decimals(bcsub($order->sold_amount, $spent, 16));
         }
 

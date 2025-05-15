@@ -7,8 +7,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { Head } from '@inertiajs/react';
 import Fuse from 'fuse.js';
-import { DynamicIcon } from 'lucide-react/dynamic';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -41,6 +40,8 @@ export default function Dashboard({ cryptos }: Readonly<DashboardProps>) {
         setFilteredCryptos(fuse.search(trimmed).map((result) => result.item));
     };
 
+    useEffect(() => filter(), [searchQuery]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -69,12 +70,6 @@ export default function Dashboard({ cryptos }: Readonly<DashboardProps>) {
                     value={searchQuery}
                     placeholder="Search"
                 ></Input>
-                <Button
-                    onClick={() => filter()}
-                    className="bg-neutral-100 hover:cursor-pointer hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-                >
-                    <DynamicIcon name="search" className="text-black dark:text-white"></DynamicIcon>
-                </Button>
             </div>
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl">
                 <div className="flex w-full flex-col items-center justify-center gap-5">

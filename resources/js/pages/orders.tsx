@@ -7,7 +7,6 @@ import { Crypto } from '@/types/crypto';
 import { Order } from '@/types/order';
 import { Head } from '@inertiajs/react';
 import Fuse from 'fuse.js';
-import { DynamicIcon } from 'lucide-react/dynamic';
 import { useEffect, useRef, useState } from 'react';
 
 export interface OrdersProps {
@@ -25,6 +24,25 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
     const fuse = new Fuse(cryptos, { keys: ['name', 'symbol'] });
     const [selectedType, setSelectedType] = useState<OrderType>('null');
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>('null');
+
+    useEffect(() => {
+        const savedFilters = sessionStorage.getItem('filters');
+        if (savedFilters) {
+            const { searchQuery, selectedType, selectedStatus } = JSON.parse(savedFilters);
+            setSearchQuery(searchQuery ?? '');
+            setSelectedType(selectedType ?? 'null');
+            setSelectedStatus(selectedStatus ?? 'null');
+        }
+    }, []);
+
+    useEffect(() => {
+        const filters = {
+            searchQuery,
+            selectedType,
+            selectedStatus,
+        };
+        sessionStorage.setItem('filters', JSON.stringify(filters));
+    }, [searchQuery, selectedType, selectedStatus]);
 
     const filter = () => {
         setFiltering(true);
@@ -61,6 +79,8 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
             sessionStorage.removeItem('scrollY');
         }
     }, []);
+
+    useEffect(() => filter(), [searchQuery]);
 
     return (
         <AppLayout>
@@ -101,12 +121,6 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
                     <option value={'completed'}>Completed</option>
                     <option value={'pending'}>Pending</option>
                 </select>
-                <Button
-                    onClick={() => filter()}
-                    className="bg-neutral-100 hover:cursor-pointer hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-                >
-                    <DynamicIcon name="search" className="text-black dark:text-white"></DynamicIcon>
-                </Button>
             </div>
 
             <div className="mt-10 flex max-w-7xl min-w-7xl flex-row flex-wrap gap-3 self-center">

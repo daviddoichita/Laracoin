@@ -49,7 +49,7 @@ function OrderListener() {
             });
 
             if (location.toString().includes('my-orders')) {
-                window.location.reload();
+                setTimeout(() => window.location.reload(), 250);
             }
         };
 
@@ -62,7 +62,7 @@ function OrderListener() {
             });
 
             if (location.toString().includes('my-orders')) {
-                window.location.reload();
+                setTimeout(() => window.location.reload(), 250);
             }
         };
 
