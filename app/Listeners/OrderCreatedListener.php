@@ -4,9 +4,11 @@ namespace App\Listeners;
 
 use App\Events\OrderCompleted;
 use App\Events\OrderCreated;
+use App\Events\OrderFilled;
 use App\Models\Order;
 use App\Models\UserBalance;
 use Auth;
+use Event;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Log;
@@ -58,6 +60,7 @@ class OrderCreatedListener
             ->where('price', $order->price)
             ->get();
     }
+
     private function processOrderMatching(Order $order, Order $overlaping): void
     {
         $orderRemainingToFill = $this->truncateTo8Decimals(
@@ -85,8 +88,13 @@ class OrderCreatedListener
             ? $remainingToFill
             : $this->truncateTo8Decimals(bcmul($remainingToFill, $order->price, 8));
 
-        $order->filled = $this->truncateTo8Decimals(bcadd($order->filled, $orderFillAmount, 8));
-        $overlaping->filled = $this->truncateTo8Decimals(bcadd($overlaping->filled, $remainingToFill, 8));
+        $orderFill = $this->truncateTo8Decimals(bcadd($order->filled, $orderFillAmount, 8));
+        $order->filled = $orderFill;
+        event(new OrderFilled($order, $orderFill));
+
+        $overlapingFill = $this->truncateTo8Decimals(bcadd($overlaping->filled, $remainingToFill, 8));
+        $overlaping->filled = $overlapingFill;
+        event(new OrderFilled($overlaping, $overlapingFill));
 
         $this->updateRemainingToSell($order);
         $this->updateRemainingToSell($overlaping);
