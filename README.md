@@ -17,6 +17,8 @@
 ### Instalar composer, laravel, php, etc
 [Solo hace falta ejecutar el primer comando de esta seccion](https://laravel.com/docs/12.x/installation#creating-a-laravel-project)
 
+### Instala [nodejs y npm](https://nodejs.org/en/download)
+
 ### Instalar dependencias
 En la carpeta del proyecto:
 ```bash
@@ -30,6 +32,12 @@ php artisan reverb:install
 ```
 ### Configuracion backend
 Copiar .env.example a .env
+
+Modificar DB_CONNECTION a sqlite
+```
+DB_CONNECTION=sqlite
+
+```
 
 Crear la key del proyecto
 ```bash
@@ -47,7 +55,8 @@ php artisan db:seed
 ### Iniciar el proyecto
 Ejecutar
 ```bash
-composer run dev
+npm run build
+php artisan serve
 ```
 Entrar a la [web](http://localhost:8000) <br>
 
