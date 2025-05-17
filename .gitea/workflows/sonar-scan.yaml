@@ -1,0 +1,25 @@
+name: Run SonarQube Scanning
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - prod
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Install sonar-scanner
+        run: |
+          curl -o ./sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.2.4839-linux-aarch64.zip
+          unzip sonar-scanner-cli.zip
+          mv sonar-scanner-7.0.2.4839-linux-aarch64 sonar-scanner-cli
+      -
+        name: Scan
+        run: |
+          ./sonar-scanner-cli/bin/sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }}
