@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Events\TransactionInserted;
+use App\Events\TransactionReceived;
 use App\Models\Transaction;
+use App\Models\UserBalance;
+use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Log;
+use Ramsey\Uuid\Exception\InvalidUuidStringException;
+use Ramsey\Uuid\Uuid;
 
 class TransactionController extends Controller
 {
@@ -36,26 +42,52 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required',
+            'user_balance' => 'required',
             'crypto_id' => 'required',
-            'order_id' => 'required',
-            'transaction_type' => 'required',
+            'target_uuid' => 'required',
             'amount' => 'required'
         ]);
 
-        $transaction = Transaction::create([
-            'user_id' => $request->user_id,
-            'crypto_id' => $request->crypto_id,
-            'order_id' => $request->order_id,
-            'transaction_type' => $request->transaction_type,
-            'amount' => $request->amount,
-        ]);
+        try {
+            $target_uuid_parsed = Uuid::fromString($request->target_uuid);
 
-        event(new TransactionInserted($transaction));
+            if (!UserBalance::where('user_id', '!=', Auth::user()->id)->where('uuid', $target_uuid_parsed->toString())->exists()) {
+                return back()->withErrors(['target_uuid' => 'Invalid target uuid']);
+            }
 
-        return response()->json([
-            'created' => $transaction
-        ]);
+            $userBalance = UserBalance::where('id', $request->user_balance)->first();
+            if (!$userBalance || $userBalance->balance < $request->amount) {
+                return back()->withErrors(['amount' => 'Amount cannot be greater than available balance']);
+            }
+
+            $userBalance->balance -= $request->amount;
+            $userBalance->save();
+
+            $transaction = Transaction::create([
+                'user_id' => Auth::user()->id,
+                'crypto_id' => $request->crypto_id,
+                'target_uuid' => $request->target_uuid,
+                'amount' => $request->amount,
+            ]);
+
+            $targetBalance = UserBalance::where('uuid', $request->target_uuid)->first();
+
+            if ($targetBalance->crypto_id != $request->crypto_id) {
+                return back()->withErrors(['target_uuid' => 'Cannot send this crypto to target uuid']);
+            }
+            $targetBalance->balance += $request->amount;
+            $targetBalance->save();
+
+            event(new TransactionInserted($transaction));
+            event(new TransactionReceived($targetBalance->user_id, $transaction));
+        } catch (InvalidUuidStringException $e) {
+            return back()->withErrors(['target_uuid' => 'Invalid target uuid']);
+        } catch (\Throwable $e) {
+            Log::info($e);
+            return back()->withErrors(['target_uuid' => 'An unexpected error occurred while processing the ID.']);
+        }
+
+        return back();
     }
 
     /**

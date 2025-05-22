@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Str;
 
 use function Illuminate\Log\log;
 
@@ -56,6 +57,7 @@ class RegisteredUserController extends Controller
         ]);
 
         UserBalance::create([
+            'uuid' => Str::uuid(),
             'user_id' => $user->id,
             'crypto_id' => Crypto::where('symbol', '=', 'EUR')->get()[0]->id,
             'balance' => 1000,
@@ -67,6 +69,7 @@ class RegisteredUserController extends Controller
         $balances = [];
         foreach ($cryptos as $crypto) {
             array_push($balances, [
+                'uuid' => Str::uuid(),
                 'user_id' => $user->id,
                 'crypto_id' => $crypto->id,
                 'balance' => 0,

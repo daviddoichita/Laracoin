@@ -1,7 +1,7 @@
 export interface Transaction {
+    id: number;
     user_id: number;
     crypto_id: number;
-    order_id: number;
-    transaction_type: string;
+    target_uuid: number;
     amount: number;
 }

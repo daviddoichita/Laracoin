@@ -1,6 +1,7 @@
 import { SharedData } from '@/types';
 import { Crypto } from '@/types/crypto';
 import { Order } from '@/types/order';
+import { Transaction } from '@/types/transactions';
 import { Toast } from '@base-ui-components/react/toast';
 import { usePage } from '@inertiajs/react';
 import { useEchoPublic } from '@laravel/echo-react';
@@ -23,6 +24,34 @@ function OrderListener() {
     const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const { auth } = usePage<SharedData>().props;
     const toastManager = Toast.useToastManager();
+
+    useEchoPublic(`Transactions.User.Id.${auth.user.id}`, ['TransactionInserted', 'TransactionReceived'], (e: any) => {
+        const handleTransaction = (data: any) => {
+            const transaction: Transaction = data.lastTransaction;
+
+            toastManager.add({
+                title: `transaction processed`,
+                description: `sent ${transaction.amount} to wallet: ${transaction.target_uuid}`,
+                data: { className: isDarkTheme ? 'bg-black text-white' : '' },
+            });
+        };
+
+        const handleTransactionReceived = (data: any) => {
+            const received: Transaction = data.transaction;
+
+            toastManager.add({
+                title: `transaction received`,
+                description: `got ${received.amount} to wallet: ${received.target_uuid}`,
+                data: { className: isDarkTheme ? 'bg-black text-white' : '' },
+            });
+        };
+
+        if (e.lastTransaction) {
+            handleTransaction(e);
+        } else {
+            handleTransactionReceived(e);
+        }
+    });
 
     useEchoPublic(`Orders.Client.${auth.user.id}`, ['OrderCreated', 'OrderCompleted', 'OrderFilled'], (e: any) => {
         const location = window.location;

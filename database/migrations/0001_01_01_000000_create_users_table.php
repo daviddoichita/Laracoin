@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('surnames');
             $table->string('nif', 9)->unique();
             $table->boolean('admin')->default(false);
-            $table->bigInteger('phone_number');
+            $table->bigInteger('phone_number')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

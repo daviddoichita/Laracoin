@@ -9,6 +9,7 @@ use App\Models\UserBalance;
 use Hash;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -92,6 +93,7 @@ class DatabaseSeeder extends Seeder
 
         $userBalances = [
             [
+                'uuid' => Str::uuid(),
                 'user_id' => 1,
                 'crypto_id' => 1,
                 'balance' => 1000,
@@ -100,6 +102,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'uuid' => Str::uuid(),
                 'user_id' => 1,
                 'crypto_id' => 2,
                 'balance' => 80,
@@ -108,6 +111,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'uuid' => Str::uuid(),
                 'user_id' => 1,
                 'crypto_id' => 3,
                 'balance' => 1000,
@@ -162,29 +166,5 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('orders')->insert($orders);
-
-        $transactions = [
-            [
-                'user_id' => 1,
-                'crypto_id' => 2,
-                'order_id' => 1,
-                'transaction_type' => 'fill',
-                'amount' => 80,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            [
-                'user_id' => 1,
-                'crypto_id' => 3,
-                'order_id' => 2,
-                'transaction_type' => 'fill',
-                'amount' => 1000,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-        ];
-
-
-        DB::table('transactions')->insert($transactions);
     }
 }

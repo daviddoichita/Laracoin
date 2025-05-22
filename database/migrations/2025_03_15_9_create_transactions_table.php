@@ -15,14 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('crypto_id');
-            $table->foreignId('order_id');
-            $table->enum('transaction_type', ['fill', 'receive']);
+            $table->uuid('target_uuid');
             $table->decimal('amount', 18, 8);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('crypto_id')->references('id')->on('cryptos')->cascadeOnDelete();
-            $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();
         });
     }
 

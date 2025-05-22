@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Crypto;
 use App\Models\PriceComparison;
 use App\Models\PriceRecord;
+use App\Models\User;
+use App\Models\UserBalance;
+use Crypt;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Log;
+use Str;
 
 class CryptoController extends Controller
 {
@@ -106,6 +110,17 @@ class CryptoController extends Controller
             'price' => $priceComparison->price,
         ]);
 
+        $users = User::all();
+        foreach ($users as $user) {
+            UserBalance::create([
+                'uuid' => Str::uuid(),
+                'user_id' => $user->id,
+                'crypto_id' => $crypto->id,
+                'balance' => 0,
+                'locked_balance' => 0
+            ]);
+        }
+
         return Inertia::render('add-crypto');
     }
 
@@ -168,5 +183,13 @@ class CryptoController extends Controller
         return response()->json([
             'message' => 'Delete successfull'
         ]);
+    }
+
+    public function destroyInertia(int $id)
+    {
+        $crypto = Crypto::find($id);
+        $crypto->delete();
+
+        return back();
     }
 }

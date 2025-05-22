@@ -20,21 +20,21 @@ class TransactionInserted implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public int $volume24h;
+    // public int $volume24h;
 
     /**
      * Create a new event instance.
      */
     public function __construct(public Transaction $lastTransaction)
     {
-        $transactions24h = Transaction::with('crypto')
-            ->where('crypto_id', '=', $this->lastTransaction->crypto_id)
-            ->where('created_at', '>=', Carbon::now()->subDay())->get();
-        $volume = 0;
-        foreach ($transactions24h as $transaction) {
-            $volume += $transaction->amount;
-        }
-        $this->volume24h = $volume;
+        // $transactions24h = Transaction::with('crypto')
+        //     ->where('crypto_id', '=', $this->lastTransaction->crypto_id)
+        //     ->where('created_at', '>=', Carbon::now()->subDay())->get();
+        // $volume = 0;
+        // foreach ($transactions24h as $transaction) {
+        //     $volume += $transaction->amount;
+        // }
+        // $this->volume24h = $volume;
     }
 
     /**
@@ -42,6 +42,6 @@ class TransactionInserted implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('Transactions.Crypto.Id.' . $this->lastTransaction->crypto_id);
+        return new Channel('Transactions.User.Id.' . $this->lastTransaction->user_id);
     }
 }

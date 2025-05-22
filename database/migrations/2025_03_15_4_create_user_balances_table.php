@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_balances', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique()->nullable();
             $table->foreignId('user_id');
             $table->foreignId('crypto_id');
             $table->decimal('balance', 18, 8);

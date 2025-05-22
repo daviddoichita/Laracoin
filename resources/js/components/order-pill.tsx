@@ -12,7 +12,7 @@ function CancelDialog({ disabled, onClick }: Readonly<CancelDialogProps>) {
         <AlertDialog.Root>
             <AlertDialog.Trigger
                 disabled={disabled}
-                className={'w-full rounded p-1 ' + (disabled ? 'bg-red-900' : 'bg-red-500 hover:cursor-pointer hover:bg-red-400')}
+                className={'w-full rounded p-1 ' + (disabled ? 'bg-red-700' : 'bg-red-500 hover:cursor-pointer hover:bg-red-400')}
             >
                 Cancel
             </AlertDialog.Trigger>

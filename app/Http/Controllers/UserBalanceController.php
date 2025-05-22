@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserBalance;
 use Illuminate\Http\Request;
+use Str;
 
 class UserBalanceController extends Controller
 {
@@ -35,6 +36,7 @@ class UserBalanceController extends Controller
         ]);
 
         $userBalance = UserBalance::create([
+            'uuid' => Str::uuid(),
             'user_id' => $request->user_id,
             'crypto_id' => $request->crypto_id,
             'balance' => $request->balance,

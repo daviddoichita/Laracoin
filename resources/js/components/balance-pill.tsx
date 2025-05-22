@@ -2,6 +2,7 @@ import { PriceComparison } from '@/types/price-comparison';
 import { UserBalance } from '@/types/user-balance';
 import { useForm } from '@inertiajs/react';
 import { useEchoPublic } from '@laravel/echo-react';
+import { Copy } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -32,6 +33,26 @@ export function DynamicBalance({ userBalance, priceComparison }: Readonly<Dynami
                 <p>{userBalance.crypto.name}</p>
                 <p>{userBalance.crypto.symbol}</p>
             </div>
+            <div className="flex w-full flex-row items-center justify-center gap-3 text-sm font-black">
+                <p>UUID: {userBalance.uuid}</p>
+                <Copy
+                    height={16}
+                    className="hover:cursor-pointer"
+                    onClick={(e) => {
+                        navigator.clipboard.writeText(userBalance.uuid);
+                        const icon = e.currentTarget;
+                        icon.classList.add('hidden');
+                        const checkIcon = document.createElement('div');
+                        checkIcon.innerHTML =
+                            '<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-check"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                        icon.parentNode?.insertBefore(checkIcon, icon);
+                        setTimeout(() => {
+                            checkIcon.remove();
+                            icon.classList.remove('hidden');
+                        }, 1000);
+                    }}
+                />
+            </div>
             <div className="flex w-full flex-row flex-wrap gap-3">
                 <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Balance</p>
@@ -55,6 +76,14 @@ export function DynamicBalance({ userBalance, priceComparison }: Readonly<Dynami
                 </div>
             </div>
             <div className="flex w-full flex-row justify-center gap-3">
+                <Button
+                    className="w-full hover:cursor-pointer"
+                    onClick={() => {
+                        window.location.href = route('transaction.new', { balance_id: userBalance.id });
+                    }}
+                >
+                    Send
+                </Button>
                 <Button
                     className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400"
                     disabled={userBalance.balance <= 0}

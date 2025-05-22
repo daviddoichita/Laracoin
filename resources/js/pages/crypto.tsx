@@ -357,9 +357,9 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         }
     });
 
-    useEchoPublic(`Transactions.Crypto.Id.${crypto.id}`, 'TransactionInserted', (e: any) => {
-        setVolume24hState(e.volume24h);
-    });
+    // useEchoPublic(`Transactions.Crypto.Id.${crypto.id}`, 'TransactionInserted', (e: any) => {
+    //     setVolume24hState(e.volume24h);
+    // });
 
     useEffect(() => {
         setInfoPills(calculateInfoPills(crypto, priceComparison, volume24hState));

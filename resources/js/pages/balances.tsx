@@ -19,7 +19,7 @@ export default function Balances({ userBalances, priceComparison }: Readonly<Bal
     const [query, setQuery] = useState('');
     const userBalancesRef = useRef(userBalances);
     const fuse = new Fuse(userBalances, {
-        keys: ['crypto.symbol', 'crypto.name'],
+        keys: ['crypto.symbol', 'crypto.name', 'uuid'],
     });
 
     const filter = () => {

@@ -106,11 +106,12 @@ export default function ListCryptos({ cryptos }: Readonly<ListCryptosProps>) {
                         <th className="border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Circulating supply</th>
                         <th className="border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">View</th>
                         <th className="rounded-tr border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Disable</th>
+                        <th className="rounded-tr border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     {filteredCryptos
-                        .sort((a, b) => {
+                        .toSorted((a, b) => {
                             if (a.disabled === b.disabled) {
                                 return 0;
                             }
@@ -119,12 +120,14 @@ export default function ListCryptos({ cryptos }: Readonly<ListCryptosProps>) {
                         .map((v, i) => {
                             const tdClass = 'border border-neutral-700 text-center p-3';
                             return (
-                                <tr key={shortUUID()} className={v.disabled ? 'opacity-50' : ''}>
-                                    <td className={tdClass}>{v.name}</td>
-                                    <td className={tdClass}>{v.symbol}</td>
-                                    <td className={tdClass}>{v.max_supply === -1 ? 'INF' : v.max_supply}</td>
-                                    <td className={tdClass}>{v.circulating_supply === -1 ? 'INF' : v.circulating_supply}</td>
-                                    <td className={tdClass}>
+                                <tr key={shortUUID()}>
+                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>{v.name}</td>
+                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>{v.symbol}</td>
+                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>{v.max_supply === -1 ? 'INF' : v.max_supply}</td>
+                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>
+                                        {v.circulating_supply === -1 ? 'INF' : v.circulating_supply}
+                                    </td>
+                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>
                                         <Button
                                             onClick={() => (window.location.href = route('crypto.show', { id: v.id }))}
                                             disabled={v.disabled}
@@ -153,6 +156,14 @@ export default function ListCryptos({ cryptos }: Readonly<ListCryptosProps>) {
                                                 Disable
                                             </Button>
                                         )}
+                                    </td>
+                                    <td className={tdClass}>
+                                        <Button
+                                            onClick={() => (window.location.href = route('crypto.delete', { id: v.id }))}
+                                            className="cursor-pointer bg-red-500 hover:bg-red-500"
+                                        >
+                                            Delete
+                                        </Button>
                                     </td>
                                 </tr>
                             );

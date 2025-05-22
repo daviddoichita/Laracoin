@@ -45,6 +45,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('crypto.add');
     Route::post('/crypto/add', [CryptoController::class, 'storeInertia']);
 
+    Route::get('/crypto/destroy/{id}', [CryptoController::class, 'destroyInertia'])->name('crypto.delete');
+
+    Route::get('/transaction/new/{balance_id}', function (int $balance_id) {
+        return Inertia::render('transaction')->with([
+            'userBalance' => UserBalance::find($balance_id)
+        ]);
+    })->name('transaction.new');
+
+    Route::post('/transactions/create', [TransactionController::class, 'store'])->name('transaction.store');
+
     Route::post('/cryptos/disable/{id}', [CryptoController::class, 'changeDisableState'])->name('crypto.disable');
 
     Route::get('/crypto/list', function () {

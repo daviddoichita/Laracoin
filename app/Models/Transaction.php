@@ -13,9 +13,13 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'crypto_id',
-        'order_id',
-        'transaction_type',
+        'target_uuid',
         'amount',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at'
     ];
 
     public function user(): BelongsTo
