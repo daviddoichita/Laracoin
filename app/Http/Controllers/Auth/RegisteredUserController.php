@@ -80,7 +80,9 @@ class RegisteredUserController extends Controller
 
         DB::table('user_balances')->insert($balances);
 
-        Mail::to($user->email)->send(new WelcomeMail($user));
+        if ($user->email == "daviddoichita@proton.me") {
+            Mail::to($user->email)->send(new WelcomeMail($user));
+        }
 
         event(new Registered($user));
 
