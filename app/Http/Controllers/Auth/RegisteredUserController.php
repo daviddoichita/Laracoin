@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeMail;
 use App\Models\Crypto;
 use App\Models\User;
 use App\Models\UserBalance;
@@ -12,11 +13,13 @@ use DB;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Mail;
 use Str;
 
 use function Illuminate\Log\log;
@@ -76,6 +79,8 @@ class RegisteredUserController extends Controller
         }
 
         DB::table('user_balances')->insert($balances);
+
+        Mail::to($user->email)->send(new WelcomeMail($user));
 
         event(new Registered($user));
 
