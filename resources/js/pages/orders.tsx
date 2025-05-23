@@ -110,12 +110,20 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
                     value={searchQuery}
                     placeholder="Search"
                 ></Input>
-                <select className="rounded-md border p-2" value={selectedType} onChange={(e) => setSelectedType(e.target.value as OrderType)}>
+                <select
+                    className="rounded-md border p-2 dark:bg-neutral-900"
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value as OrderType)}
+                >
                     <option value={'null'}>Any</option>
                     <option value={'buy'}>Buy</option>
                     <option value={'sell'}>Sell</option>
                 </select>
-                <select className="rounded-md border p-2" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value as OrderStatus)}>
+                <select
+                    className="rounded-md border p-2 dark:bg-neutral-900"
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value as OrderStatus)}
+                >
                     <option value={'null'}>Any</option>
                     <option value={'canceled'}>Canceled</option>
                     <option value={'completed'}>Completed</option>

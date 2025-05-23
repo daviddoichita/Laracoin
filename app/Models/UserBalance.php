@@ -13,10 +13,10 @@ class UserBalance extends Model
     use HasFactory;
 
     protected $fillable = [
+        'uuid',
         'user_id',
         'crypto_id',
         'balance',
-        'locked_balance',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

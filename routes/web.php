@@ -43,7 +43,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/crypto/add', function () {
         return Inertia::render('add-crypto');
     })->name('crypto.add');
-    Route::post('/crypto/add', [CryptoController::class, 'storeInertia']);
+
+    Route::post('/crypto/store', [CryptoController::class, 'storeInertia'])->name('crypto.store');
 
     Route::get('/crypto/destroy/{id}', [CryptoController::class, 'destroyInertia'])->name('crypto.delete');
 

@@ -40,6 +40,15 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
         circulating_supply: -2,
         price: -2,
     });
+
+    type Multi = 'u' | 'h' | 'th' | 'm';
+
+    const [maxSupply, setMaxSupply] = useState<number>(-1);
+    const [maxSupplyMulti, setMaxSupplyMulti] = useState<Multi>('u');
+
+    const [circulatingSupply, setCirculatingSupply] = useState<number>(-1);
+    const [circulatingSupplyMulti, setCirculatingSupplyMulti] = useState<Multi>('u');
+
     const [inf, setInf] = useState(false);
 
     const capitalize = (str: string) => {
@@ -50,35 +59,20 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('crypto.add'));
+        post(route('crypto.store'), { onSuccess: () => reset() });
     };
 
-    const valueChange = (dataIdx: keyof AddCryptoForm, mod: string) => {
-        const setDataSafe = (modi: number) => {
-            const d = data[dataIdx];
-            if (typeof d === 'string') {
-                return;
-            } else {
-                setData(dataIdx, d * modi);
-            }
-        };
+    useEffect(() => {
+        setData('max_supply', maxSupply * (maxSupplyMulti === 'h' ? 100 : maxSupplyMulti === 'th' ? 1000 : maxSupplyMulti === 'm' ? 1000000 : 1));
+    }, [maxSupply, maxSupplyMulti]);
 
-        switch (mod) {
-            case 'u':
-                break;
-            case 'h':
-                setDataSafe(100);
-                break;
-            case 'th':
-                setDataSafe(1_000);
-                break;
-            case 'm':
-                setDataSafe(1_000_000);
-                break;
-            default:
-                break;
-        }
-    };
+    useEffect(() => {
+        setData(
+            'circulating_supply',
+            circulatingSupply *
+                (circulatingSupplyMulti === 'h' ? 100 : circulatingSupplyMulti === 'th' ? 1000 : circulatingSupplyMulti === 'm' ? 1000000 : 1),
+        );
+    }, [circulatingSupply, circulatingSupplyMulti]);
 
     useEffect(() => {
         checkRole(auth);
@@ -142,15 +136,15 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             required
                             autoFocus
                             autoComplete="max-supply"
-                            value={data.max_supply.toString().startsWith('-') ? '' : data.max_supply}
-                            onChange={(e) => setData('max_supply', parseFloat(e.target.value))}
+                            value={data.max_supply < 0 ? '' : data.max_supply}
+                            onChange={(e) => setMaxSupply(parseFloat(e.target.value))}
                             placeholder="Max supply"
                         />
                         <select
                             disabled={inf}
                             name="magnitude-max"
                             className="rounded border p-1"
-                            onChange={(e) => valueChange('max_supply', e.target.value)}
+                            onChange={(e) => setMaxSupplyMulti(e.target.value as Multi)}
                         >
                             <option value={'u'} className="dark:bg-neutral-900">
                                 Units
@@ -180,14 +174,14 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             required
                             autoFocus
                             autoComplete="circulating-supply"
-                            value={data.circulating_supply.toString().startsWith('-') ? '' : data.circulating_supply}
-                            onChange={(e) => setData('circulating_supply', parseFloat(e.target.value))}
+                            value={data.circulating_supply < 0 ? '' : data.circulating_supply}
+                            onChange={(e) => setCirculatingSupply(parseFloat(e.target.value))}
                             placeholder="Circulating supply"
                         />
                         <select
                             name="magnitude-circulating"
                             className="rounded border p-1"
-                            onChange={(e) => valueChange('circulating_supply', e.target.value)}
+                            onChange={(e) => setCirculatingSupplyMulti(e.target.value as Multi)}
                         >
                             <option value={'u'} className="dark:bg-neutral-900">
                                 Units
@@ -231,6 +225,7 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                         type="reset"
                         className="mt-4 w-full cursor-pointer bg-red-500 text-white transition duration-[0.3s] hover:bg-red-600 dark:text-black"
                         disabled={processing}
+                        onClick={() => reset()}
                     >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Cancel

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->foreignId('crypto_id');
             $table->decimal('balance', 18, 8);
-            $table->decimal('locked_balance', 18, 8);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

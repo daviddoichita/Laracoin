@@ -59,25 +59,16 @@ export function DynamicBalance({ userBalance, priceComparison }: Readonly<Dynami
                     <p>{userBalance.balance}</p>
                 </div>
                 <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Locked balance</p>
-                    <p>{userBalance.locked_balance}</p>
-                </div>
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Euro value</p>
                     <p className={priceComparisonCopy && priceComparisonCopy.last_update > 0 ? 'text-green-500' : 'text-red-500'}>
                         {formatPrice(userBalance.balance * (priceComparisonCopy?.price ?? 0))}
-                    </p>
-                </div>
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Locked euro value</p>
-                    <p className={priceComparisonCopy && priceComparisonCopy.last_update > 0 ? 'text-green-500' : 'text-red-500'}>
-                        {formatPrice(userBalance.locked_balance * (priceComparisonCopy?.price ?? 0))}
                     </p>
                 </div>
             </div>
             <div className="flex w-full flex-row justify-center gap-3">
                 <Button
                     className="w-full hover:cursor-pointer"
+                    disabled={userBalance.balance <= 0}
                     onClick={() => {
                         window.location.href = route('transaction.new', { balance_id: userBalance.id });
                     }}
@@ -122,22 +113,17 @@ export function StaticBalance({ userBalance }: Readonly<StaticBalanceProps>) {
                 <p>{userBalance.crypto.name}</p>
                 <p>{userBalance.crypto.symbol}</p>
             </div>
+            <div className="flex w-full flex-row items-center justify-center gap-3 text-sm font-black">
+                <p>Cannot transfer euro</p>
+            </div>
             <div className="flex w-full flex-row flex-wrap gap-3">
                 <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Balance</p>
                     <p>{userBalance.balance}</p>
                 </div>
                 <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Locked balance</p>
-                    <p>{userBalance.locked_balance}</p>
-                </div>
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Euro value</p>
                     <p>{formatPrice(parseFloat(userBalance.balance.toString()))}</p>
-                </div>
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Locked euro value</p>
-                    <p>{formatPrice(parseFloat(userBalance.locked_balance.toString()))}</p>
                 </div>
             </div>
             <div className="flex w-full flex-row justify-center gap-3">

@@ -5,7 +5,11 @@ namespace App\Listeners;
 use App\Events\OrderCompleted;
 use App\Events\OrderCreated;
 use App\Events\OrderFilled;
+use App\Events\PriceComparisonUpdated;
+use App\Events\PriceRecordCreated;
 use App\Models\Order;
+use App\Models\PriceComparison;
+use App\Models\PriceRecord;
 use App\Models\UserBalance;
 use Log;
 
@@ -149,6 +153,26 @@ class OrderCreatedListener
     private function completeOrder(Order $order): void
     {
         $order->status = 'completed';
+        $priceComparison = null;
+        if (($priceComparison = PriceComparison::where('main_id', $order->sold_id)->first()) == null) {
+            $priceComparison =  PriceComparison::where('main_id', $order->purchased_id)->first();
+        }
+
+        $current = $priceComparison->price;
+
+        $priceUpdatePercentage = abs($current - $order->price) / (($current + $order->price) / 2);
+
+        if ($order->price < $current) {
+            $priceUpdatePercentage *= -1;
+        }
+
+        if ($priceUpdatePercentage != 0) {
+            $priceComparison->price = $order->price;
+            $priceComparison->last_update = $priceUpdatePercentage;
+            $priceComparison->save();
+            event(new PriceComparisonUpdated($priceComparison));
+        }
+
         event(new OrderCompleted($order));
     }
 

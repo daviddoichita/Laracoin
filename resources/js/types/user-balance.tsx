@@ -6,6 +6,5 @@ export interface UserBalance {
     user_id: number;
     crypto_id: number;
     balance: number;
-    locked_balance: number;
     crypto: Crypto;
 }

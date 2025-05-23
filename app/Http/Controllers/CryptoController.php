@@ -112,12 +112,12 @@ class CryptoController extends Controller
 
         $users = User::all();
         foreach ($users as $user) {
+            $balance = $user->admin ? 10 : 0;
             UserBalance::create([
                 'uuid' => Str::uuid(),
                 'user_id' => $user->id,
                 'crypto_id' => $crypto->id,
-                'balance' => 0,
-                'locked_balance' => 0
+                'balance' => $balance,
             ]);
         }
 

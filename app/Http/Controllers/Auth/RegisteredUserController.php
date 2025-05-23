@@ -60,8 +60,7 @@ class RegisteredUserController extends Controller
             'uuid' => Str::uuid(),
             'user_id' => $user->id,
             'crypto_id' => Crypto::where('symbol', '=', 'EUR')->get()[0]->id,
-            'balance' => 1000,
-            'locked_balance' => 0
+            'balance' => 1000
         ]);
 
         $cryptos = Crypto::all()->where('symbol', '!=', 'EUR');
@@ -73,7 +72,6 @@ class RegisteredUserController extends Controller
                 'user_id' => $user->id,
                 'crypto_id' => $crypto->id,
                 'balance' => 0,
-                'locked_balance' => 0
             ]);
         }
 

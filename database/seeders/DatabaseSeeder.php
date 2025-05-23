@@ -97,7 +97,6 @@ class DatabaseSeeder extends Seeder
                 'user_id' => 1,
                 'crypto_id' => 1,
                 'balance' => 1000,
-                'locked_balance' => 0,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
@@ -106,7 +105,6 @@ class DatabaseSeeder extends Seeder
                 'user_id' => 1,
                 'crypto_id' => 2,
                 'balance' => 80,
-                'locked_balance' => 0,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
@@ -115,7 +113,6 @@ class DatabaseSeeder extends Seeder
                 'user_id' => 1,
                 'crypto_id' => 3,
                 'balance' => 1000,
-                'locked_balance' => 0,
                 'created_at' => $now,
                 'updated_at' => $now,
             ]
@@ -126,10 +123,10 @@ class DatabaseSeeder extends Seeder
         $cryptosSelect = Crypto::all()->where('symbol', '!=', 'EUR')->where('symbol', '!=', 'BTC')->where('symbol', '!=', 'ETH');
         foreach ($cryptosSelect as $cryptoSelect) {
             UserBalance::create([
+                'uuid' => Str::uuid(),
                 'user_id' => 1,
                 'crypto_id' => $cryptoSelect->id,
                 'balance' => 0,
-                'locked_balance' => 0,
             ]);
         }
 
