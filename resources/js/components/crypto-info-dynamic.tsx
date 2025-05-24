@@ -15,6 +15,9 @@ export function CryptoInfoDynamic({ value, latest }: Readonly<CryptoInfoDynamicP
         if (latest < 0) {
             setColor('text-red-500');
             setArrow('chevron-down');
+        } else if (latest === 0) {
+            setColor('dark:text-white text-black');
+            setArrow('minus');
         } else {
             setColor('text-green-500');
             setArrow('chevron-up');

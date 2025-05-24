@@ -273,6 +273,9 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         price: null,
     });
 
+    const [timeFrame, setTimeFrame] = useState<string>('5m');
+    const activeTimeFrame = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
@@ -495,6 +498,32 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                 <div className="mr-2 ml-2 flex flex-col gap-6">
                     <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{crypto.symbol}&nbsp;&nbsp;|&nbsp;&nbsp;EUR</h2>
                     {/* Should have a WebSocket for 1h, 30m, etc to retrieve all the prices update to that interval in 1d, 1w, 1m size */}
+                    <div className="flex w-full flex-row justify-center">
+                        <button
+                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '5m' ? activeTimeFrame : '')}
+                            onClick={() => setTimeFrame('5m')}
+                        >
+                            5m
+                        </button>
+                        <button
+                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '15m' ? activeTimeFrame : '')}
+                            onClick={() => setTimeFrame('15m')}
+                        >
+                            15m
+                        </button>
+                        <button
+                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '30m' ? activeTimeFrame : '')}
+                            onClick={() => setTimeFrame('30m')}
+                        >
+                            30m
+                        </button>
+                        <button
+                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '1h' ? activeTimeFrame : '')}
+                            onClick={() => setTimeFrame('1h')}
+                        >
+                            1h
+                        </button>
+                    </div>
                     <CryptoPriceChart priceRecords={priceRecordsState} />
                 </div>
                 <div className="flex flex-col gap-6">
