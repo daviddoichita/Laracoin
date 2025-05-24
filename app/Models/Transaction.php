@@ -17,11 +17,6 @@ class Transaction extends Model
         'amount',
     ];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at'
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -30,10 +25,5 @@ class Transaction extends Model
     public function crypto(): BelongsTo
     {
         return $this->belongsTo(Crypto::class);
-    }
-
-    public function order(): BelongsTo
-    {
-        return $this->belongsTo(Order::class);
     }
 }

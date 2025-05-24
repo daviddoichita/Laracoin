@@ -14,7 +14,7 @@ import { UserBalance } from '@/types/user-balance';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEchoPublic } from '@laravel/echo-react';
 import { FormEventHandler, JSX, useEffect, useState } from 'react';
-import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, CartesianGrid, ComposedChart, ReferenceArea, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -65,7 +65,7 @@ const calculateInfoPills = (crypto: Crypto, priceComparison: PriceComparison, vo
 
     const rawmc = crypto.circulating_supply * price;
     const rawvol = volume24h * price;
-    const latest = priceComparison.last_update;
+    const latest = parseFloat(priceComparison.last_update.toString());
 
     return { marketCap, volume, fdv, vol_mktCap, max_supply, circulating_supply, rawmc, rawvol, latest };
 };
@@ -86,66 +86,144 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     }
     return null;
 };
-
 const CryptoPriceChart = ({ priceRecords }: { priceRecords: PriceRecord[] }) => {
-    const minPrice = Math.min(...priceRecords.map((record) => record.price));
-    const maxPrice = Math.max(...priceRecords.map((record) => record.price));
-    const modRecords = priceRecords.map((record) => ({
-        ...record,
-        price: record.price * 0.4,
-    }));
+    const [xDomainLeft, setXDomainLeft] = useState<Date | string>('');
+    const [xDomainRight, setXDomainRight] = useState<Date | string>('');
+    const [visibleData, setVisibleData] = useState<PriceRecord[]>(priceRecords);
+    const [isZoomed, setIsZoomed] = useState<boolean>(false);
+    const [yDomainBottom, setYDomainBottom] = useState<number>(0);
+    const [yDomainTop, setYDomainTop] = useState<number>(0);
+
+    const minPrice = Math.min(...visibleData.map((record) => record.price));
+    const maxPrice = Math.max(...visibleData.map((record) => record.price));
+    // const modRecords = visibleData.map((record) => ({
+    //     ...record,
+    //     price: record.price * 0.4,
+    // }));
+
+    useEffect(() => {
+        if (!isZoomed) {
+            setVisibleData(priceRecords);
+        }
+    }, [priceRecords, isZoomed]);
+
+    const zoomIn = () => {
+        if (xDomainLeft === xDomainRight || xDomainRight === '') {
+            setXDomainLeft('');
+            setXDomainRight('');
+            return;
+        }
+
+        const fromIndex = priceRecords.findIndex((record) => record.created_at === xDomainLeft);
+        const toIndex = priceRecords.findIndex((record) => record.created_at === xDomainRight);
+
+        if (fromIndex === -1 || toIndex === -1) return;
+
+        const startIndex = Math.min(fromIndex, toIndex);
+        const endIndex = Math.max(fromIndex, toIndex);
+
+        const filteredData = priceRecords.slice(startIndex, endIndex + 1);
+
+        if (filteredData.length > 0) {
+            const minPrice = Math.min(...filteredData.map((record) => record.price));
+            const maxPrice = Math.max(...filteredData.map((record) => record.price));
+
+            setVisibleData(filteredData);
+            setIsZoomed(true);
+            setYDomainBottom(minPrice - minPrice * 0.08);
+            setYDomainTop(maxPrice + maxPrice * 0.08);
+        }
+
+        setXDomainLeft('');
+        setXDomainRight('');
+    };
+
+    const zoomOut = () => {
+        setVisibleData(priceRecords);
+        setIsZoomed(false);
+        setXDomainLeft('');
+        setXDomainRight('');
+        setYDomainBottom(0);
+        setYDomainTop(0);
+    };
 
     return (
-        <ResponsiveContainer className="self-center" width="100%" height={600}>
-            <ComposedChart
-                width={500}
-                height={300}
-                data={priceRecords}
-                margin={{
-                    top: 20,
-                    right: 30,
-                    left: 35,
-                    bottom: 50,
-                }}
-            >
-                <defs>
-                    <linearGradient id="colorPrice" x1={0} y1={0} x2={0} y2={1}>
-                        <stop offset="5%" stopColor="#0069a8" stopOpacity={0.7} />
-                        <stop offset="95%" stopColor="#0069a8" stopOpacity={0.05} />
-                    </linearGradient>
-                </defs>
-                <CartesianGrid stroke="#404040" strokeDasharray="3 3"></CartesianGrid>
-                <XAxis
-                    dataKey="created_at"
-                    tick={{ fontSize: 12, width: 100 }}
-                    tickFormatter={(tick) => {
-                        const tickDate = new Date(tick);
-                        return `${tickDate.toLocaleDateString()} ${tickDate.toLocaleTimeString()}`;
+        <div className="flex w-full flex-col">
+            <ResponsiveContainer className="self-center" width="100%" height={600}>
+                <ComposedChart
+                    width={500}
+                    height={300}
+                    data={visibleData}
+                    margin={{
+                        top: 20,
+                        right: 30,
+                        left: 35,
+                        bottom: 50,
                     }}
-                    tickMargin={10}
-                    scale="auto"
-                ></XAxis>
-                <YAxis
-                    orientation="right"
-                    dataKey="price"
-                    domain={[minPrice - minPrice * 0.08, maxPrice + maxPrice * 0.08]}
-                    tickFormatter={(tick) => {
-                        return localeStringCompact(parseFloat(tick));
-                    }}
-                ></YAxis>
-                <Tooltip content={<CustomTooltip />}></Tooltip>
-                <Area
-                    type="monotone"
-                    dataKey="price"
-                    activeDot={{ r: 4 }}
-                    stroke="#0069a8"
-                    strokeWidth={2.5}
-                    fillOpacity={1}
-                    fill="url(#colorPrice)"
-                ></Area>
-                <Bar dataKey="price" data={modRecords} stroke="#0069a8" opacity={0.6} fill="#0069a8"></Bar>
-            </ComposedChart>
-        </ResponsiveContainer>
+                    onMouseDown={(nextState) => nextState?.activeLabel && setXDomainLeft(nextState.activeLabel)}
+                    onMouseMove={(nextState) => xDomainLeft && nextState?.activeLabel && setXDomainRight(nextState.activeLabel)}
+                    onMouseUp={zoomIn}
+                >
+                    <defs>
+                        <linearGradient id="colorPrice" x1={0} y1={0} x2={0} y2={1}>
+                            <stop offset="5%" stopColor="#0069a8" stopOpacity={0.7} />
+                            <stop offset="95%" stopColor="#0069a8" stopOpacity={0.05} />
+                        </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke="#404040" strokeDasharray="3 3" />
+                    <XAxis
+                        dataKey="created_at"
+                        tick={{ fontSize: 12, width: 100 }}
+                        tickFormatter={(tick) => {
+                            const tickDate = new Date(tick);
+                            return `${tickDate.toLocaleDateString()} ${tickDate.toLocaleTimeString()}`;
+                        }}
+                        tickMargin={10}
+                        scale="auto"
+                        allowDataOverflow={true}
+                    />
+                    <YAxis
+                        orientation="right"
+                        dataKey="price"
+                        domain={isZoomed ? [yDomainBottom, yDomainTop] : [minPrice - minPrice * 0.08, maxPrice + maxPrice * 0.08]}
+                        tickFormatter={(tick) => {
+                            return localeStringCompact(parseFloat(tick.toString()));
+                        }}
+                        allowDataOverflow={true}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Area
+                        type="monotone"
+                        dataKey="price"
+                        activeDot={{ r: 4 }}
+                        stroke="#0069a8"
+                        strokeWidth={2.5}
+                        fillOpacity={1}
+                        fill="url(#colorPrice)"
+                    />
+                    {/* <Bar dataKey="price" data={modRecords} stroke="#0069a8" opacity={0.6} fill="#0069a8" /> */}
+
+                    {xDomainLeft && xDomainRight ? (
+                        <ReferenceArea
+                            x1={xDomainLeft.toString()}
+                            x2={xDomainRight.toString()}
+                            strokeOpacity={0.3}
+                            fill="#0069a8"
+                            fillOpacity={0.2}
+                        />
+                    ) : null}
+                </ComposedChart>
+            </ResponsiveContainer>
+
+            {isZoomed && (
+                <button
+                    onClick={zoomOut}
+                    className="my-2 self-center rounded-md bg-sky-600 px-4 py-1 font-black text-white transition-colors hover:bg-sky-700"
+                >
+                    Zoom Out
+                </button>
+            )}
+        </div>
     );
 };
 
@@ -357,10 +435,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         }
     });
 
-    // useEchoPublic(`Transactions.Crypto.Id.${crypto.id}`, 'TransactionInserted', (e: any) => {
-    //     setVolume24hState(e.volume24h);
-    // });
-
     useEffect(() => {
         setInfoPills(calculateInfoPills(crypto, priceComparison, volume24hState));
     }, [volume24hState, priceComparison]);
@@ -391,16 +465,16 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                 dynamic
                                 latest={infoPills.latest}
                             />
-                            <CoinInfoPill
+                            {/* <CoinInfoPill
                                 name="Volume (24h)"
                                 value={infoPills.volume}
                                 textClassName="text-sm"
                                 rawValue={infoPills.rawvol}
                                 dynamic
                                 latest={infoPills.latest}
-                            />
+                            /> */}
                             <CoinInfoPill name="FDV" value={infoPills.fdv} textClassName="text-sm" latest={infoPills.latest} />
-                            <CoinInfoPill name="Vol/Mkt (24h)" value={infoPills.vol_mktCap} textClassName="text-sm" latest={infoPills.latest} />
+                            {/* <CoinInfoPill name="Vol/Mkt (24h)" value={infoPills.vol_mktCap} textClassName="text-sm" latest={infoPills.latest} /> */}
                             <CoinInfoPill
                                 name="Total supply"
                                 value={infoPills.circulating_supply}
@@ -417,11 +491,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                             />
                         </div>
                     </div>
-
-                    {/* Add social links if applicable also whitepaper, explorers, wallets, etc */}
-                    {/* Maybe store in the db */}
-
-                    {/* Add a convenience converter */}
                 </div>
                 <div className="mr-2 ml-2 flex flex-col gap-6">
                     <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{crypto.symbol}&nbsp;&nbsp;|&nbsp;&nbsp;EUR</h2>
@@ -429,7 +498,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                     <CryptoPriceChart priceRecords={priceRecordsState} />
                 </div>
                 <div className="flex flex-col gap-6">
-                    {/* Change according to selected tab */}
                     <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{tab.toUpperCase()}</h2>
 
                     <div className="flex w-full flex-col items-center justify-center">
@@ -445,7 +513,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setData('sold_amount', null);
                                     setData('order_type', 'buy');
                                 }}
-                                className={'w-full cursor-pointer rounded p-2 ' + (isBuying ? activeTab : '')}
+                                className={'w-full cursor-pointer rounded p-2 font-black text-white ' + (isBuying ? activeTab : '')}
                             >
                                 Buy
                             </button>
@@ -460,7 +528,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setData('sold_amount', null);
                                     setData('order_type', 'sell');
                                 }}
-                                className={'w-full cursor-pointer rounded p-2 ' + (!isBuying ? activeTab : '')}
+                                className={'w-full cursor-pointer rounded p-2 font-black text-white ' + (!isBuying ? activeTab : '')}
                             >
                                 Sell
                             </button>

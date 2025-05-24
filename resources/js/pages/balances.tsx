@@ -40,7 +40,7 @@ export default function Balances({ userBalances, priceComparison }: Readonly<Bal
     return (
         <AppLayout>
             <Head title="My balances" />
-            <div className="mt-5 mb-5 flex w-[40%] max-w-7xl flex-row gap-2 self-center">
+            <div className="sticky top-0 z-10 mt-5 mb-5 flex w-full max-w-7xl flex-row gap-3 self-center bg-white p-3 dark:bg-neutral-950">
                 {filtering ? (
                     <Button
                         onClick={() => {

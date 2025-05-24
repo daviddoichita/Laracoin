@@ -7,6 +7,7 @@ use App\Models\Crypto;
 use App\Models\Order;
 use App\Models\PriceComparison;
 use App\Models\PriceRecord;
+use App\Models\Transaction;
 use App\Models\UserBalance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -84,6 +85,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/metrics', function () {
         return Inertia::render('metrics');
     });
+
+    Route::get('/my-transactions', function () {
+        $userBalances = UserBalance::with('crypto')->where('user_id', Auth::user()->id)->get();
+        $userBalanceUuids = $userBalances->pluck('uuid')->toArray();
+
+        $incomingTransactions = Transaction::with('crypto')
+            ->whereIn('target_uuid', $userBalanceUuids)
+            ->get();
+
+        return Inertia::render('transaction-history', [
+            'outgoingTransactions' => Transaction::with('crypto')->where('user_id', Auth::user()->id)->get(),
+            'incomingTransactions' => $incomingTransactions,
+            'userBalances' => $userBalances
+        ]);
+    })->name('my-transactions');
 
     Route::get('/admin/pulse', function () {
         return redirect('/pulse');

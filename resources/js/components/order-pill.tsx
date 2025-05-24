@@ -12,7 +12,7 @@ function CancelDialog({ disabled, onClick }: Readonly<CancelDialogProps>) {
         <AlertDialog.Root>
             <AlertDialog.Trigger
                 disabled={disabled}
-                className={'w-full rounded p-1 ' + (disabled ? 'bg-red-700' : 'bg-red-500 hover:cursor-pointer hover:bg-red-400')}
+                className={'w-full rounded p-1 ' + (disabled ? 'hidden' : 'bg-red-500 hover:cursor-pointer hover:bg-red-400')}
             >
                 Cancel
             </AlertDialog.Trigger>
@@ -65,34 +65,34 @@ export default function OrderPill({ order, sold, purchased }: Readonly<OrderPill
     }
 
     return (
-        <div className={`mb-5 flex w-[49.5%] flex-col items-center gap-3 rounded-xl border p-3 ${statusClass}`}>
+        <div className={`mb-5 flex w-[49%] flex-col items-center gap-3 rounded-xl border p-3 ${statusClass}`}>
             <div className="flex w-full flex-row justify-center gap-3 text-lg font-black">
                 <p>Order id: {order.id}</p>
                 <p>Sold: {sold?.name}</p>
                 <p>Purchased: {purchased?.name}</p>
             </div>
             <div className="flex w-full flex-row flex-wrap gap-3">
-                <div className="flex w-[32%] flex-col items-center gap-2 rounded-sm border p-2">
+                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Type</p>
                     <p>{order.order_type}</p>
                 </div>
-                <div className="flex w-[32%] flex-col items-center gap-2 rounded-sm border p-2">
+                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Amount</p>
                     <p>{formatPrice(parseFloat(order.purchased_amount.toString()))}</p>
                 </div>
-                <div className="flex w-[32%] flex-col items-center gap-2 rounded-sm border p-2">
+                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Price</p>
                     <p>{formatPrice(parseFloat(order.price.toString()))}</p>
                 </div>
-                <div className="flex w-[32%] flex-col items-center gap-2 rounded-sm border p-2">
+                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Total price</p>
                     <p>{formatPrice(parseFloat(order.sold_amount.toString()))}</p>
                 </div>
-                <div className="flex w-[32%] flex-col items-center gap-2 rounded-sm border p-2">
+                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>Filled</p>
                     <p>{formatPrice(parseFloat(order.filled.toString()))}</p>
                 </div>
-                <div className="flex w-[32%] flex-col items-center gap-2 rounded-sm border p-2">
+                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
                     <p>To sell</p>
                     <p>{formatPrice(parseFloat(order.remaining_to_sell.toString()))}</p>
                 </div>

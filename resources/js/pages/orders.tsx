@@ -85,7 +85,7 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
     return (
         <AppLayout>
             <Head title="My orders" />
-            <div className="mt-5 mb-5 flex w-[40%] max-w-7xl flex-row gap-3 self-center">
+            <div className="sticky top-0 z-10 mt-5 mb-5 flex w-full max-w-7xl flex-row gap-3 self-center bg-white p-3 dark:bg-neutral-950">
                 {filtering ? (
                     <Button
                         onClick={() => {
@@ -131,19 +131,25 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
                 </select>
             </div>
 
-            <div className="mt-10 flex max-w-7xl min-w-7xl flex-row flex-wrap gap-3 self-center">
-                {filteredOrders
-                    .toSorted((a, b) => a.id - b.id)
-                    .map((v, _i) => {
-                        return (
-                            <OrderPill
-                                order={v}
-                                sold={cryptos.find((c) => c.id === v.sold_id)}
-                                purchased={cryptos.find((c) => c.id === v.purchased_id)}
-                                key={shortUUID()}
-                            />
-                        );
-                    })}
+            <div className="mt-10 flex max-w-6xl min-w-6xl flex-row flex-wrap gap-3 self-center">
+                {filteredOrders.length > 0 ? (
+                    filteredOrders
+                        .toSorted((a, b) => a.id - b.id)
+                        .map((v, _i) => {
+                            return (
+                                <OrderPill
+                                    order={v}
+                                    sold={cryptos.find((c) => c.id === v.sold_id)}
+                                    purchased={cryptos.find((c) => c.id === v.purchased_id)}
+                                    key={shortUUID()}
+                                />
+                            );
+                        })
+                ) : (
+                    <div className="flex w-full justify-center">
+                        <p>No orders</p>
+                    </div>
+                )}
             </div>
         </AppLayout>
     );
