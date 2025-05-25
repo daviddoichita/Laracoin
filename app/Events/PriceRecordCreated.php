@@ -34,6 +34,31 @@ class PriceRecordCreated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('Prices.Pair.' . $this->priceRecord->pair_id);
+        $channels = [];
+
+        $intervals = ['5m', '15m', '30m', '1h'];
+        $createdAt = $this->priceRecord->created_at;
+        $currentMinute = (int) $createdAt->format('i');
+
+        foreach ($intervals as $interval) {
+            switch ($interval) {
+                case '5m':
+                    if ($currentMinute % 5 !== 0) continue 2;
+                    break;
+                case '15m':
+                    if ($currentMinute % 15 !== 0) continue 2;
+                    break;
+                case '30m':
+                    if ($currentMinute % 30 !== 0) continue 2;
+                    break;
+                case '1h':
+                    if ($currentMinute !== 0) continue 2;
+                    break;
+                default:
+            }
+            $channels[] = new Channel('Prices.Pair.' . $this->priceRecord->pair_id . '.' . $interval);
+        }
+
+        return $channels;
     }
 }

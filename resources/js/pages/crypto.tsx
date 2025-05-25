@@ -273,7 +273,9 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         price: null,
     });
 
-    const [timeFrame, setTimeFrame] = useState<string>('5m');
+    type TimeFrame = '5m' | '15m' | '30m' | '1h';
+    const url = window.location.href.split('/');
+    const [timeFrame, setTimeFrame] = useState<TimeFrame>(url[url.length - 1] as TimeFrame);
     const activeTimeFrame = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
 
     const submit: FormEventHandler = (e) => {
@@ -429,10 +431,13 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         </>
     );
 
-    useEchoPublic(`Prices.Pair.${priceComparison?.id}`, ['PriceComparisonUpdated', 'PriceRecordCreated'], (e: any) => {
+    useEchoPublic(`Prices.Pair.${priceComparison?.id}`, 'PriceComparisonUpdated', (e: any) => {
         if (e.priceComparison?.pair_symbol.includes(crypto.symbol)) {
             setPriceComparison(e.priceComparison);
         }
+    });
+
+    useEchoPublic(`Prices.Pair.${priceComparison?.id}.${timeFrame}`, 'PriceRecordCreated', (e: any) => {
         if (e.priceRecord?.pair_id === priceComparison?.id) {
             setPriceRecordsState(() => [...priceRecordsState, e.priceRecord]);
         }
@@ -501,25 +506,25 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                     <div className="flex w-full flex-row justify-center">
                         <button
                             className={'w-full cursor-pointer rounded p-2' + (timeFrame === '5m' ? activeTimeFrame : '')}
-                            onClick={() => setTimeFrame('5m')}
+                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '5m' }))}
                         >
                             5m
                         </button>
                         <button
                             className={'w-full cursor-pointer rounded p-2' + (timeFrame === '15m' ? activeTimeFrame : '')}
-                            onClick={() => setTimeFrame('15m')}
+                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '15m' }))}
                         >
                             15m
                         </button>
                         <button
                             className={'w-full cursor-pointer rounded p-2' + (timeFrame === '30m' ? activeTimeFrame : '')}
-                            onClick={() => setTimeFrame('30m')}
+                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '30m' }))}
                         >
                             30m
                         </button>
                         <button
                             className={'w-full cursor-pointer rounded p-2' + (timeFrame === '1h' ? activeTimeFrame : '')}
-                            onClick={() => setTimeFrame('1h')}
+                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '1h' }))}
                         >
                             1h
                         </button>

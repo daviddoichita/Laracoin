@@ -26,16 +26,50 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    Route::get('/crypto/show/{id}', function (int $id) {
+    Route::get('/crypto/show/{id}/{interval}', function (int $id, string $invterval) {
         if ($id == Crypto::where('symbol', 'EUR')->get()->first()->id) {
             return redirect('dashboard');
         }
+
+        $intervalMapping = [
+            '5m' => 5,
+            '15m' => 15,
+            '30m' => 30,
+            '1h' => 60,
+        ];
+
+        if (!isset($intervalMapping[$invterval])) {
+            abort(400, 'Invalid interval');
+        }
+
+        $intervalMinutes = $intervalMapping[$invterval];
+        $priceRecords = DB::select("
+            WITH ranked AS (
+                SELECT 
+                    pr.*,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY DATE_TRUNC('hour', pr.created_at) + 
+                            INTERVAL '{$intervalMinutes} minutes' * FLOOR(DATE_PART('minute', pr.created_at) / {$intervalMinutes})
+                        ORDER BY pr.created_at
+                    ) AS rn
+                FROM price_records pr
+                JOIN price_comparison pc ON pr.pair_id = pc.id
+                WHERE pc.main_id = ?
+            )
+            SELECT * FROM ranked WHERE rn = 1 ORDER BY created_at
+        ", [$id]);
+
+        // Convert to collection to maintain consistency with your code
+        $priceRecords = collect($priceRecords);
+
+        Log::info(json_encode($priceRecords));
 
         return Inertia::render('crypto', [
             'crypto' => Crypto::with(['mainPriceComparison', 'childPriceComparison'])
                 ->where('disabled', '=', false)->find($id),
             'volume24h' => TransactionController::volume24h($id),
-            'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
+            // 'priceRecords' => PriceRecord::whereHas('pair', fn($query) => $query->where('main_id', $id))->get(),
+            'priceRecords' => $priceRecords,
             'state' => request()->query('state'),
             'userBalance' => UserBalance::all()->where('user_id', '=', Auth::user()->id)->values()->toArray()
         ]);
