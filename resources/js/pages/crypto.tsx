@@ -451,7 +451,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Crypto View"></Head>
 
-            <div className="mt-8 grid grid-cols-1 gap-8 self-center px-2 xl:grid-cols-12 xl:gap-2">
+            <div className="mt-8 grid w-full grid-cols-1 gap-8 self-center px-2 xl:grid-cols-12 xl:gap-2">
                 <section className="order-2 flex flex-col gap-6 rounded-lg bg-white/70 p-4 shadow xl:order-1 xl:col-span-3 dark:bg-neutral-900/70">
                     <h2 className="mb-2 w-full border-b pb-2 text-center text-xl font-black">Coin info and metrics</h2>
                     <CryptoDashPillPrice
