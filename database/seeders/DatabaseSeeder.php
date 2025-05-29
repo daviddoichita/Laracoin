@@ -75,6 +75,19 @@ class DatabaseSeeder extends Seeder
 
         DB::table('price_comparison')->insert($priceComparisons);
 
+        $priceRecords = [
+            [
+                'pair_id' => 1,
+                'price' => 80000
+            ],
+            [
+                'pair_id' => 2,
+                'price' => 2000
+            ]
+        ];
+
+        DB::table('price_records')->insert($priceRecords);
+
         $users = [
             [
                 'name' => 'admin',

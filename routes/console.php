@@ -37,11 +37,24 @@ Schedule::call(function () {
     $priceComparisonArray = PriceComparison::all();
 
     foreach ($priceComparisonArray as $priceComparison) {
-        $current = $priceComparison->price;
+        $today = now()->startOfDay();
+        $priceRecord = PriceRecord::where('pair_id', $priceComparison->id)
+            ->whereDate('created_at', $today)
+            ->whereTime('created_at', '00:00:00')
+            ->first();
 
+        if (!$priceRecord) {
+            $priceRecord = PriceRecord::where('pair_id', $priceComparison->id)
+                ->orderBy('created_at', 'asc')
+                ->first();
+        }
+
+        $current = $priceRecord ? $priceRecord->price : $priceComparison->price;
+
+        $curr = $priceComparison->price;
         $percent = rand(-2, 2);
-        $adjust = ($percent / 100) * $current;
-        $new = $current + $adjust;
+        $adjust = ($percent / 100) * $curr;
+        $new = $curr + $adjust;
 
         $priceUpdatePercentage = abs($current - $new) / (($current + $new) / 2);
 

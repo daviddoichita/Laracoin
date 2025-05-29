@@ -158,7 +158,19 @@ class OrderCreatedListener
             $priceComparison =  PriceComparison::where('main_id', $order->purchased_id)->first();
         }
 
-        $current = $priceComparison->price;
+        $today = now()->startOfDay();
+        $priceRecord = PriceRecord::where('pair_id', $priceComparison->id)
+            ->whereDate('created_at', $today)
+            ->whereTime('created_at', '00:00:00')
+            ->first();
+
+        if (!$priceRecord) {
+            $priceRecord = PriceRecord::where('pair_id', $priceComparison->id)
+                ->orderBy('created_at', 'asc')
+                ->first();
+        }
+
+        $current = $priceRecord ? $priceRecord->price : $priceComparison->price;
 
         $priceUpdatePercentage = abs($current - $order->price) / (($current + $order->price) / 2);
 
