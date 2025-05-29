@@ -65,48 +65,52 @@ export default function OrderPill({ order, sold, purchased }: Readonly<OrderPill
     }
 
     return (
-        <div className={`mb-5 flex w-[49%] flex-col items-center gap-3 rounded-xl border p-3 ${statusClass}`}>
-            <div className="flex w-full flex-row justify-center gap-3 text-lg font-black">
-                <p>Order id: {order.id}</p>
-                <p>Sold: {sold?.name}</p>
-                <p>Purchased: {purchased?.name}</p>
+        <div
+            className={`mb-5 flex w-full max-w-xl flex-col items-center gap-4 rounded-xl border bg-white p-4 transition-shadow duration-200 dark:bg-neutral-950 ${statusClass}`}
+        >
+            <div className="flex w-full flex-col gap-2 text-base font-black sm:flex-row sm:justify-between sm:gap-4 sm:text-lg">
+                <p className="truncate">Order id: {order.id}</p>
+                <p className="truncate">Sold: {sold?.name}</p>
+                <p className="truncate">Purchased: {purchased?.name}</p>
             </div>
-            <div className="flex w-full flex-row flex-wrap gap-3">
-                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Type</p>
-                    <p>{order.order_type}</p>
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+                <div className="flex flex-col items-center gap-1 rounded border bg-gray-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-gray-500 dark:text-gray-300">Type</p>
+                    <p className="font-medium">{order.order_type}</p>
                 </div>
-                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Amount</p>
-                    <p>{formatPrice(parseFloat(order.purchased_amount.toString()))}</p>
+                <div className="flex flex-col items-center gap-1 rounded border bg-gray-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-gray-500 dark:text-gray-300">Amount</p>
+                    <p className="font-medium">{formatPrice(parseFloat(order.purchased_amount.toString()))}</p>
                 </div>
-                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Price</p>
-                    <p>{formatPrice(parseFloat(order.price.toString()))}</p>
+                <div className="flex flex-col items-center gap-1 rounded border bg-gray-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-gray-500 dark:text-gray-300">Price</p>
+                    <p className="font-medium">{formatPrice(parseFloat(order.price.toString()))}</p>
                 </div>
-                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Total price</p>
-                    <p>{formatPrice(parseFloat(order.sold_amount.toString()))}</p>
+                <div className="flex flex-col items-center gap-1 rounded border bg-gray-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-gray-500 dark:text-gray-300">Total price</p>
+                    <p className="font-medium">{formatPrice(parseFloat(order.sold_amount.toString()))}</p>
                 </div>
-                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Filled</p>
-                    <p>{formatPrice(parseFloat(order.filled.toString()))}</p>
+                <div className="flex flex-col items-center gap-1 rounded border bg-gray-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-gray-500 dark:text-gray-300">Filled</p>
+                    <p className="font-medium">{formatPrice(parseFloat(order.filled.toString()))}</p>
                 </div>
-                <div className="flex w-[31%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>To sell</p>
-                    <p>{formatPrice(parseFloat(order.remaining_to_sell.toString()))}</p>
+                <div className="flex flex-col items-center gap-1 rounded border bg-gray-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-gray-500 dark:text-gray-300">To sell</p>
+                    <p className="font-medium">{formatPrice(parseFloat(order.remaining_to_sell.toString()))}</p>
                 </div>
-                <div className="flex w-full flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Status</p>
-                    <p className={textClass}>{order.status}</p>
+                <div className="col-span-1 flex flex-col items-center gap-1 rounded border bg-gray-50 p-2 sm:col-span-2 md:col-span-3 dark:bg-neutral-800">
+                    <p className="text-xs text-gray-500 dark:text-gray-300">Status</p>
+                    <p className={`font-bold ${textClass}`}>{order.status}</p>
                 </div>
             </div>
-            <CancelDialog
-                disabled={order.status === 'completed' || order.status === 'canceled'}
-                onClick={() => {
-                    window.location.href = route('cancel-order', { id: order.id });
-                }}
-            ></CancelDialog>
+            <div className="flex w-full justify-end">
+                <CancelDialog
+                    disabled={order.status === 'completed' || order.status === 'canceled'}
+                    onClick={() => {
+                        window.location.href = route('cancel-order', { id: order.id });
+                    }}
+                />
+            </div>
         </div>
     );
 }

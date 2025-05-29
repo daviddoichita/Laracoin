@@ -256,7 +256,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     const [priceRecordsState, setPriceRecordsState] = useState(priceRecords);
 
     const [tab, setTab] = useState(state ?? 'buy');
-    const activeTab = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600';
+    const activeTab = ' dark:bg-sky-800 dark:hover:bg-sky-900 bg-sky-500 hover:bg-sky-600 text-white';
     const [customPrice, setCustomPrice] = useState(false);
     const [isBuying, setIsBuying] = useState(tab === 'buy');
 
@@ -322,28 +322,22 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
     }, [priceComparison.price]);
 
     const formData: JSX.Element = (
-        <>
-            <div className="mt-4 flex w-full flex-col font-black">
-                <p>
-                    Available balance ({!isBuying ? crypto.symbol : 'EUR'}):{' '}
-                    {parseFloat(userBalance.find((u) => u.crypto_id === data.sold_id)?.balance.toString() ?? '').toLocaleString('es-ES', {
-                        maximumFractionDigits: 8,
-                    })}
-                </p>
+        <div className="space-y-4">
+            <div className="mb-2 flex flex-col gap-1">
+                <div className="text-muted-foreground flex items-center justify-between text-xs">
+                    <span>Balance ({isBuying ? 'EUR' : crypto.symbol})</span>
+                    <span className="ml-2 font-mono">
+                        {localeStringNoCompact(userBalance.find((u) => u.crypto_id === data.sold_id)?.balance ?? 0, 8)}
+                    </span>
+                </div>
+                <div className="text-muted-foreground flex items-center justify-between text-xs">
+                    <span>Market price</span>
+                    <span className="ml-2 font-mono">{localeStringNoCompact(priceComparison.price, 4)} EUR</span>
+                </div>
             </div>
-            <div className="flex w-full flex-col font-black">
-                <p>
-                    Price: ~
-                    {parseFloat(priceComparison.price.toString()).toLocaleString('es-ES', {
-                        style: 'currency',
-                        currency: 'EUR',
-                        maximumFractionDigits: 2,
-                    })}
-                </p>
-            </div>
-            <div className="flex w-full flex-col">
-                <Label htmlFor="price" className="text-md flex items-center gap-2">
-                    Custom price
+
+            <div>
+                <Label htmlFor="price" className="flex items-center gap-2 text-sm font-medium">
                     <Checkbox
                         id="custom-price-check"
                         checked={customPrice}
@@ -352,10 +346,12 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                             setData('purchased_amount', null);
                             setData('sold_amount', null);
                         }}
+                        className="mr-2"
                     />
+                    Set custom price
                 </Label>
-                {customPrice ? (
-                    <>
+                {customPrice && (
+                    <div className="mt-2">
                         <Input
                             disabled={!customPrice}
                             name="price"
@@ -369,48 +365,52 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                 setData('purchased_amount', null);
                                 setData('sold_amount', null);
                             }}
+                            className="w-full"
+                            placeholder="Enter custom price"
                         />
                         <InputError message={errors.price} />
-                    </>
-                ) : (
-                    <></>
+                    </div>
                 )}
             </div>
 
-            <div className="flex w-full flex-col">
-                <Label htmlFor="price" className="text-md">
-                    {isBuying ? 'You buy' : 'You spend'} ({crypto.symbol})
-                </Label>
-                <Input
-                    name="price"
-                    id="price"
-                    type="number"
-                    step={0.00000001}
-                    autoFocus
-                    autoComplete="price"
-                    value={isBuying ? (data.purchased_amount ?? '') : (data.sold_amount ?? '')}
-                    onChange={(e) => setAmount(isBuying, parseFloat(e.target.value))}
-                />
-                <InputError message={errors.purchased_amount} />
-            </div>
-            <div className="flex w-full flex-col">
-                <Label htmlFor="price" className="text-md">
-                    {isBuying ? 'You spend' : 'You get'} (EUR)
-                </Label>
-                <Input
-                    name="price"
-                    id="price"
-                    type="number"
-                    step={0.00000001}
-                    autoFocus
-                    autoComplete="price"
-                    value={isBuying ? (data.sold_amount ?? '') : (data.purchased_amount ?? '')}
-                    onChange={(e) => setAmount(!isBuying, parseFloat(e.target.value))}
-                />
-                <InputError message={errors.sold_amount} />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                    <Label htmlFor="amount-crypto" className="text-sm font-medium">
+                        {isBuying ? 'You buy' : 'You spend'} ({crypto.symbol})
+                    </Label>
+                    <Input
+                        id="amount-crypto"
+                        type="number"
+                        step={0.00000001}
+                        autoFocus
+                        autoComplete="off"
+                        value={isBuying ? (data.purchased_amount ?? '') : (data.sold_amount ?? '')}
+                        onChange={(e) => setAmount(isBuying, parseFloat(e.target.value))}
+                        className="mt-1 w-full"
+                        placeholder={`Amount in ${crypto.symbol}`}
+                    />
+                    <InputError message={errors.purchased_amount} />
+                </div>
+                <div>
+                    <Label htmlFor="amount-eur" className="text-sm font-medium">
+                        {isBuying ? 'You spend' : 'You get'} (EUR)
+                    </Label>
+                    <Input
+                        id="amount-eur"
+                        type="number"
+                        step={0.00000001}
+                        autoFocus
+                        autoComplete="off"
+                        value={isBuying ? (data.sold_amount ?? '') : (data.purchased_amount ?? '')}
+                        onChange={(e) => setAmount(!isBuying, parseFloat(e.target.value))}
+                        className="mt-1 w-full"
+                        placeholder="Amount in EUR"
+                    />
+                    <InputError message={errors.sold_amount} />
+                </div>
             </div>
 
-            <div className="flex w-full flex-row gap-2">
+            <div className="flex w-full flex-row gap-2 pt-2">
                 <Button
                     disabled={processing}
                     type="reset"
@@ -420,15 +420,15 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                         setData('purchased_amount', null);
                         setData('sold_amount', null);
                     }}
-                    className="w-full bg-red-500 text-white hover:bg-red-600 dark:text-black"
+                    className="w-1/2 bg-red-500 text-white hover:bg-red-600 dark:text-black"
                 >
                     Cancel
                 </Button>
-                <Button type="submit" className="w-full bg-green-500 text-white hover:bg-green-600 dark:text-black" disabled={processing}>
-                    Buy
+                <Button type="submit" className="w-1/2 bg-green-500 text-white hover:bg-green-600 dark:text-black" disabled={processing}>
+                    {isBuying ? 'Buy' : 'Sell'}
                 </Button>
             </div>
-        </>
+        </div>
     );
 
     useEchoPublic(`Prices.Pair.${priceComparison?.id}`, 'PriceComparisonUpdated', (e: any) => {
@@ -451,91 +451,66 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Crypto View"></Head>
 
-            <div className="mt-[2rem] grid grid-cols-[0.4fr_1fr_0.4fr] p-1 2xl:grid-cols-[0.2fr_1fr_0.2fr]">
-                <div className="flexflex-col gap-6 font-bold">
-                    <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">Coin info and metrics</h2>
-                    <div className="flex flex-col items-start justify-start gap-3">
-                        <CryptoDashPillPrice
-                            id="cryptoPrice"
-                            priceComparison={priceComparison}
-                            className="mt-2 self-center text-2xl"
-                            maxFractionDigits={2}
-                            smallTextClassName="text-[0.8rem]"
-                            arrowSize={18}
+            <div className="mt-8 grid grid-cols-1 gap-8 self-center px-2 xl:grid-cols-12 xl:gap-2">
+                <section className="order-2 flex flex-col gap-6 rounded-lg bg-white/70 p-4 shadow xl:order-1 xl:col-span-3 dark:bg-neutral-900/70">
+                    <h2 className="mb-2 w-full border-b pb-2 text-center text-xl font-black">Coin info and metrics</h2>
+                    <CryptoDashPillPrice
+                        id="cryptoPrice"
+                        priceComparison={priceComparison}
+                        className="mt-2 self-center text-2xl"
+                        maxFractionDigits={2}
+                        smallTextClassName="text-[0.8rem]"
+                        arrowSize={18}
+                    />
+                    <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-2">
+                        <CoinInfoPill
+                            name="Market Cap"
+                            value={infoPills.marketCap}
+                            rawValue={infoPills.rawmc}
+                            textClassName="text-sm"
+                            dynamic
+                            latest={infoPills.latest}
                         />
-
-                        <div className="grid w-full grid-cols-2 gap-3 self-center">
-                            <CoinInfoPill
-                                name="Market Cap"
-                                value={infoPills.marketCap}
-                                rawValue={infoPills.rawmc}
-                                textClassName="text-sm"
-                                dynamic
-                                latest={infoPills.latest}
-                            />
-                            {/* <CoinInfoPill
-                                name="Volume (24h)"
-                                value={infoPills.volume}
-                                textClassName="text-sm"
-                                rawValue={infoPills.rawvol}
-                                dynamic
-                                latest={infoPills.latest}
-                            /> */}
-                            <CoinInfoPill name="FDV" value={infoPills.fdv} textClassName="text-sm" latest={infoPills.latest} />
-                            {/* <CoinInfoPill name="Vol/Mkt (24h)" value={infoPills.vol_mktCap} textClassName="text-sm" latest={infoPills.latest} /> */}
-                            <CoinInfoPill
-                                name="Total supply"
-                                value={infoPills.circulating_supply}
-                                textClassName="text-sm"
-                                latest={infoPills.latest}
-                            />
-                            <CoinInfoPill name="Max supply" value={infoPills.max_supply} textClassName="text-sm" latest={infoPills.latest} />
-                            <CoinInfoPill
-                                name="Circulating supply"
-                                value={infoPills.circulating_supply}
-                                textClassName="text-sm"
-                                additionalClassName="col-span-2 flex justify-center"
-                                latest={infoPills.latest}
-                            />
-                        </div>
+                        <CoinInfoPill name="FDV" value={infoPills.fdv} textClassName="text-sm" latest={infoPills.latest} />
+                        <CoinInfoPill name="Total supply" value={infoPills.circulating_supply} textClassName="text-sm" latest={infoPills.latest} />
+                        <CoinInfoPill name="Max supply" value={infoPills.max_supply} textClassName="text-sm" latest={infoPills.latest} />
+                        <CoinInfoPill
+                            name="Circulating supply"
+                            value={infoPills.circulating_supply}
+                            textClassName="text-sm"
+                            additionalClassName="col-span-2 md:col-span-1 flex justify-center"
+                            latest={infoPills.latest}
+                        />
                     </div>
-                </div>
-                <div className="mr-2 ml-2 flex flex-col gap-6">
-                    <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{crypto.symbol}&nbsp;&nbsp;|&nbsp;&nbsp;EUR</h2>
-                    {/* Should have a WebSocket for 1h, 30m, etc to retrieve all the prices update to that interval in 1d, 1w, 1m size */}
-                    <div className="flex w-full flex-row justify-center">
-                        <button
-                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '5m' ? activeTimeFrame : '')}
-                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '5m' }))}
-                        >
-                            5m
-                        </button>
-                        <button
-                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '15m' ? activeTimeFrame : '')}
-                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '15m' }))}
-                        >
-                            15m
-                        </button>
-                        <button
-                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '30m' ? activeTimeFrame : '')}
-                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '30m' }))}
-                        >
-                            30m
-                        </button>
-                        <button
-                            className={'w-full cursor-pointer rounded p-2' + (timeFrame === '1h' ? activeTimeFrame : '')}
-                            onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: '1h' }))}
-                        >
-                            1h
-                        </button>
-                    </div>
-                    <CryptoPriceChart priceRecords={priceRecordsState} />
-                </div>
-                <div className="flex flex-col gap-6">
-                    <h2 className="w-full self-center border-b p-2 text-center text-xl font-black">{tab.toUpperCase()}</h2>
+                </section>
 
+                <section className="order-1 flex flex-col gap-6 rounded-lg bg-white/70 p-4 shadow xl:order-2 xl:col-span-6 dark:bg-neutral-900/70">
+                    <h2 className="mb-2 w-full border-b pb-2 text-center text-xl font-black">{crypto.symbol}&nbsp;&nbsp;|&nbsp;&nbsp;EUR</h2>
+                    <div className="mb-2 flex w-full flex-row justify-center gap-2">
+                        {(['5m', '15m', '30m', '1h'] as const).map((tf) => (
+                            <button
+                                key={tf}
+                                className={
+                                    'w-full rounded px-2 py-1 text-sm font-semibold transition-colors ' +
+                                    (timeFrame === tf
+                                        ? activeTimeFrame
+                                        : 'bg-gray-100 hover:bg-gray-200 dark:bg-neutral-800 dark:hover:bg-neutral-700')
+                                }
+                                onClick={() => (window.location.href = route('crypto.show', { id: crypto.id, interval: tf }))}
+                            >
+                                {tf}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="min-h-[300px]">
+                        <CryptoPriceChart priceRecords={priceRecordsState} />
+                    </div>
+                </section>
+
+                <section className="order-3 flex flex-col gap-6 rounded-lg bg-white/70 p-4 shadow xl:order-3 xl:col-span-3 dark:bg-neutral-900/70">
+                    <h2 className="mb-2 w-full border-b pb-2 text-center text-xl font-black">{tab.toUpperCase()}</h2>
                     <div className="flex w-full flex-col items-center justify-center">
-                        <div className="flex w-full flex-row">
+                        <div className="mb-4 flex w-full flex-row gap-2">
                             <button
                                 disabled={processing || euroBalance <= 0}
                                 onClick={() => {
@@ -547,7 +522,10 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setData('sold_amount', null);
                                     setData('order_type', 'buy');
                                 }}
-                                className={'w-full cursor-pointer rounded p-2 font-black text-white ' + (isBuying ? activeTab : '')}
+                                className={
+                                    'w-1/2 rounded p-2 font-black transition-colors ' +
+                                    (isBuying ? activeTab : 'bg-gray-100 hover:bg-gray-200 dark:bg-neutral-800 dark:hover:bg-neutral-700')
+                                }
                             >
                                 Buy
                             </button>
@@ -562,17 +540,19 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                                     setData('sold_amount', null);
                                     setData('order_type', 'sell');
                                 }}
-                                className={'w-full cursor-pointer rounded p-2 font-black text-white ' + (!isBuying ? activeTab : '')}
+                                className={
+                                    'w-1/2 rounded p-2 font-black transition-colors ' +
+                                    (!isBuying ? activeTab : 'bg-gray-100 hover:bg-gray-200 dark:bg-neutral-800 dark:hover:bg-neutral-700')
+                                }
                             >
                                 Sell
                             </button>
                         </div>
-
                         <form onSubmit={submit} className="flex w-full flex-col gap-2">
                             {formData}
                         </form>
                     </div>
-                </div>
+                </section>
             </div>
         </AppLayout>
     );

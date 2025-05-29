@@ -131,7 +131,7 @@ export default function Orders({ userOrders, cryptos }: Readonly<OrdersProps>) {
                 </select>
             </div>
 
-            <div className="mt-10 flex max-w-6xl min-w-6xl flex-row flex-wrap gap-3 self-center">
+            <div className="mt-10 flex w-full max-w-7xl min-w-full flex-row flex-wrap justify-center gap-3 self-center sm:min-w-0">
                 {filteredOrders.length > 0 ? (
                     filteredOrders
                         .toSorted((a, b) => a.id - b.id)

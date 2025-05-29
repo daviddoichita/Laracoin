@@ -67,7 +67,7 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<AppHeaderProps>) {
     const getInitials = useInitials();
     return (
         <>
-            <div className="border-sidebar-border/80 border-b">
+            <div className="border-sidebar-border/80 border-b bg-neutral-100 dark:bg-neutral-900">
                 <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
                     {/* Mobile Menu */}
                     <div className="lg:hidden">

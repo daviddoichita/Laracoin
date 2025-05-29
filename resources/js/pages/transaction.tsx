@@ -42,10 +42,18 @@ export default function Trasaction({ userBalance }: Readonly<TransactionProps>) 
         <AppLayout>
             <Head title="New transaction"></Head>
 
-            <form className="mt-[4rem] flex w-[30%] flex-col gap-6 self-center" onSubmit={submit}>
+            <form
+                className="mx-auto mt-16 flex w-full max-w-5xl flex-col gap-8 rounded-lg bg-white p-6 shadow-md dark:bg-neutral-900"
+                onSubmit={submit}
+            >
                 <h1 className="text-xl font-black">New transaction</h1>
 
-                <p className="text-lg font-black">Available balance: {userBalance.balance}</p>
+                <div className="mb-2 flex flex-col gap-1">
+                    <div className="text-muted-foreground flex items-center justify-between text-xs">
+                        <span>Available balance ({userBalance.crypto.symbol})</span>
+                        <span className="ml-2 font-mono">{userBalance.balance}</span>
+                    </div>
+                </div>
 
                 <div className="grid gap-2">
                     <Label htmlFor="target_uuid">Target uuid</Label>
@@ -57,43 +65,48 @@ export default function Trasaction({ userBalance }: Readonly<TransactionProps>) 
                         autoComplete="uuid"
                         value={data.target_uuid ?? ''}
                         onChange={(e) => setData('target_uuid', e.target.value)}
-                    ></Input>
-                    <InputError message={errors.target_uuid}></InputError>
+                        placeholder="Target UUID"
+                        className="w-full"
+                    />
+                    <InputError message={errors.target_uuid} />
                 </div>
 
                 <div className="grid gap-2">
                     <Label htmlFor="amount">Amount</Label>
-                    <Input
-                        id="amount"
-                        type="number"
-                        step={0.00000001}
-                        required
-                        autoFocus
-                        autoComplete="amount"
-                        value={data.amount ?? ''}
-                        onChange={(e) => setData('amount', parseFloat(e.target.value))}
-                    ></Input>
-                    <InputError message={errors.amount}></InputError>
+                    <div className="flex flex-row items-center gap-3">
+                        <Input
+                            id="amount"
+                            type="number"
+                            step={0.00000001}
+                            required
+                            autoComplete="amount"
+                            value={data.amount ?? ''}
+                            onChange={(e) => setData('amount', parseFloat(e.target.value))}
+                            placeholder="Amount"
+                            className="w-full"
+                        />
+                    </div>
+                    <InputError message={errors.amount} />
                 </div>
 
-                <div className="flex w-full flex-row items-center justify-center gap-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <Button
                         onClick={() => {
                             window.location.href = route('my-balances');
                         }}
                         type="reset"
-                        className="mt-4 w-full cursor-pointer bg-red-500 text-white transition duration-[0.3s] hover:bg-red-600 dark:text-black"
+                        className="w-full bg-red-500 text-white transition hover:bg-red-600 dark:text-black"
                         disabled={processing}
                     >
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         Cancel
                     </Button>
                     <Button
                         type="submit"
-                        className="mt-4 w-full cursor-pointer bg-green-500 text-white transition duration-[0.3s] hover:bg-green-600 dark:text-black"
+                        className="w-full bg-green-500 text-white transition hover:bg-green-600 dark:text-black"
                         disabled={processing}
                     >
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         Send
                     </Button>
                 </div>

@@ -60,23 +60,21 @@ export default function ListCryptos({ cryptos }: Readonly<ListCryptosProps>) {
 
     return (
         <AppLayout>
-            <Head title="Cryptos list"></Head>
+            <Head title="Cryptos list" />
 
-            <div className={'mt-5 mb-5 flex w-[40%] max-w-7xl flex-row gap-2 self-center ' + (auth.user.admin ? '' : 'hidden')}>
-                <div className="flex w-full flex-row items-center justify-center gap-3 p-4">
-                    {filtering ? (
+            <div className={'mt-5 mb-5 flex w-full max-w-4xl flex-row gap-2 self-center px-2 ' + (auth.user.admin ? '' : 'hidden')}>
+                <div className="flex w-full flex-row items-center justify-center gap-2 rounded-lg p-3 md:gap-3 md:p-4 dark:bg-neutral-950">
+                    {filtering && (
                         <Button
                             onClick={() => {
                                 setFiltering(false);
                                 setFilteredCryptos(cryptosRef.current);
                                 setQuery('');
                             }}
-                            className="bg-neutral-100 text-black hover:cursor-pointer hover:bg-neutral-300 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800"
+                            className="bg-neutral-200 text-black hover:bg-neutral-300 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
                         >
                             Clear
                         </Button>
-                    ) : (
-                        <></>
                     )}
                     <Input
                         onKeyDown={(e) => {
@@ -87,89 +85,91 @@ export default function ListCryptos({ cryptos }: Readonly<ListCryptosProps>) {
                         onInput={(e) => setQuery(e.currentTarget.value)}
                         value={query}
                         placeholder="Search"
-                    ></Input>
-                    <Button
-                        onClick={() => filter()}
-                        className="bg-neutral-100 hover:cursor-pointer hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-                    >
-                        <DynamicIcon name="search" className="text-black dark:text-white"></DynamicIcon>
+                        className="min-w-0 flex-1"
+                    />
+                    <Button onClick={() => filter()} className="bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700">
+                        <DynamicIcon name="search" className="text-black dark:text-white" />
                     </Button>
                 </div>
             </div>
 
-            <table className={'w-[85%] border-separate self-center ' + (auth.user.admin ? '' : 'hidden')}>
-                <thead className="text-lg">
-                    <tr>
-                        <th className="rounded-tl border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Name</th>
-                        <th className="border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Symbol</th>
-                        <th className="border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Max supply</th>
-                        <th className="border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Circulating supply</th>
-                        <th className="border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">View</th>
-                        <th className="rounded-tr border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Disable</th>
-                        <th className="rounded-tr border border-neutral-700 bg-neutral-200 p-4 dark:bg-neutral-800">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredCryptos
-                        .toSorted((a, b) => {
-                            if (a.disabled === b.disabled) {
-                                return 0;
-                            }
-                            return a.disabled ? 1 : -1;
-                        })
-                        .map((v, i) => {
-                            const tdClass = 'border border-neutral-700 text-center p-3';
-                            return (
-                                <tr key={shortUUID()}>
-                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>{v.name}</td>
-                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>{v.symbol}</td>
-                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>{v.max_supply === -1 ? 'INF' : v.max_supply}</td>
-                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>
-                                        {v.circulating_supply === -1 ? 'INF' : v.circulating_supply}
-                                    </td>
-                                    <td className={tdClass + (v.disabled ? ' opacity-50' : '')}>
-                                        <Button
-                                            onClick={() => (window.location.href = route('crypto.show', { id: v.id }))}
-                                            disabled={v.disabled}
-                                            className="cursor-pointer"
-                                        >
-                                            View
-                                        </Button>
-                                    </td>
-                                    <td className={tdClass}>
-                                        {v.disabled ? (
+            <div className={'flex w-full justify-center overflow-x-auto px-2 ' + (auth.user.admin ? '' : 'hidden')}>
+                <table className="w-full max-w-7xl min-w-[600px] border-separate rounded-lg bg-white shadow-md dark:bg-neutral-900">
+                    <thead className="text-base md:text-lg">
+                        <tr>
+                            <th className="rounded-tl-lg border border-neutral-200 bg-neutral-100 p-3 font-semibold dark:border-neutral-700 dark:bg-neutral-800">
+                                Name
+                            </th>
+                            <th className="border border-neutral-200 bg-neutral-100 p-3 font-semibold dark:border-neutral-700 dark:bg-neutral-800">
+                                Symbol
+                            </th>
+                            <th className="border border-neutral-200 bg-neutral-100 p-3 font-semibold dark:border-neutral-700 dark:bg-neutral-800">
+                                Max supply
+                            </th>
+                            <th className="border border-neutral-200 bg-neutral-100 p-3 font-semibold dark:border-neutral-700 dark:bg-neutral-800">
+                                Circulating supply
+                            </th>
+                            <th className="border border-neutral-200 bg-neutral-100 p-3 font-semibold dark:border-neutral-700 dark:bg-neutral-800">
+                                View
+                            </th>
+                            <th className="border border-neutral-200 bg-neutral-100 p-3 font-semibold dark:border-neutral-700 dark:bg-neutral-800">
+                                Disable
+                            </th>
+                            <th className="rounded-tr-lg border border-neutral-200 bg-neutral-100 p-3 font-semibold dark:border-neutral-700 dark:bg-neutral-800">
+                                Delete
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredCryptos
+                            .toSorted((a, b) => {
+                                if (a.disabled === b.disabled) {
+                                    return 0;
+                                }
+                                return a.disabled ? 1 : -1;
+                            })
+                            .map((v) => {
+                                const tdClass = 'border border-neutral-200 text-center p-2 md:p-3 align-middle dark:border-neutral-700';
+                                const faded = v.disabled ? ' opacity-50' : '';
+                                return (
+                                    <tr key={shortUUID()} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/60">
+                                        <td className={tdClass + faded}>{v.name}</td>
+                                        <td className={tdClass + faded}>{v.symbol}</td>
+                                        <td className={tdClass + faded}>{v.max_supply === -1 ? 'INF' : v.max_supply}</td>
+                                        <td className={tdClass + faded}>{v.circulating_supply === -1 ? 'INF' : v.circulating_supply}</td>
+                                        <td className={tdClass + faded}>
                                             <Button
-                                                className="cursor-pointer"
+                                                onClick={() => (window.location.href = route('crypto.show', { id: v.id }))}
+                                                disabled={v.disabled}
+                                                className="cursor-pointer px-2 py-1 text-sm md:px-4 md:py-2"
+                                            >
+                                                View
+                                            </Button>
+                                        </td>
+                                        <td className={tdClass}>
+                                            <Button
+                                                className="cursor-pointer px-2 py-1 text-sm md:px-4 md:py-2"
                                                 onClick={() => {
                                                     disable(v.id);
                                                 }}
                                             >
-                                                Enable
+                                                {v.disabled ? 'Enable' : 'Disable'}
                                             </Button>
-                                        ) : (
+                                        </td>
+                                        <td className={tdClass}>
                                             <Button
-                                                className="cursor-pointer"
-                                                onClick={() => {
-                                                    disable(v.id);
-                                                }}
+                                                onClick={() => (window.location.href = route('crypto.delete', { id: v.id }))}
+                                                className="cursor-pointer bg-red-500 px-2 py-1 text-sm hover:bg-red-600 md:px-4 md:py-2"
                                             >
-                                                Disable
+                                                Delete
                                             </Button>
-                                        )}
-                                    </td>
-                                    <td className={tdClass}>
-                                        <Button
-                                            onClick={() => (window.location.href = route('crypto.delete', { id: v.id }))}
-                                            className="cursor-pointer bg-red-500 hover:bg-red-500"
-                                        >
-                                            Delete
-                                        </Button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                </tbody>
-            </table>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                    </tbody>
+                </table>
+            </div>
         </AppLayout>
     );
 }

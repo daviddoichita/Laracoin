@@ -85,7 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/transaction/new/{balance_id}', function (int $balance_id) {
         return Inertia::render('transaction')->with([
-            'userBalance' => UserBalance::find($balance_id)
+            'userBalance' => UserBalance::with('crypto')->find($balance_id)
         ]);
     })->name('transaction.new');
 

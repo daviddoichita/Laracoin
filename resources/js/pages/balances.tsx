@@ -67,7 +67,7 @@ export default function Balances({ userBalances, priceComparison }: Readonly<Bal
                 ></Input>
             </div>
 
-            <div className="mt-10 flex max-w-7xl min-w-7xl flex-row flex-wrap gap-3 self-center">
+            <div className="mt-10 flex w-full max-w-7xl flex-col flex-wrap justify-center gap-2 self-center sm:flex-row">
                 {filteredBalances
                     .toSorted((a, b) => a.id - b.id)
                     .map((v, _i) => {

@@ -80,9 +80,15 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Add crypto"></Head>
+            <Head title="Add crypto" />
 
-            <form className={'mt-[4rem] flex w-[30%] flex-col gap-6 self-center ' + (auth.user.admin ? '' : 'hidden')} onSubmit={submit}>
+            <form
+                className={
+                    'mx-auto mt-16 flex w-full max-w-5xl flex-col gap-8 rounded-lg bg-white p-6 shadow-md dark:bg-neutral-900 ' +
+                    (auth.user.admin ? '' : 'hidden')
+                }
+                onSubmit={submit}
+            >
                 <div className="grid gap-2">
                     <Label htmlFor="name">Name</Label>
                     <Input
@@ -94,6 +100,7 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                         value={data.name}
                         onChange={(e) => setData('name', capitalize(e.target.value))}
                         placeholder="Name"
+                        className="w-full"
                     />
                     <InputError message={errors.name} />
                 </div>
@@ -109,14 +116,15 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                         value={data.symbol}
                         onChange={(e) => setData('symbol', e.target.value.toUpperCase())}
                         placeholder="Symbol"
+                        className="w-full"
                     />
                     <InputError message={errors.symbol} />
                 </div>
 
                 <div className="grid gap-2">
                     <Label htmlFor="max-supply">Max supply</Label>
-                    <div className="flex flex-row gap-3">
-                        <Label htmlFor="a" className="text-md flex items-center gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                        <Label htmlFor="infinite" className="text-md flex items-center gap-2">
                             Infinite
                             <Checkbox
                                 id="infinite"
@@ -125,7 +133,7 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                                     setInf(!inf);
                                     setData('max_supply', -1);
                                 }}
-                            ></Checkbox>
+                            />
                         </Label>
                         <Input
                             id="max-supply"
@@ -139,25 +147,18 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             value={data.max_supply < 0 ? '' : data.max_supply}
                             onChange={(e) => setMaxSupply(parseFloat(e.target.value))}
                             placeholder="Max supply"
+                            className="w-full sm:w-1/2"
                         />
                         <select
                             disabled={inf}
                             name="magnitude-max"
-                            className="rounded border p-1"
+                            className="rounded border bg-neutral-100 p-2 dark:bg-neutral-800"
                             onChange={(e) => setMaxSupplyMulti(e.target.value as Multi)}
                         >
-                            <option value={'u'} className="dark:bg-neutral-900">
-                                Units
-                            </option>
-                            <option value={'h'} className="dark:bg-neutral-900">
-                                Hundreds
-                            </option>
-                            <option value={'th'} className="dark:bg-neutral-900">
-                                Thousands
-                            </option>
-                            <option value={'m'} className="dark:bg-neutral-900">
-                                Millions
-                            </option>
+                            <option value={'u'}>Units</option>
+                            <option value={'h'}>Hundreds</option>
+                            <option value={'th'}>Thousands</option>
+                            <option value={'m'}>Millions</option>
                         </select>
                     </div>
                     <InputError message={errors.max_supply} />
@@ -165,7 +166,7 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
 
                 <div className="grid gap-2">
                     <Label htmlFor="circulating-supply">Circulating supply</Label>
-                    <div className="flex flex-row gap-3">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                         <Input
                             id="circulating-supply"
                             type="number"
@@ -177,24 +178,17 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             value={data.circulating_supply < 0 ? '' : data.circulating_supply}
                             onChange={(e) => setCirculatingSupply(parseFloat(e.target.value))}
                             placeholder="Circulating supply"
+                            className="w-full sm:w-1/2"
                         />
                         <select
                             name="magnitude-circulating"
-                            className="rounded border p-1"
+                            className="rounded border bg-neutral-100 p-2 dark:bg-neutral-800"
                             onChange={(e) => setCirculatingSupplyMulti(e.target.value as Multi)}
                         >
-                            <option value={'u'} className="dark:bg-neutral-900">
-                                Units
-                            </option>
-                            <option value={'h'} className="dark:bg-neutral-900">
-                                Hundreds
-                            </option>
-                            <option value={'th'} className="dark:bg-neutral-900">
-                                Thousands
-                            </option>
-                            <option value={'m'} className="dark:bg-neutral-900">
-                                Millions
-                            </option>
+                            <option value={'u'}>Units</option>
+                            <option value={'h'}>Hundreds</option>
+                            <option value={'th'}>Thousands</option>
+                            <option value={'m'}>Millions</option>
                         </select>
                     </div>
                     <InputError message={errors.circulating_supply} />
@@ -214,28 +208,29 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             value={data.price.toString().startsWith('-') ? '' : data.price}
                             onChange={(e) => setData('price', parseFloat(e.target.value))}
                             placeholder="Price"
+                            className="w-full"
                         />
-                        <p className="text-xl">€</p>
+                        <span className="text-xl font-semibold">€</span>
                     </div>
                     <InputError message={errors.price} />
                 </div>
 
-                <div className="flex w-full flex-row items-center justify-center gap-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <Button
                         type="reset"
-                        className="mt-4 w-full cursor-pointer bg-red-500 text-white transition duration-[0.3s] hover:bg-red-600 dark:text-black"
+                        className="w-full bg-red-500 text-white transition hover:bg-red-600 dark:text-black"
                         disabled={processing}
                         onClick={() => reset()}
                     >
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         Cancel
                     </Button>
                     <Button
                         type="submit"
-                        className="mt-4 w-full cursor-pointer bg-green-500 text-white transition duration-[0.3s] hover:bg-green-600 dark:text-black"
+                        className="w-full bg-green-500 text-white transition hover:bg-green-600 dark:text-black"
                         disabled={processing}
                     >
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         Save
                     </Button>
                 </div>

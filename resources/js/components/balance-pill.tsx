@@ -28,16 +28,19 @@ export function DynamicBalance({ userBalance, priceComparison }: Readonly<Dynami
     });
 
     return (
-        <div className="flex w-[32.5%] flex-col items-center gap-3 rounded-xl border p-3 shadow dark:shadow-neutral-500">
-            <div className="flex w-full flex-row justify-center gap-3 text-xl font-black">
+        <div className="flex w-full max-w-md min-w-[220px] flex-col items-center gap-4 rounded-2xl border bg-white/80 p-4 shadow transition-all dark:bg-neutral-950 dark:shadow dark:shadow-neutral-700">
+            <div className="flex w-full flex-row justify-center gap-2 text-lg font-extrabold tracking-tight text-neutral-800 md:text-xl dark:text-neutral-100">
                 <p>{userBalance.crypto.name}</p>
+                <span className="text-neutral-400 dark:text-neutral-400">|</span>
                 <p>{userBalance.crypto.symbol}</p>
             </div>
-            <div className="flex w-full flex-row items-center justify-center gap-3 text-sm font-black">
-                <p>UUID: {userBalance.uuid}</p>
+            <div className="flex w-full flex-row items-center justify-center gap-2 text-xs font-semibold text-neutral-600 md:text-sm dark:text-neutral-300">
+                <p>
+                    UUID: <span className="break-all">{userBalance.uuid}</span>
+                </p>
                 <Copy
                     height={16}
-                    className="hover:cursor-pointer"
+                    className="ml-1 hover:cursor-pointer"
                     onClick={(e) => {
                         navigator.clipboard.writeText(userBalance.uuid);
                         const icon = e.currentTarget;
@@ -54,20 +57,22 @@ export function DynamicBalance({ userBalance, priceComparison }: Readonly<Dynami
                 />
             </div>
             <div className="flex w-full flex-row flex-wrap gap-3">
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Balance</p>
-                    <p>{userBalance.balance}</p>
+                <div className="flex min-w-[120px] flex-1 flex-col items-center gap-1 rounded-md border bg-neutral-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Balance</p>
+                    <p className="text-base font-bold md:text-lg">{userBalance.balance}</p>
                 </div>
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Euro value</p>
-                    <p className={priceComparisonCopy && priceComparisonCopy.last_update > 0 ? 'text-green-500' : 'text-red-500'}>
+                <div className="flex min-w-[120px] flex-1 flex-col items-center gap-1 rounded-md border bg-neutral-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Euro value</p>
+                    <p
+                        className={`text-base font-bold md:text-lg ${priceComparisonCopy && priceComparisonCopy.last_update > 0 ? 'text-green-600' : 'text-red-500'}`}
+                    >
                         {formatPrice(userBalance.balance * (priceComparisonCopy?.price ?? 0))}
                     </p>
                 </div>
             </div>
-            <div className="flex w-full flex-row justify-center gap-3">
+            <div className="mt-2 flex w-full flex-col justify-center gap-2 md:flex-row">
                 <Button
-                    className="w-full hover:cursor-pointer"
+                    className="w-full flex-1 hover:cursor-pointer md:w-auto"
                     disabled={userBalance.balance <= 0}
                     onClick={() => {
                         window.location.href = route('transaction.new', { balance_id: userBalance.id });
@@ -76,18 +81,18 @@ export function DynamicBalance({ userBalance, priceComparison }: Readonly<Dynami
                     Send
                 </Button>
                 <Button
-                    className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400"
+                    className="w-full flex-1 bg-red-500 hover:cursor-pointer hover:bg-red-400 md:w-auto"
                     disabled={userBalance.balance <= 0}
                     onClick={() => {
-                        window.location.href = route('crypto.show', { id: userBalance.crypto_id, state: 'sell' });
+                        window.location.href = route('crypto.show', { id: userBalance.crypto_id, state: 'sell', interval: '5m' });
                     }}
                 >
                     Sell
                 </Button>
                 <Button
-                    className="w-full bg-green-500 hover:cursor-pointer hover:bg-green-400"
+                    className="w-full flex-1 bg-green-500 hover:cursor-pointer hover:bg-green-400 md:w-auto"
                     onClick={() => {
-                        window.location.href = route('crypto.show', { id: userBalance.crypto_id, state: 'buy' });
+                        window.location.href = route('crypto.show', { id: userBalance.crypto_id, state: 'buy', interval: '5m' });
                     }}
                 >
                     Buy
@@ -108,48 +113,50 @@ export function StaticBalance({ userBalance }: Readonly<StaticBalanceProps>) {
 
     const { post } = useForm();
     return (
-        <div className="flex w-[32.5%] flex-col items-center gap-3 rounded-xl border p-3 shadow dark:shadow-neutral-500">
-            <div className="flex w-full flex-row justify-center gap-3 text-xl font-black">
+        <div className="flex w-full max-w-md min-w-[220px] flex-col items-center gap-4 rounded-2xl border bg-white/80 p-4 shadow transition-all dark:bg-neutral-950 dark:shadow-neutral-700">
+            <div className="flex w-full flex-row justify-center gap-2 text-lg font-extrabold tracking-tight text-neutral-800 md:text-xl dark:text-neutral-100">
                 <p>{userBalance.crypto.name}</p>
+                <span className="text-neutral-400 dark:text-neutral-400">|</span>
                 <p>{userBalance.crypto.symbol}</p>
             </div>
-            <div className="flex w-full flex-row items-center justify-center gap-3 text-sm font-black">
+            <div className="flex w-full flex-row items-center justify-center gap-2 text-xs font-semibold text-neutral-600 md:text-sm dark:text-neutral-300">
                 <p>Cannot transfer euro</p>
             </div>
             <div className="flex w-full flex-row flex-wrap gap-3">
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Balance</p>
-                    <p>{userBalance.balance}</p>
+                <div className="flex min-w-[120px] flex-1 flex-col items-center gap-1 rounded-md border bg-neutral-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Balance</p>
+                    <p className="text-base font-bold md:text-lg">{userBalance.balance}</p>
                 </div>
-                <div className="flex w-[48.4%] flex-col items-center gap-2 rounded-sm border p-2">
-                    <p>Euro value</p>
-                    <p>{formatPrice(parseFloat(userBalance.balance.toString()))}</p>
+                <div className="flex min-w-[120px] flex-1 flex-col items-center gap-1 rounded-md border bg-neutral-50 p-2 dark:bg-neutral-800">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Euro value</p>
+                    <p className="text-base font-bold md:text-lg">{formatPrice(parseFloat(userBalance.balance.toString()))}</p>
                 </div>
             </div>
-            <div className="flex w-full flex-row justify-center gap-3">
-                <div className="flex w-full flex-col gap-3">
-                    <Button
-                        onClick={() => {
-                            setShowAdd(true);
-                        }}
+            <div className="mt-2 flex w-full flex-col gap-2">
+                <Button
+                    onClick={() => {
+                        setShowAdd(true);
+                    }}
+                    id="add-euro"
+                    className="w-full hover:cursor-pointer"
+                >
+                    Add
+                </Button>
+                <div className={showAdd ? 'flex w-full flex-col items-center gap-2' : 'hidden'}>
+                    <Input
+                        name="add-euro"
                         id="add-euro"
-                        className="w-full hover:cursor-pointer"
-                    >
-                        Add
-                    </Button>
-                    <div className={showAdd ? 'flex flex-col items-center gap-2' : 'hidden'}>
-                        <Input
-                            name="add-euro"
-                            id="add-euro"
-                            type="number"
-                            step={0.01}
-                            autoComplete="price"
-                            value={add ?? ''}
-                            onChange={(e) => setAdd(parseFloat(e.target.value))}
-                        ></Input>
-                        <p id="error" className="text-red-500">
-                            {error}
-                        </p>
+                        type="number"
+                        step={0.01}
+                        autoComplete="price"
+                        value={add ?? ''}
+                        onChange={(e) => setAdd(parseFloat(e.target.value))}
+                        className="w-full"
+                    ></Input>
+                    <p id="error" className="text-xs text-red-500">
+                        {error}
+                    </p>
+                    <div className="flex w-full flex-row gap-2">
                         <Button
                             onClick={() => {
                                 if (add !== null) {
@@ -161,7 +168,7 @@ export function StaticBalance({ userBalance }: Readonly<StaticBalanceProps>) {
                                     setError('You must add an amount');
                                 }
                             }}
-                            className="w-full bg-green-500 hover:cursor-pointer hover:bg-green-400"
+                            className="flex-1 bg-green-500 hover:cursor-pointer hover:bg-green-400"
                         >
                             Confirm
                         </Button>
@@ -171,7 +178,7 @@ export function StaticBalance({ userBalance }: Readonly<StaticBalanceProps>) {
                                 setError(null);
                                 setShowAdd(false);
                             }}
-                            className="w-full bg-red-500 hover:cursor-pointer hover:bg-red-400"
+                            className="flex-1 bg-red-500 hover:cursor-pointer hover:bg-red-400"
                         >
                             Cancel
                         </Button>
