@@ -78,11 +78,15 @@ class DatabaseSeeder extends Seeder
         $priceRecords = [
             [
                 'pair_id' => 1,
-                'price' => 80000
+                'price' => 80000,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'pair_id' => 2,
-                'price' => 2000
+                'price' => 2000,
+                'created_at' => $now,
+                'updated_at' => $now,
             ]
         ];
 

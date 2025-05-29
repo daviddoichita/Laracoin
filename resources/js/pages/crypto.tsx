@@ -32,7 +32,7 @@ interface CryptoViewProps {
 }
 
 const localeString = (n: number, compact: boolean, maxFracDigits?: number) => {
-    let opts: any = { style: 'currency', currency: 'EUR', notation: 'compact' };
+    let opts: any = { notation: 'compact' };
     if (compact) {
         opts = { notation: 'compact', ...opts };
     }

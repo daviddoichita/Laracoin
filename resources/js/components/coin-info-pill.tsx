@@ -23,7 +23,9 @@ export default function CoinInfoPill({ name, value, rawValue, textClassName, add
             {dynamic ? (
                 <CryptoInfoDynamic value={value.toString()} rawValue={rv ?? 0} latest={latest} />
             ) : (
-                <p className={textClassName}>{parseFloat(value.toString()) === -1 ? 'INF' : value}</p>
+                <p className={textClassName}>
+                    {parseFloat(value.toString()) === -1 ? 'INF' : value} {name.match('Market Cap') || name.match('FDV') ? '€' : ''}
+                </p>
             )}
         </div>
     );
