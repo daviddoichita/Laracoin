@@ -64,10 +64,11 @@ export function DynamicBalance({ userBalance, priceComparison }: Readonly<Dynami
                 <div className="flex min-w-[120px] flex-1 flex-col items-center gap-1 rounded-md border bg-neutral-50 p-2 dark:bg-neutral-800">
                     <p className="text-xs text-neutral-500 dark:text-neutral-400">Euro value</p>
                     <p
-                        className={`text-base font-bold md:text-lg ${priceComparisonCopy && priceComparisonCopy.last_update > 0 ? 'text-green-600' : 'text-red-500'}`}
+                        className={`text-base font-bold md:text-lg ${priceComparisonCopy && priceComparisonCopy.last_update < 0 ? 'text-red-500' : priceComparison.last_update == 0 ? 'text-white' : 'text-green-600'}`}
                     >
                         {formatPrice(userBalance.balance * (priceComparisonCopy?.price ?? 0))}
                     </p>
+                    <p className={'text-xs ' + (priceComparison.last_update < 0 ? 'text-red-500' : priceComparison.last_update == 0 ? 'text-white' : 'text-green-600')}>{parseFloat(priceComparison.last_update.toString()).toLocaleString('es-ES', {style: 'percent', maximumFractionDigits: 2})}</p>
                 </div>
             </div>
             <div className="mt-2 flex w-full flex-col justify-center gap-2 md:flex-row">

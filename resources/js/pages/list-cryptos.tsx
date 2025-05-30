@@ -139,7 +139,7 @@ export default function ListCryptos({ cryptos }: Readonly<ListCryptosProps>) {
                                         <td className={tdClass + faded}>{v.circulating_supply === -1 ? 'INF' : v.circulating_supply}</td>
                                         <td className={tdClass + faded}>
                                             <Button
-                                                onClick={() => (window.location.href = route('crypto.show', { id: v.id }))}
+                                                onClick={() => (window.location.href = route('crypto.show', { id: v.id, interval: '5m' }))}
                                                 disabled={v.disabled}
                                                 className="cursor-pointer px-2 py-1 text-sm md:px-4 md:py-2"
                                             >
