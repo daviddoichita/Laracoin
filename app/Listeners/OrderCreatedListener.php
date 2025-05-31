@@ -161,7 +161,7 @@ class OrderCreatedListener
         $today = now()->startOfDay();
         $priceRecord = PriceRecord::where('pair_id', $priceComparison->id)
             ->whereDate('created_at', $today)
-            ->whereTime('created_at', '00:00:00')
+            ->whereTime('created_at', '00:00:01')
             ->first();
 
         if (!$priceRecord) {

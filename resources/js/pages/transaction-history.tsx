@@ -169,7 +169,7 @@ function IncomingHistory({ transactions, userBalances }: Readonly<IncomingHistor
                                     <div className="flex flex-col gap-1 sm:w-2/3">
                                         <span className="text-xs text-neutral-500 dark:text-neutral-400">Wallet UUID</span>
                                         <span className="truncate font-mono text-sm font-semibold text-neutral-800 dark:text-neutral-200">
-                                            {v.target_uuid}
+                                            {v.from_uuid}
                                         </span>
                                         <span className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                                             {new Date(v.created_at).toLocaleString('en-GB', { timeZone: 'Europe/Madrid' })}

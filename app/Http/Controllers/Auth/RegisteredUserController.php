@@ -47,7 +47,17 @@ class RegisteredUserController extends Controller
             'nif' => ['required', 'string', new SpanishId],
             'phoneNumber' => ['required', new SpanishPhone],
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [
+                'required',
+                'string',
+                'confirmed',
+                Rules\Password::min(12)
+                    ->mixedCase()
+                    ->letters()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
+            ],
         ]);
 
         $user = User::create([

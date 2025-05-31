@@ -13,6 +13,7 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'crypto_id',
+        'from_uuid',
         'target_uuid',
         'amount',
     ];
@@ -25,5 +26,15 @@ class Transaction extends Model
     public function crypto(): BelongsTo
     {
         return $this->belongsTo(Crypto::class);
+    }
+
+    public function from(): BelongsTo
+    {
+        return $this->belongsTo(UserBalance::class, 'from_uuid');
+    }
+
+    public function to(): BelongsTo
+    {
+        return $this->belongsTo(UserBalance::class, 'target_uuid');
     }
 }

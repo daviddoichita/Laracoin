@@ -44,6 +44,7 @@ class TransactionController extends Controller
         $request->validate([
             'user_balance' => 'required',
             'crypto_id' => 'required',
+            'from_uuid' => 'required',
             'target_uuid' => 'required',
             'amount' => 'required'
         ]);
@@ -66,6 +67,7 @@ class TransactionController extends Controller
             $transaction = Transaction::create([
                 'user_id' => Auth::user()->id,
                 'crypto_id' => $request->crypto_id,
+                'from_uuid' => $request->from_uuid,
                 'target_uuid' => $request->target_uuid,
                 'amount' => $request->amount,
             ]);

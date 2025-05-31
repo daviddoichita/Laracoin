@@ -15,6 +15,7 @@ export interface TransactionProps {
 export default function Trasaction({ userBalance }: Readonly<TransactionProps>) {
     type TransactionForm = {
         crypto_id: number;
+        from_uuid: string;
         target_uuid: string | null;
         amount: number | null;
         user_balance: number;
@@ -22,6 +23,7 @@ export default function Trasaction({ userBalance }: Readonly<TransactionProps>) 
 
     const { data, setData, errors, post, processing, reset } = useForm<TransactionForm>({
         crypto_id: userBalance.crypto_id,
+        from_uuid: userBalance.uuid,
         target_uuid: null,
         amount: null,
         user_balance: userBalance.id,
