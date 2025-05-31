@@ -358,7 +358,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                             id="price"
                             type="number"
                             step={0.00000001}
-                            autoFocus
                             autoComplete="price"
                             onChange={(e) => {
                                 setData('price', parseFloat(e.target.value));
@@ -382,7 +381,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                         id="amount-crypto"
                         type="number"
                         step={0.00000001}
-                        autoFocus
                         autoComplete="off"
                         value={isBuying ? (data.purchased_amount ?? '') : (data.sold_amount ?? '')}
                         onChange={(e) => setAmount(isBuying, parseFloat(e.target.value))}
@@ -399,7 +397,6 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
                         id="amount-eur"
                         type="number"
                         step={0.00000001}
-                        autoFocus
                         autoComplete="off"
                         value={isBuying ? (data.sold_amount ?? '') : (data.purchased_amount ?? '')}
                         onChange={(e) => setAmount(!isBuying, parseFloat(e.target.value))}

@@ -111,7 +111,6 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                         id="symbol"
                         type="text"
                         required
-                        autoFocus
                         autoComplete="symbol"
                         value={data.symbol}
                         onChange={(e) => setData('symbol', e.target.value.toUpperCase())}
@@ -142,7 +141,6 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             min={-1}
                             step={0.00000001}
                             required
-                            autoFocus
                             autoComplete="max-supply"
                             value={data.max_supply < 0 ? '' : data.max_supply}
                             onChange={(e) => setMaxSupply(parseFloat(e.target.value))}
@@ -173,7 +171,6 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             min={-1}
                             step={0.00000001}
                             required
-                            autoFocus
                             autoComplete="circulating-supply"
                             value={data.circulating_supply < 0 ? '' : data.circulating_supply}
                             onChange={(e) => setCirculatingSupply(parseFloat(e.target.value))}
@@ -203,7 +200,6 @@ export default function AddCrypto({ crypto }: Readonly<AddCryptoProps>) {
                             min={0}
                             step={0.00000001}
                             required
-                            autoFocus
                             autoComplete="price"
                             value={data.price.toString().startsWith('-') ? '' : data.price}
                             onChange={(e) => setData('price', parseFloat(e.target.value))}

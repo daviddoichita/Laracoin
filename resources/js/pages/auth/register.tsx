@@ -67,7 +67,6 @@ export default function Register() {
                             <Input
                                 id="surnames"
                                 type="text"
-                                autoFocus
                                 autoComplete="surnames"
                                 value={data.surnames}
                                 onChange={(e) => setData('surnames', e.target.value)}
@@ -86,7 +85,6 @@ export default function Register() {
                             <Input
                                 id="nif"
                                 type="text"
-                                autoFocus
                                 autoComplete="nif"
                                 value={data.nif}
                                 onChange={(e) => setData('nif', e.target.value.toUpperCase())}
@@ -103,7 +101,6 @@ export default function Register() {
                             <Input
                                 id="phoneNumber"
                                 type="number"
-                                autoFocus
                                 autoComplete="phoneNumber"
                                 value={data.phoneNumber}
                                 onChange={(e) => setData('phoneNumber', e.target.value)}
@@ -171,10 +168,7 @@ export default function Register() {
                 </div>
 
                 <div className="text-muted-foreground text-center text-sm">
-                    Already have an account?{' '}
-                    <TextLink href={route('login')}>
-                        Log in
-                    </TextLink>
+                    Already have an account? <TextLink href={route('login')}>Log in</TextLink>
                 </div>
             </form>
         </AuthLayout>
