@@ -270,7 +270,7 @@ export default function CryptoView({ crypto, volume24h, priceRecords, state, use
         order_type: state ?? 'buy',
         sold_amount: null,
         purchased_amount: null,
-        price: null,
+        price: !customPrice ? priceComparison.price : null,
     });
 
     type TimeFrame = '5m' | '15m' | '30m' | '1h';
